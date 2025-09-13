@@ -1,0 +1,37 @@
+<h5 class="page-header" style="color: #2199e8">
+      <i class="fas fa-arrow-left" style="padding: 0px 25px; cursor: pointer;" (click)="backButton()"></i>  {{ isEditMode ? 'Edit Customer Groups' : 'New Customer Groups' }}
+</h5>
+  
+<div class="page-content-create">
+    <form [formGroup]="addForm" class="container">
+        <div class="container mt-5">
+        
+          <div class="row">
+        
+            <div class="col-sm-6">
+              <div class="form-group d-flex align-items-center gap-2">
+                <label class="label" style="white-space: nowrap; min-width: 130px;">Name <span style="color: red;">*</span></label>
+                <input type="text" class="form-control small-placeholder" formControlName="name"/>
+              </div>
+            </div>
+
+            <div class="col-sm-6">
+              <div class="form-group d-flex align-items-center gap-2">
+                <label class="label" style="white-space: nowrap; min-width: 130px;">Description<span style="color: red;">*</span></label>
+                <input type="text" class="form-control small-placeholder" formControlName="description"/>
+              </div>
+            </div>
+          </div>
+        
+        
+          <div class="text-end mt-5">
+                <button class="btn btn-primary me-2" (click)="cancel()">Cancel</button>
+                <button class="btn btn-success" (click)="onSubmit()">Save</button>
+          </div>
+        </div>
+    </form>
+</div>
+
+  
+
+

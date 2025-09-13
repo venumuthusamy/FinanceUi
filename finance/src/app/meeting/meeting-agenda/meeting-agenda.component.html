@@ -1,0 +1,165 @@
+<div class="page-content-create">
+  <label>Please fill in all the mandatory fields<span style="color: red;">*</span></label>
+    <form [formGroup]="addForm" class="container d-flex flex-column" style="min-height: 100%;">
+      <div class="flex-grow-1">
+          <div class="container mt-5">
+              <div class="row">
+                <div class="col-sm-6">
+                  <div class="form-group d-flex align-items-center gap-2">
+                    <label class="label" style="white-space: nowrap; min-width: 130px;">Meeting Name <span style="color: red;">*</span></label>
+                    <input type="text" class="form-control small-placeholder" formControlName="meetingName"/>
+                  </div>
+                </div>
+                <div class="col-sm-6">
+                  <div class="form-group d-flex align-items-center gap-2">
+                    <label class="label" style="white-space: nowrap; min-width: 130px;">Meeting Type<span style="color: red;">*</span></label>
+                    <input type="text" class="form-control small-placeholder" formControlName="meetingType"/>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row mt-3">
+                <div class="col-sm-6">
+                  <div class="form-group d-flex align-items-center gap-2">
+                    <label class="label" style="white-space: nowrap; min-width: 130px;">Start Date<span style="color: red;">*</span></label>
+                     <div class="w-100">
+                     <p-calendar
+                      formControlName="startDate"
+                      dateFormat="dd-mm-yy"
+                      [showIcon]="true"
+                      placeholder="Choose Date"
+                      styleClass="w-100"
+                      appendTo="body"
+                    ></p-calendar> 
+                     </div>
+                  </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group d-flex align-items-center gap-2">
+                      <label class="label" style="white-space: nowrap; min-width: 130px;">End Date<span style="color: red;">*</span></label>
+                      <div class="w-100">
+                        <p-calendar
+                        formControlName="endDate"
+                        dateFormat="dd-mm-yy"
+                        [showIcon]="true"
+                        placeholder="Choose Date"
+                        styleClass="w-100"
+                        appendTo="body"
+                      ></p-calendar>
+                      </div>
+                    </div>
+                  </div>
+              </div>
+
+              <div class="row mt-3">
+                <div class="col-sm-6">
+                  <div class="form-group d-flex align-items-center gap-2">
+                    <label class="label" style="white-space: nowrap; min-width: 130px;">Department</label>
+                    <input type="text" class="form-control small-placeholder" formControlName="department"/>
+                  </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group d-flex align-items-center gap-2">
+                      <label class="label" style="white-space: nowrap; min-width: 130px;">Location<span style="color: red;">*</span></label>
+                      <input type="text" class="form-control small-placeholder" formControlName="location"/>
+                    </div>
+                  </div>
+              </div>
+
+              <div class="row mt-3">
+                <div class="col-sm-6">
+                  <div class="form-group d-flex align-items-center gap-2">
+                    <label class="label" style="white-space: nowrap; min-width: 130px;">Organised By</label>
+                    <input type="text" class="form-control small-placeholder" formControlName="organisedBy"/>
+                  </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group d-flex align-items-center gap-2">
+                      <label class="label" style="white-space: nowrap; min-width: 130px;">Reporter</label>
+                      <input type="text" class="form-control small-placeholder" formControlName="reporter"/>
+                    </div>
+                  </div>
+              </div>
+
+              <!-- Add Attendees Button -->
+              <div class="row mt-5">
+                <div class="col-12 d-flex justify-content-between align-items-center mb-2">
+                  <h6 class="label">Attendees</h6>
+                  <button pButton type="button" icon="pi pi-plus" label="Add" 
+                  style="background-color: #007bff; color: white;border: none" (click)="showAttendeesDialog()"></button>
+                </div>
+
+                <div class="col-12">
+                  <p-table [value]="attendees.controls" [formGroup]="addForm" formArrayName="attendees" 
+                  [scrollable]="true" scrollHeight="400px">
+                    <ng-template pTemplate="header">
+                      <tr>
+                        <th class="nowrap-column">Attendee</th>
+                        <th class="nowrap-column">Attendee Type</th>
+                        <th class="nowrap-column">Attendee Status</th>
+                        <th class="nowrap-column">Action</th>
+                      </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-row let-i="rowIndex">
+                      <tr [formGroupName]="i">
+                        <td class="nowrap-column">{{ row.get('attendee')?.value }}</td>
+                        <td class="nowrap-column">{{ row.get('attendeeType')?.value }}</td>
+                        <td class="nowrap-column">{{ row.get('attendeeStatus')?.value }}</td>
+                        <td class="nowrap-column">
+                          <button pButton type="button" icon="pi pi-pencil" class="p-button-edit" (click)="editAttendees(i)"></button>
+                          <button pButton type="button" icon="pi pi-trash" class="p-button-danger" (click)="removeAttendees(i)"></button>
+                        </td>
+                      </tr>
+                    </ng-template>
+                  </p-table>
+                </div>
+              </div>
+          </div>
+       </div>
+       <div class="text-end mt-5">
+           <button class="btn btn-primary me-2" (click)="cancel()">Cancel</button>
+           <button class="btn btn-success" (click)="onSubmit()">Save</button>
+       </div>
+    </form>
+</div>
+
+<!-- Dialog for Adding/Editing Attendees -->
+<p-dialog [(visible)]="displayDialog" [modal]="true" [style]="{width: '60vw'}" 
+        [contentStyle]="{ 'background-color': '#f9f9f9', 'padding': '1.5rem' }" 
+        [styleClass]="'custom-dialog-shadow'" [closable]="true" header="{{ dialogMode === 'add' ? 'Add' : 'Edit' }} Meeting Attendees">
+    <form [formGroup]="attendeesForm">
+        <div class="row mb-3">
+          <div class="col-sm-12 d-flex align-items-center mb-2">
+            <div style="width: 150px;">
+              <label for="attendee">Attendee<span style="color: red;">*</span></label>
+            </div>        
+            <div class="flex-grow-1">
+              <input type="text" class="form-control" id="attendee" formControlName="attendee" placeholder="Enter product name" />
+            </div>
+          </div>
+          <div class="col-sm-12 d-flex align-items-center mb-2">
+            <div style="width: 150px;">
+              <label for="attendeeType">Attendee Type<span style="color: red;">*</span></label>
+            </div>
+            <div class="flex-grow-1">
+              <input type="text" class="form-control" id="attendeeType" formControlName="attendeeType" placeholder="Enter description" />
+            </div>       
+          </div>
+          <div class="col-sm-12 d-flex align-items-center mb-2">
+            <div style="width: 150px;">
+              <label for="attendeeStatus">Attendee Status<span style="color: red;">*</span></label>
+            </div>
+            <div class="flex-grow-1">
+              <input type="text" class="form-control" id="attendeeStatus" formControlName="attendeeStatus" placeholder="Enter unit name" />
+            </div>       
+          </div>
+        </div>
+    </form>
+    <p-footer>
+        <button pButton label="Save" icon="pi pi-check" class="p-dialog-button-save" (click)="saveAttendees()"></button>
+        <button pButton label="Cancel" icon="pi pi-times" class="p-button-secondary p-dialog-button-cancel" style="margin-left: 5px;" (click)="hideAttendeesDialog()"></button>
+    </p-footer>
+</p-dialog>
+
+  
+

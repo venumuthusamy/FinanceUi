@@ -32,6 +32,7 @@ export const NAVIGATION = [
   {
     name: 'Sales',icon:'fas fa-hand-holding-usd',
     children: [
+      { name: 'New Sale', route: '/sales/sales/create',icon:'far fa-circle' },
       { name: 'Sales', route: '/sales/sales',icon:'fas fa-hand-holding-usd ' },
       // { name: 'Sales Quotation', route: '/sales/salesquotation' }
     ]

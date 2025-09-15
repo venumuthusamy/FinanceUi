@@ -1,0 +1,85 @@
+<h5 class="page-header" style="color: #2199e8">{{headervalue}}</h5>
+<div class="page-content">
+  <div style="display: flex;flex-direction: row">
+      <div class="top-action-bar">
+        <div class="searchtop-container">
+            <i class="fa fa-search search-icon"></i>
+            <input type="text" [(ngModel)]="searchCustomerName" (input)="filterCustomers()" placeholder="Search...">
+            <i *ngIf="searchCustomerName" class="fa fa-times clear-icon"  (click)="clearField('searchCustomerName')" ></i>
+        </div>
+        <div style="margin-left: 5px;"  class="searchtop-container">
+            <i class="fa fa-plus icon" style="color: #00a65a;"></i>
+            <input type="text" placeholder="New Customer" readonly style="width: 150px;cursor: pointer;" (click)="createCustomer()"/>
+        </div> 
+        <div style="margin-left: 2px;"  class="searchtop-container">
+            <i class="fa fa-sync icon" style="color: #01a1ff"></i>
+            <input type="text"  readonly style="width: 20px;cursor: pointer;"/>
+        </div> 
+        <div style="margin-left: 2px;"  class="searchtop-container">
+            <i class="fa fa-columns icon" style="color: #01a1ff;"></i>
+            <input type="text"  readonly style="width: 20px;cursor: pointer;"/>
+        </div> 
+      </div>
+  </div>
+
+  <div style="max-width: 100%;overflow-x: auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Customer Name</th>
+                <th>Contact Name</th>
+                <!-- <th>Contact Title</th> -->
+                <th>Country Name</th>
+                <th>State Name</th>
+                <th>City Name</th>
+                <th>Address</th>
+                <th>Region</th>
+                <th>Customer Group</th>
+                <th>Postal Code</th>
+                <th>Phone</th>
+                <th>Website</th>
+                <th>Fax</th>
+                <th>Email</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of customerList | paginate: { itemsPerPage: itemsPerPage, currentPage: page };let i = index">
+                <td>{{ (page - 1) * itemsPerPage + i + 1}}</td>
+                <td>{{ item.name }}</td>
+                <td>{{ item.contactName }}</td>
+                <!-- <td>{{ item.contactTitle}}</td> -->
+                <td>{{ item.countryName }}</td>
+                <td>{{ item.stateName }}</td>
+                <td>{{ item.cityName }}</td>
+                <td>{{ item.address }}</td>
+                <td>{{ item.regionName }}</td>
+                <td>{{ item.customerGroupName }}</td>
+                <td>{{ item.postalCode }}</td>
+                <td>{{ item.phone }}</td>
+                <td>{{ item.website }}</td>
+                <td>{{ item.fax }}</td>
+                <td>{{ item.email }}</td>
+                <td style="padding-left: 20px;">
+                  <i class="fas fa-pen" 
+                    style="color: #05a743; margin-right: 15px; cursor: pointer;" 
+                    (click)="editcustomer(item)">
+                  </i>
+                  <i class="fas fa-trash" 
+                    style="color: red; cursor: pointer;" 
+                    (click)="confirmdeleteCustomer(item)">
+                  </i>
+                </td>
+              </tr>
+            </tbody>
+          </table>          
+  </div>
+  
+  <div style="margin-top: 10px;">
+        <pagination-controls (pageChange)="page = $event"></pagination-controls>
+  </div>
+</div>
+
+<p-confirmDialog></p-confirmDialog>
+<p-toast></p-toast>

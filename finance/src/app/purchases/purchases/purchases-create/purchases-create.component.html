@@ -1,0 +1,339 @@
+<h5 class="page-header" style="color:#2199e8">
+  <i class="fas fa-arrow-left" style="padding: 0px 25px; cursor: pointer;" (click)="backButton()"></i>  {{ isEditMode ? 'Edit Purchases' : 'New Purchases' }}
+</h5>
+  
+<div class="page-content-create">
+  <form [formGroup]="addForm" class="container d-flex flex-column" style="min-height: 100%;">
+      <div class="flex-grow-1">
+        <div class="container mt-5">
+        
+          <div class="row">
+            <!-- Supplier Dropdown -->
+            <div class="col-sm-6">
+              <div class="form-group d-flex align-items-center gap-2">
+                <label class="label" style="white-space: nowrap; min-width: 130px;">Supplier <span style="color: red;">*</span></label>
+                <div class="w-100">
+                <p-dropdown 
+                  [options]="supplierList"
+                  optionLabel="name"
+                  optionValue="id"
+                  formControlName="supplierId"
+                  placeholder="Choose your Supplier name"
+                  styleClass="w-100"
+                  [showClear]="true"
+                  appendTo="body"
+                ></p-dropdown>
+                </div>
+              </div>
+            </div>
+
+            <!-- Date Picker -->
+            <div class="col-sm-6">
+              <div class="form-group d-flex align-items-center gap-2">
+                <label class="label" style="white-space: nowrap; min-width: 130px;">Date <span style="color: red;">*</span></label>
+                <div style="width: 320px;">
+                <p-calendar
+                  formControlName="date"
+                  dateFormat="dd-mm-yy"
+                  [showIcon]="true"
+                  placeholder="Choose Date"
+                  styleClass="w-100"
+                  appendTo="body"
+                ></p-calendar>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row mt-3">
+            <div class="col-sm-6">
+              <div class="form-group d-flex align-items-center gap-2">
+                <label class="label" style="white-space: nowrap; min-width: 130px;">Payment Account <span style="color: red;">*</span></label>
+                <input type="text" class="form-control small-placeholder" formControlName="paymentAccount"/>
+              </div>
+            </div>
+          </div>
+
+          <!-- Add Line Item Button -->
+          <div class="row mt-5">
+            <div class="col-12 d-flex justify-content-between align-items-center mb-2">
+              <h6 class="label">Line Items</h6>
+              <button pButton type="button" icon="pi pi-plus" label="Add Line Item" 
+              style="background-color: #2199e8; color: white;border: none" (click)="showAddLineItemDialog()"></button>
+            </div>
+  
+            <div class="col-12">
+              <p-table [value]="lineItems.controls" [formGroup]="addForm" formArrayName="lineItems" 
+              [scrollable]="true" scrollHeight="400px">
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th class="nowrap-column">Product Name</th>
+                    <th class="nowrap-column">Description</th>
+                    <th class="nowrap-column">Unit Name</th>
+                    <th class="nowrap-column">Quantity</th>
+                    <th class="nowrap-column">Rate</th>
+                    <th class="nowrap-column">Discount (%)</th>
+                    <th class="nowrap-column">Total</th>
+                    <th class="nowrap-column">Action</th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-row let-i="rowIndex">
+                  <tr [formGroupName]="i">
+                    <td class="nowrap-column">{{ row.get('productName')?.value }}</td>
+                    <td class="nowrap-column">{{ row.get('description')?.value }}</td>
+                    <td class="nowrap-column">{{ row.get('unitName')?.value }}</td>
+                    <td class="nowrap-column">{{ row.get('quantity')?.value }}</td>
+                    <td class="nowrap-column">{{ row.get('rate')?.value }}</td>
+                    <td class="nowrap-column">{{ row.get('discount')?.value }}</td>
+                    <td class="nowrap-column">{{ row.get('total')?.value }}</td>
+                    <td class="nowrap-column">
+                      <button pButton type="button" icon="pi pi-pencil" class="p-button-edit" (click)="editLineItem(i)"></button>
+                      <button pButton type="button" icon="pi pi-trash" class="p-button-danger" (click)="removeLineItem(i)"></button>
+                    </td>
+                  </tr>
+                </ng-template>
+              </p-table>
+            </div>
+          </div>
+  
+          <!-- Calculation Details -->
+          <div class="row mt-5">
+            <div class="col-sm-3">
+              <div class="form-group d-flex align-items-center gap-2">
+                <label class="label" style="white-space: nowrap; min-width: 100px;">Grand Total</label>
+                <input
+                type="text"
+                class="form-control"
+                style="min-width: 120px;"
+                [value]="addForm.get('grandTotal')?.value | number:'1.2-2'"
+                disabled
+              />
+              </div>
+            </div>
+            <div class="col-sm-3">
+              <div class="form-group d-flex align-items-center gap-2">
+                <label class="label" style="white-space: nowrap; min-width: 100px;">Discount(%) <span style="color: red;">*</span></label>
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="discount"
+                  style="min-width: 120px;"
+                  (keypress)="allowOnlyNumbers($event)"
+                  (blur)="formatDiscount()"
+                />
+  
+              </div>
+            </div>
+            <div class="col-sm-3">
+              <div class="form-group d-flex align-items-center gap-2">
+                <label class="label" style="white-space: nowrap; min-width: 100px;">Total Discount</label>
+                <input
+                type="text"
+                class="form-control"
+                style="min-width: 120px;"
+                [value]="addForm.get('totalDiscount')?.value | number:'1.2-2'"
+                disabled
+              />
+              </div>
+            </div>
+            <div class="col-sm-3">
+              <div class="form-group d-flex align-items-center gap-2">
+                <label class="label" style="white-space: nowrap; min-width: 100px;">No Tax</label>
+                <input type="checkbox"  class="form-check-input custom-checkbox" formControlName="noTax"/>
+              </div>
+            </div>
+          </div>
+
+          <div class="row mt-3">
+            <div class="col-sm-3">
+              <div class="form-group d-flex align-items-center gap-2">
+                <label class="label" style="white-space: nowrap; min-width: 100px;">GST(%)</label>
+                 <p-dropdown              
+                  [options]="gstList"
+                  optionLabel="tax"
+                  optionValue="id"
+                  formControlName="gstPercentage"
+                  styleClass="w-100"
+                  [showClear]="true"
+                  appendTo="body"
+                ></p-dropdown>
+              </div>
+            </div>
+               <div class="col-sm-3">
+              <div class="form-group d-flex align-items-center gap-2">
+                <label class="label" style="white-space: nowrap; min-width: 100px;">GST Amount</label>
+                  <input
+                type="text"
+                class="form-control"
+                style="min-width: 120px;"
+                [value]="addForm.get('gst')?.value | number:'1.2-2'"
+                disabled
+              />
+              </div>
+            </div>
+            <!-- <div class="col-sm-3">
+              <div class="form-group d-flex align-items-center gap-2">
+                <label class="label" style="white-space: nowrap; min-width: 100px;">Total Tax</label>
+                <input
+                type="text"
+                class="form-control"
+                style="min-width: 120px;"
+                [value]="addForm.get('totalTax')?.value | number:'1.2-2'"
+                disabled
+              />
+              </div>
+            </div> -->
+            <div class="col-sm-3">
+              <div class="form-group d-flex align-items-center gap-2">
+                <label class="label" style="white-space: nowrap; min-width: 100px;">Shipping Cost <span style="color: red;">*</span></label>
+                <input 
+                type="text"
+                class="form-control"
+                style="min-width: 120px;"
+                formControlName="shippingCost"
+                (keypress)="allowOnlyNumbers($event)"
+                (blur)="formatShipping()"/>
+              </div>
+            </div>
+            <div class="col-sm-3">
+              <div class="form-group d-flex align-items-center gap-2">
+                <label class="label" style="white-space: nowrap; min-width: 100px;">Net Total</label>
+                <input
+                type="text"
+                class="form-control"
+                style="min-width: 120px;"
+                [value]="addForm.get('netTotal')?.value | number:'1.2-2'"
+                disabled
+              />
+              </div>
+            </div>
+          </div>
+
+          <div class="row mt-3">
+            <div class="col-sm-3">
+              <div class="form-group d-flex align-items-center gap-2">
+                <label class="label" style="white-space: nowrap; min-width: 100px;">Paid Amount <span style="color: red;">*</span></label>
+                <input 
+                type="text"
+                class="form-control"
+                style="min-width: 120px;"
+                formControlName="paidAmount"
+                (keypress)="allowOnlyNumbers($event)"
+                (blur)="formatPaidAmount()"/>
+              </div>
+            </div>
+            <div class="col-sm-3">
+              <div class="form-group d-flex align-items-center gap-2">
+                <label class="label" style="white-space: nowrap; min-width: 100px;">Due</label>
+                <input
+                type="text"
+                class="form-control"
+                style="min-width: 120px;"
+                [value]="addForm.get('due')?.value | number:'1.2-2'"
+                disabled
+              />
+              </div>
+            </div>
+            <div class="col-sm-3">
+              <div class="form-group d-flex align-items-center gap-2">
+                <label class="label" style="white-space: nowrap; min-width: 100px;">Change</label>
+                <input
+                type="text"
+                class="form-control"
+                style="min-width: 120px;"
+                [value]="addForm.get('change')?.value | number:'1.2-2'"
+                disabled
+              />
+              </div>
+            </div>
+          </div>
+
+          <div class="row mt-3">
+            <div class="col-sm-6">
+              <div class="form-group d-flex align-items-center gap-2">
+                <label class="label" style="white-space: nowrap; min-width: 100px;">Details</label>
+                <textarea
+                class="form-control"
+                formControlName="details"
+                rows="3">
+              </textarea>
+              
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="text-end mt-5">
+        <button class="btn btn-primary me-2" (click)="cancel()">Cancel</button>
+        <button class="btn btn-success" (click)="onSubmit()">Save</button>
+      </div>
+  </form>
+</div>
+
+<!-- Dialog for Adding/Editing Line Item -->
+<p-dialog [(visible)]="displayDialog" [modal]="true" [style]="{width: '60vw'}" 
+      [contentStyle]="{ 'background-color': '#f9f9f9', 'padding': '1.5rem' }" 
+      [styleClass]="'custom-dialog-shadow'" [closable]="true" header="{{ dialogMode === 'add' ? 'Add' : 'Edit' }} Line Item">
+  <form [formGroup]="lineItemForm">
+    <div class="row mb-3">
+      <div class="col-sm-6 d-flex align-items-center mb-2">
+        <div style="width: 150px;">
+          <label for="productName">Product Name<span style="color: red;">*</span></label>
+        </div>
+        <div class="flex-grow-1">
+          <input type="text" class="form-control" id="productName" formControlName="productName" placeholder="Enter product name" />
+        </div>
+      </div>
+      <div class="col-sm-6 d-flex align-items-center mb-2">
+        <div style="width: 150px;">
+          <label for="description">Description</label>
+        </div>
+        <div class="flex-grow-1">
+          <input type="text" class="form-control" id="description" formControlName="description" placeholder="Enter description" />
+        </div>
+      </div>
+      <div class="col-sm-6 d-flex align-items-center mb-2">
+        <div style="width: 150px;">
+          <label for="unitName">Unit Name<span style="color: red;">*</span></label>
+        </div>
+        <div class="flex-grow-1">
+          <input type="text" class="form-control" id="unitName" formControlName="unitName" placeholder="Enter unit name" />
+        </div>
+      </div>
+      <div class="col-sm-6 d-flex align-items-center mb-2">
+        <div style="width: 150px;">
+          <label for="quantity">Quantity<span style="color: red;">*</span></label>
+        </div>
+        <div class="flex-grow-1">
+          <input type="number" class="form-control" id="quantity" formControlName="quantity" placeholder="Enter quantity" />
+        </div>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-sm-6 d-flex align-items-center mb-2">
+        <div style="width: 150px;">
+          <label for="rate">Rate<span style="color: red;">*</span></label>
+        </div>
+        <div class="flex-grow-1">
+          <input type="number" class="form-control" id="rate" formControlName="rate" placeholder="Enter rate" />
+        </div>
+      </div>
+      <div class="col-sm-6 d-flex align-items-center mb-2">
+        <div style="width: 150px;">
+          <label for="discount">Discount (%)<span style="color: red;">*</span></label>
+        </div>
+        <div class="flex-grow-1">
+          <input type="number" class="form-control" id="discount" formControlName="discount" placeholder="Enter discount" />
+        </div>
+      </div>
+    </div>
+  </form>
+  <p-footer>
+      <button pButton label="Save" icon="pi pi-check" class="p-dialog-button-save" (click)="saveLineItem()"></button>
+      <button pButton label="Cancel" icon="pi pi-times" class="p-button-secondary p-dialog-button-cancel" style="margin-left: 5px;" (click)="hideAddLineItemDialog()"></button>
+  </p-footer>
+</p-dialog>
+
+  
+

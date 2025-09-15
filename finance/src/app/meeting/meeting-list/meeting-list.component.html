@@ -1,0 +1,87 @@
+<h5 class="page-header" style="color: #01a1ff;">{{headervalue}}</h5>
+<div class="page-content">
+  <div style="display: flex;flex-direction: row">
+    <div class="top-action-bar">
+        <div class="searchtop-container">
+            <i class="fa fa-search search-icon"></i>
+            <input type="text" [(ngModel)]="searchMeetingName" (input)="filterEmployees()" placeholder="Search...">
+            <i *ngIf="searchMeetingName" class="fa fa-times clear-icon"  (click)="clearField('searchMeetingName')" ></i>
+        </div>
+        <div style="margin-left: 5px;"  class="searchtop-container">
+            <i class="fa fa-plus icon" style="color: #00a65a;"></i>
+            <input type="text" placeholder="New Meetings" readonly style="width: 150px;cursor: pointer;" (click)="createMeeting()"/>
+        </div> 
+        <div style="margin-left: 2px;"  class="searchtop-container">
+            <i class="fa fa-sync icon" style="color: #01a1ff"></i>
+            <input type="text"  readonly style="width: 20px;cursor: pointer;"/>
+        </div> 
+        <div style="margin-left: 2px;"  class="searchtop-container">
+            <i class="fa fa-columns icon" style="color: #01a1ff;"></i>
+            <input type="text"  readonly style="width: 20px;cursor: pointer;"/>
+        </div> 
+        <div style="margin-left: 10px;"  class="searchtop-container">
+            <i class="fa fa-file-excel icon" style="color: #00a65a;" (click)="downloadExcel()"></i>
+            <input type="text"  readonly style="width: 20px;cursor: pointer;" (click)="downloadExcel()"/>
+        <div style="margin-left: 2px;" class="searchtop-container">
+          <i class="fa fa-file-pdf icon" 
+              style="color:#dd4b39; font-size: 20px; cursor: pointer;" 
+              (click)="downloadPDF()">
+          </i>
+          <input type="text" readonly style="width: 20px; cursor: pointer;" (click)="downloadPDF()" />
+        </div>
+        </div> 
+    </div> 
+  </div>
+
+  <div style=" max-width: 100%;overflow-x: auto;">
+      <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Meeting Name</th>
+              <th>Meeting Type Name</th>
+              <th>Start Date</th>
+              <th>End Date</th>
+              <th>Department</th>
+              <th>Location Name</th>
+              <th>Organised By</th>
+              <th>Reporter</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of meetingList | paginate: { itemsPerPage: itemsPerPage, currentPage: page };let i = index">
+                <td>{{ (page - 1) * itemsPerPage + i + 1}}</td>
+              <td>{{ item.meetingName }}</td>
+              <td>{{ item.meetingType }}</td>
+              <td>{{ item.startDate | date:'dd-MM-yyyy'}}</td>
+              <td>{{ item.endDate | date:'dd-MM-yyyy'}}</td>
+              <td>{{ item.department }}</td>
+              <td>{{ item.location }}</td>
+              <td>{{ item.organisedBy }}</td>
+              <td>{{ item.reporter }}</td>
+              <td style="padding-left: 20px;">
+                <i class="fas fa-pen" 
+                  style="color: #05a743; margin-right: 15px; cursor: pointer;" 
+                  (click)="editMeeting(item)">
+                </i>
+                <i class="fas fa-trash" 
+                  style="color: red; cursor: pointer;" 
+                  (click)="confirmdeleteMeeting(item)">
+                </i>
+              </td>
+            </tr>
+          </tbody>
+      </table>  
+  </div>
+  
+  <div style="margin-top: 10px;">
+      <pagination-controls (pageChange)="page = $event"></pagination-controls>
+  </div>
+</div>
+ 
+<p-confirmDialog></p-confirmDialog>
+<p-toast></p-toast>
+  
+  
+  

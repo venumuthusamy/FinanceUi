@@ -1,0 +1,4 @@
+::ng-deep .p-dropdown {
+  min-width: 200px !important; 
+  max-width: 320px !important;    
+}

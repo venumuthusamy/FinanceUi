@@ -1,0 +1,24 @@
+::ng-deep .custom-tabview .p-tabview-nav li.p-highlight .p-tabview-nav-link {
+    color: #01a1ff;               /* Optional: change text color for contrast */
+    font-weight: bold;         /* Optional: emphasize active tab */
+    border-radius: 4px;        /* Optional: rounded look */
+  }
+  
+  /* Keep base style for all tabs */
+  ::ng-deep .custom-tabview .p-tabview-nav li .p-tabview-nav-link {
+    padding: 0.75rem 1rem;
+    line-height: 1.5rem;
+    display: flex;
+    align-items: center;
+  }
+  
+  ::ng-deep .custom-tabview .p-tabview-nav li {
+    height: 3rem;
+  }
+  
+  ::ng-deep .custom-tabview .p-tabview-nav  {
+     background: none !important;
+     border: none !important;
+  }
+  
+  

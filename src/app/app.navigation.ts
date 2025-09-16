@@ -39,7 +39,8 @@ export const NAVIGATION = [
    {
     name: 'Purchasing',icon:'fas fa-shopping-cart',
     children: [
-      { name: 'Purchases', route: '/purchases/purchases',icon:'fas fa-shopping-cart ' },
+      { name: 'Purchases', route: '/purchases/list',icon:'fas fa-shopping-cart ' },
+      { name: 'Purchases', route: '/purchases/requisition',icon:'fas fa-shopping-cart ' },
     ]
   },
   {

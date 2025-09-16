@@ -7,7 +7,8 @@
 /* HEADER */
 .header {
   height: 60px;
-  background-color: #2C3E50;
+  /* background-color: #2C3E50; */
+  background-color: #2E5F73;
   color: #fff;
   display: flex;
   align-items: center;
@@ -18,7 +19,7 @@
 /* FOOTER */
 .footer {
   height: 30px; 
-  background-color: #2C3E50;
+  background-color: #2E5F73;
   color: #fff;
   display: flex;
   align-items: center;
@@ -55,7 +56,7 @@
 /* SIDEBAR */
 .sidebar {
   width: 250px;
-  background-color: #2C3E50;
+  background-color: #2E5F73;
   color: #fff;
   height: calc(100vh - 90px); /* adjust if header/footer height changes */
   position: relative;
@@ -67,7 +68,7 @@
   padding: 15px;
   position: sticky;
   top: 0;
-  background-color: #2C3E50;
+  background-color: #2E5F73;
   z-index: 1;
   position: relative;
   display: inline-block;
@@ -108,6 +109,7 @@ pointer-events: none; /* So the click goes to the input */
   text-decoration: none;  
   padding: 5px 10px;
   border-radius: 5px;
+  font-family: lora;
   font-weight: bold;
   cursor: pointer;  
   user-select: none;
@@ -118,20 +120,24 @@ pointer-events: none; /* So the click goes to the input */
 }
 
 .sidebar ul li a.active {
-  color: #f7c06e !important;
+  /* color: #f7c06e !important; */
+  color: #F7C06E !important;
+  font-family: lora;
+  font-weight: bold;
 }
 
 .sidebar ul li a:hover {
-  background-color: #343a40;
-  color: #f7c06e !important;
+  /* background-color: #93877f; */
+  color: #F7C06E !important;
 }
 
 .sidebar ul li a:focus {
-  color: #f7c06e !important;
+  color: #F7C06E !important;
   outline: none;
 }
 
 .menu-title {
+  font-family: lora;
   font-weight: bold;
   cursor: pointer;
   padding: 5px 10px;
@@ -143,20 +149,20 @@ pointer-events: none; /* So the click goes to the input */
 }
 
 .menu-title:hover {
-  background-color: #343a40;
-  color: #f7c06e !important;
+  /* background-color: #93877f; */
+  color: #F7C06E !important;
 }
 
 
 .sidebar ul li a.selected,
 .menu-title.selected {
-  background-color: #495057;  /* Highlight color */
-  color: #f7c06e;  /* Text color for selected item */
+  /* background-color: #93877f;  */
+  color: #F7C06E;  /* Text color for selected item */
 }
 
 .sidebar ul li a.selected:hover,
 .menu-title.selected:hover {
-  background-color: #495057;  /* Same as above to maintain consistency on hover */
+  /* background-color: #93877f;   */
 }
 
 .submenu {
@@ -179,8 +185,8 @@ pointer-events: none; /* So the click goes to the input */
 }
 
 .submenu li a:hover {
-  background-color: #495057;
-  color: #f7c06e !important;
+  /* background-color: #495057; */
+  color: #F7C06E !important;
 }
 
 

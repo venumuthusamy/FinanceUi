@@ -33,7 +33,8 @@ export class ForgotPasswordComponent {
     if (this.forgotForm.valid) {
       this.buttonDisabled = true
          this.loginService.forgotPassword(this.forgotForm.value).subscribe((res :any) => {
-          this.toast.showSuccess("Reset link sent to your email, please check and proceed further") 
+          this.toast.showSuccess("Reset link sent to your email, please check and proceed further")
+          this.router.navigateByUrl('login'); 
           },(err:any)=>{
           this.toast.showWarning(err.error)
           });  

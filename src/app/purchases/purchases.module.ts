@@ -17,6 +17,7 @@ import { PurchasesCreateComponent } from './purchases/purchases-create/purchases
 import { PurchaseRequisitionComponent } from './purchase-requisition/purchase-requisition.component';
 import { RouterModule, Routes } from '@angular/router';
 import { PurchaseOrderComponent } from './purchase-order/purchase-order.component';
+import { PurchaseGoodreceiptComponent } from './purchase-goodreceipt/purchase-goodreceipt.component';
 
 
 
@@ -26,13 +27,15 @@ const routes: Routes = [
   { path: 'edit/:id', component: PurchasesCreateComponent },
   { path: 'requisition', component: PurchaseRequisitionComponent },
    { path: 'order', component: PurchaseOrderComponent },
+   { path: 'goodreceipt', component: PurchaseGoodreceiptComponent },
 ];
 @NgModule({
   declarations: [
       PurchasesListComponent,
          PurchasesCreateComponent,
          PurchaseRequisitionComponent,
-         PurchaseOrderComponent
+         PurchaseOrderComponent,
+         PurchaseGoodreceiptComponent
   ],
   imports: [
     CommonModule,

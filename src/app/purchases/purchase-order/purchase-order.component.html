@@ -22,7 +22,11 @@
         <div [ngClass]="gridColsClass(4)">
           <div>
             <label class="text-xs font-medium text-gray-600">Supplier</label>
-            <input class="w-full rounded-xl border px-3 py-2 text-sm" placeholder="Select supplier"/>
+              <input
+  class="w-full rounded-xl border focus:outline-none focus:ring-2 px-3 py-2 text-sm"
+  style="border-color: #0e3a4c"
+  placeholder="Select supplier"/>
+           
           </div>
           <div>
             <label class="text-xs font-medium text-gray-600">Terms</label>
@@ -36,12 +40,20 @@
               <select class="w-full rounded-xl border px-3 py-2 text-sm bg-white" [(ngModel)]="poHdr.currency">
                 <option>SGD</option><option>USD</option><option>MYR</option><option>INR</option>
               </select>
-              <input type="number" class="w-full rounded-xl border px-3 py-2 text-sm" placeholder="FX rate"/>
+              <input type="number"
+  class="w-full rounded-xl border px-3 py-2 text-sm"
+  style="border-color: #0e3a4c"
+  placeholder="FX rate"/>
+             
             </div>
           </div>
           <div>
             <label class="text-xs font-medium text-gray-600">Delivery To (WH)</label>
-            <input class="w-full rounded-xl border px-3 py-2 text-sm" placeholder="Central Kitchen"/>
+              <input
+  class="w-full rounded-xl border focus:outline-none focus:ring-2 px-3 py-2 text-sm"
+  style="border-color: #0e3a4c"
+  placeholder="Central Kitchen"/>
+           
           </div>
         </div>
 
@@ -54,15 +66,25 @@
           </div>
           <div>
             <label class="text-xs font-medium text-gray-600">PO Date</label>
-            <input type="date" class="w-full rounded-xl border px-3 py-2 text-sm"/>
+             <input type="date"
+  class="w-full rounded-xl border focus:outline-none focus:ring-2 px-3 py-2 text-sm"
+  style="border-color: #0e3a4c"
+  />
+          
           </div>
           <div>
             <label class="text-xs font-medium text-gray-600">Expected Delivery</label>
-            <input type="date" class="w-full rounded-xl border px-3 py-2 text-sm"/>
+                 <input type="date"
+  class="w-full rounded-xl border focus:outline-none focus:ring-2 px-3 py-2 text-sm"
+  style="border-color: #0e3a4c"
+  />
           </div>
           <div>
             <label class="text-xs font-medium text-gray-600">Remarks</label>
-            <input class="w-full rounded-xl border px-3 py-2 text-sm"/>
+           <input
+  class="w-full rounded-xl border focus:outline-none focus:ring-2 px-3 py-2 text-sm"
+  style="border-color: #0e3a4c"
+  />
           </div>
         </div>
 
@@ -146,5 +168,29 @@
             </div>
           </div>
         </div>
+      </div>
+        <div class="bg-white rounded-2xl shadow p-5 border border-gray-100">
+        <h2 class="text-lg font-semibold text-gray-800 mb-2">Purchase Order List</h2>
+          <table class="min-w-full text-sm">
+            <thead class="text-white">
+
+                <tr>
+                <th class="text-left px-3 py-2 font-medium">Supplier Name</th>
+                  <th class="text-left px-3 py-2 font-medium">Currency /FX</th>
+                  <th class="text-left px-3 py-2 font-medium">Delivery TO</th>
+                  <th class="text-left px-3 py-2 font-medium">Incoterms</th>
+                  <th class="text-left px-3 py-2 font-medium">PO Date</th>
+                 <th class="text-left px-3 py-2 font-medium">Expected Delivery</th>
+                  <th class="text-left px-3 py-2 font-medium">Remarks</th>
+                  <th class="px-3"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr >
+                  <td class="px-3 py-6 text-center text-gray-400" [attr.colspan]="7">No lines yet.</td>
+                </tr>
+              
+              </tbody>
+            </table>
       </div>
     </div>

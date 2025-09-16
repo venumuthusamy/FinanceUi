@@ -7,27 +7,27 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { ToastService } from 'src/app/toaster/toaster/toaster.service';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { PurchasesInnerService } from '../purchases-service';
+import { SupplierInvoiceService } from '../supplier-invoice-service';
 
 @Component({
-  selector: 'app-purchases-list',
-  templateUrl: './purchases-list.component.html',
-  styleUrls: ['./purchases-list.component.css'],
+  selector: 'app-supplier-invoice-list',
+  templateUrl: './supplier-invoice-list.component.html',
+  styleUrls: ['./supplier-invoice-list.component.css'],
   providers: [ConfirmationService, MessageService]
 })
-export class PurchasesListComponent {
+export class SupplierInvoiceListComponent {
 
   headervalue: any
-  purchasesList : any = []
+  supplierInvoiceList : any = []
   searchText: any
   page: number = 1; // Current page
   itemsPerPage: number = 10; // Items per page
-  searchSupplierName: string = '';
+  searchSupplierInvoice: string = '';
   filteredList: any;
 
   constructor(private formBuilder : FormBuilder,
     private router : Router,
-    private purchasesInnerService : PurchasesInnerService,
+    private supplierInvoiceService : SupplierInvoiceService,
     private toast: ToastService,
     private confirmationService: ConfirmationService, private messageService: MessageService
   ){
@@ -35,46 +35,46 @@ export class PurchasesListComponent {
   }
 
   ngOnInit(){    
-    this.headervalue = 'Purchases'
-    this.purchasesInnerService.getPurchases().subscribe((data :any) => {
+    this.headervalue = 'Supplier Invoice'
+    this.supplierInvoiceService.getSupplierPurchase().subscribe((data :any) => {
     const supplierDetails = data|| '{}';
      if (supplierDetails) {
-        this.purchasesList = supplierDetails
+        this.supplierInvoiceList = supplierDetails
         
     } else {
-        this.purchasesList = supplierDetails;
+        this.supplierInvoiceList = supplierDetails;
     }  
     });   
   }
-  createPurchases(){
-    this.router.navigateByUrl('purchases/create')
+  createSupplierInvoice(){
+    this.router.navigateByUrl('purchases/supplier-invoice-create')
   }
-  editPurchases(item : any){
-    this.router.navigateByUrl(`purchases/edit/${item.id}`)
+  editSupplierInvoice(item : any){
+    this.router.navigateByUrl(`purchases/supplier-invoice-create/${item.id}`)
   }
-  deletePurchases(item : any){
-      this.purchasesInnerService.deletePurchases(item.id).subscribe((res)=>{
+  deleteSupplierInvoice(item : any){
+      this.supplierInvoiceService.deleteSupplierPurchase(item.id).subscribe((res)=>{
          this.ngOnInit() 
          this.toast.showSuccess("Purchases Deleted Successfully")
       })
   }
-  filterPurchases() {
-    this.purchasesInnerService.getPurchases().subscribe((data :any) => {
+  filterSupplierInvoice() {
+    this.supplierInvoiceService.getSupplierPurchase().subscribe((data :any) => {
         this.filteredList = data
-        if (this.searchSupplierName) {
+        if (this.searchSupplierInvoice) {
         this.filteredList = this.filteredList.filter((employee: any) =>
-          (!this.searchSupplierName || employee.supplierName.toLowerCase().includes(this.searchSupplierName.toLowerCase()))
+          (!this.searchSupplierInvoice || employee.supplierName.toLowerCase().includes(this.searchSupplierInvoice.toLowerCase()))
         );
         }
-        this.purchasesList = this.filteredList;
+        this.supplierInvoiceList = this.filteredList;
         this.page = 1;
       }); 
   }
   clearField(field: string) {
-    if (field === 'searchSupplierName') {
-      this.searchSupplierName = '';
+    if (field === 'searchSupplierInvoice') {
+      this.searchSupplierInvoice = '';
     } 
-    this.filterPurchases();
+    this.filterSupplierInvoice();
   }
   formatDate = (dateStr: string | Date): string => {
   const date = new Date(dateStr);
@@ -84,7 +84,7 @@ export class PurchasesListComponent {
   return `${day}-${month}-${year}`;
   };
   downloadExcel() {
-    const data = this.purchasesList.map((item: any) => ({
+    const data = this.supplierInvoiceList.map((item: any) => ({
       ID: item.id,
       'Supplier Name': item.supplierName,
       Date: this.formatDate(item.date),
@@ -115,7 +115,7 @@ export class PurchasesListComponent {
       'Total Discount', 'GST', 'Total Tax', 'Shipping Cost', 
        'Net Total', 'Paid Amount', 'Due', 'Change', 'Details'
     ]];
-    const data = this.purchasesList.map((item:any)=> [
+    const data = this.supplierInvoiceList.map((item:any)=> [
       item.id, item.supplierName, this.formatDate(item.date), item.paymentAccount,item.grandTotal, item.discount,
       item.totalDiscount, item.gst, item.totalTax, item.shippingCost,
        item.netTotal, item.paidAmount, item.due, item.change, item.details
@@ -128,7 +128,7 @@ export class PurchasesListComponent {
     doc.save('PurchasesData.pdf');
   }
 
-  confirmdeletePurchases(item:any) {
+  confirmdeleteSupplierInvoice(item:any) {
         this.confirmationService.confirm({
           header: 'Confirm Delete',
           message: 'Are you sure you want to delete this item?',
@@ -136,13 +136,16 @@ export class PurchasesListComponent {
           rejectLabel: 'Cancel',
           rejectIcon: 'pi pi-times',
           accept: () => {
-            this.deletePurchases(item);
+            this.deleteSupplierInvoice(item);
           },
           reject: () => {
           }
         });
   }
 }
+
+
+
 
 
 

@@ -19,6 +19,9 @@ import { RouterModule, Routes } from '@angular/router';
 import { PurchaseOrderComponent } from './purchase-order/purchase-order.component';
 import { PurchaseGoodreceiptComponent } from './purchase-goodreceipt/purchase-goodreceipt.component';
 
+import { SupplierInvoiceListComponent } from './supplier-invoice/supplier-invoice-list/supplier-invoice-list.component';
+import { SupplierInvoiceCreateComponent } from './supplier-invoice/supplier-invoice-create/supplier-invoice-create.component';
+import { DebitNoteCreateComponent } from './debit-note/debit-note-create/debit-note-create.component';
 
 
 const routes: Routes = [
@@ -28,6 +31,8 @@ const routes: Routes = [
   { path: 'requisition', component: PurchaseRequisitionComponent },
    { path: 'order', component: PurchaseOrderComponent },
    { path: 'goodreceipt', component: PurchaseGoodreceiptComponent },
+  { path: 'supplier-invoice', component: SupplierInvoiceCreateComponent },
+  { path: 'debit-note', component: DebitNoteCreateComponent },
 ];
 @NgModule({
   declarations: [
@@ -35,7 +40,10 @@ const routes: Routes = [
          PurchasesCreateComponent,
          PurchaseRequisitionComponent,
          PurchaseOrderComponent,
-         PurchaseGoodreceiptComponent
+         PurchaseGoodreceiptComponent,
+          SupplierInvoiceListComponent,
+         SupplierInvoiceCreateComponent,
+         DebitNoteCreateComponent
   ],
   imports: [
     CommonModule,

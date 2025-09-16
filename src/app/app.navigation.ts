@@ -40,7 +40,8 @@ export const NAVIGATION = [
     name: 'Purchasing',icon:'fas fa-shopping-cart',
     children: [
       { name: 'Purchases', route: '/purchases/list',icon:'fas fa-shopping-cart ' },
-      { name: 'Purchases', route: '/purchases/requisition',icon:'fas fa-shopping-cart ' },
+      { name: 'PR', route: '/purchases/requisition',icon:'fas fa-shopping-cart ' },
+      { name: 'Purchases Order', route: '/purchases/order',icon:'fas fa-shopping-cart ' },
     ]
   },
   {

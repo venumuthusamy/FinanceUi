@@ -1,1 +1,240 @@
-<p>purchase-requisition works!</p>
+ <div  class="space-y-5">
+      <div class="bg-white rounded-2xl shadow p-5 border border-gray-100">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-lg font-semibold text-gray-800">PR Wizard</h2>
+          <span [ngClass]="badgeClass('emerald')">Flow: Draft → HOD Approve → Convert to PO/RFQ</span>
+        </div>
+
+        <div class="flex items-center gap-2 mb-4">
+          <div class="flex items-center gap-2" *ngFor="let s of prSteps; let i = index">
+           <div
+  [ngClass]="{
+    'w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold': true,
+    'text-white': i <= prStep,
+    'bg-gray-200 text-gray-600': i > prStep
+  }"
+  [ngStyle]="{
+    'background-color': i <= prStep ? '#0e3a4c' : ''
+  }"
+>
+  {{ i + 1 }}
+</div>
+
+            <span class="text-sm" [ngClass]="{ 'font-semibold': i === prStep, 'text-gray-600': i !== prStep }">{{ s }}</span>
+            <div class="w-8 h-px bg-gray-300" *ngIf="i < prSteps.length - 1"></div>
+          </div>
+        </div>
+
+        <!-- Step 0 -->
+        <div *ngIf="prStep === 0" class="space-y-4">
+          <div [ngClass]="gridColsClass(4)">
+            <div>
+              <label class="text-xs font-medium text-gray-600">Requester</label>
+              <input
+  class="w-full rounded-xl border focus:outline-none focus:ring-2 px-3 py-2 text-sm"
+  style="border-color: #0e3a4c"
+  placeholder="Your name"/>
+
+
+            </div>
+            <div>
+              <label class="text-xs font-medium text-gray-600">Department</label>
+               <input
+  class="w-full rounded-xl border focus:outline-none focus:ring-2 px-3 py-2 text-sm"
+  style="border-color: #0e3a4c"
+  placeholder="e.g., Operations"/>
+
+            
+            </div>
+            <div>
+              <label class="text-xs font-medium text-gray-600">Needed By</label>
+              <input
+  type="date"
+  class="w-full rounded-xl border px-3 py-2 text-sm focus:outline-none"
+  style="border-color: #0e3a4c;"
+  [(ngModel)]="prHeader.neededBy"
+/>
+
+            </div>
+            <div>
+              <label class="text-xs font-medium text-gray-600">Delivery To (Location/Warehouse)</label>
+               <input
+  class="w-full rounded-xl border focus:outline-none focus:ring-2 px-3 py-2 text-sm"
+  style="border-color: #0e3a4c"
+  placeholder="e.g., Central Kitchen"/>
+             
+            </div>
+          </div>
+
+          <div [ngClass]="gridColsClass(4)">
+            <div>
+              <label class="text-xs font-medium text-gray-600">Purpose</label>
+              <input
+  class="w-full rounded-xl border focus:outline-none focus:ring-2 px-3 py-2 text-sm"
+  style="border-color: #0e3a4c"
+  placeholder="e.g., Weekly replenishment"/>
+              
+            </div>
+            <div>
+              <label class="text-xs font-medium text-gray-600">Budget Line</label>
+              <input
+  class="w-full rounded-xl border focus:outline-none focus:ring-2 px-3 py-2 text-sm"
+  style="border-color: #0e3a4c"
+  placeholder="e.g., OPEX-FOOD"/>
+             
+            </div>
+            <div class="flex items-end gap-2">
+              <div class="flex items-center gap-2">
+                <input id="oversea" type="checkbox" [(ngModel)]="prHeader.oversea"/>
+                <label class="text-xs font-medium text-gray-600" for="oversea">Oversea Purchase</label>
+              </div>
+              <div class="flex items-center gap-2 ml-6">
+                <input id="multiloc" type="checkbox" [(ngModel)]="prHeader.multiLoc"/>
+                <label class="text-xs font-medium text-gray-600" for="multiloc">Split to multiple locations</label>
+              </div>
+            </div>
+            <div></div>
+          </div>
+
+          <div *ngIf="prHeader.oversea" class="rounded-xl border p-3 bg-emerald-50">
+            <p class="text-sm font-medium text-emerald-800 mb-2">Oversea details</p>
+            <div [ngClass]="gridColsClass(4)">
+              <div><label class="text-xs font-medium text-gray-600">Port of Loading</label><input class="w-full rounded-xl border px-3 py-2 text-sm"/></div>
+              <div><label class="text-xs font-medium text-gray-600">Port of Destination</label><input class="w-full rounded-xl border px-3 py-2 text-sm"/></div>
+              <div><label class="text-xs font-medium text-gray-600">Customs Agency Fees</label><input type="number" class="w-full rounded-xl border px-3 py-2 text-sm" placeholder="0.00"/></div>
+              <div><label class="text-xs font-medium text-gray-600">Both-side Tax (%)</label><input type="number" class="w-full rounded-xl border px-3 py-2 text-sm" placeholder="0"/></div>
+            </div>
+            <div [ngClass]="gridColsClass(4)">
+              <div><label class="text-xs font-medium text-gray-600">Shipping Cost</label><input type="number" class="w-full rounded-xl border px-3 py-2 text-sm" placeholder="0.00"/></div>
+              <div><label class="text-xs font-medium text-gray-600">Packaging List Ref</label><input class="w-full rounded-xl border px-3 py-2 text-sm"/></div>
+              <div><label class="text-xs font-medium text-gray-600">Delivery Order Ref</label><input class="w-full rounded-xl border px-3 py-2 text-sm"/></div>
+              <div><label class="text-xs font-medium text-gray-600">Remarks</label><input class="w-full rounded-xl border px-3 py-2 text-sm"/></div>
+            </div>
+          </div>
+
+          <div class="flex justify-end">
+            <button class="px-3 py-2 rounded-xl text-sm font-medium border border-emerald-600 text-emerald-700 hover:bg-emerald-50"
+                    (click)="prStep = 1" type="button">Next: Lines →</button>
+          </div>
+        </div>
+
+        <!-- Step 1 -->
+        <div *ngIf="prStep === 1" class="space-y-4">
+          <div class="overflow-auto border border-gray-200 rounded-xl">
+            <table class="min-w-full text-sm">
+            <thead class="text-white">
+
+                <tr>
+                  <th class="text-left px-3 py-2 font-medium">Item/Description</th>
+                  <th class="text-left px-3 py-2 font-medium">Qty</th>
+                  <th class="text-left px-3 py-2 font-medium">UOM</th>
+                  <th class="text-left px-3 py-2 font-medium">Location</th>
+                  <th class="text-left px-3 py-2 font-medium">Budget Line</th>
+                  <th class="text-left px-3 py-2 font-medium">Remarks</th>
+                  <th class="px-3"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngIf="prLines.length === 0">
+                  <td class="px-3 py-6 text-center text-gray-400" [attr.colspan]="7">No lines yet.</td>
+                </tr>
+                <tr *ngFor="let row of prLines; let i = index; trackBy: trackByIndex" class="border-t">
+                 <td class="px-3 py-2">
+  <input class="w-full rounded-xl border px-3 py-2 text-sm" [(ngModel)]="prLines[i]['item']" />
+</td>
+<td class="px-3 py-2">
+  <input type="number" class="w-full rounded-xl border px-3 py-2 text-sm" [(ngModel)]="prLines[i]['qty']" />
+</td>
+<td class="px-3 py-2">
+  <input class="w-full rounded-xl border px-3 py-2 text-sm" [(ngModel)]="prLines[i]['uom']" />
+</td>
+<td class="px-3 py-2">
+  <input class="w-full rounded-xl border px-3 py-2 text-sm" [(ngModel)]="prLines[i]['loc']" />
+</td>
+<td class="px-3 py-2">
+  <input class="w-full rounded-xl border px-3 py-2 text-sm" [(ngModel)]="prLines[i]['budget']" />
+</td>
+<td class="px-3 py-2">
+  <input class="w-full rounded-xl border px-3 py-2 text-sm" [(ngModel)]="prLines[i]['remarks']" />
+</td>
+
+                  <td class="px-3 py-2 text-right">
+                    <button class="px-3 py-2 rounded-xl text-sm font-medium hover:bg-gray-100 border border-transparent"
+                            (click)="prRemoveLine(i)" type="button">Remove</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="p-2 border-t bg-gray-50">
+             <button 
+  class="px-3 py-2 rounded-xl text-sm font-medium text-white"
+  style="background-color: #0e3a4c;"
+  (mouseenter)="hover=true" (mouseleave)="hover=false"
+  [style.background-color]="hover ? '#0b2e3d' : '#0e3a4c'" 
+  (click)="prAddLine()" 
+  type="button"
+>
+  + Add line
+</button>
+
+            </div>
+          </div>
+          <div class="flex justify-between">
+            <button class="px-3 py-2 rounded-xl text-sm font-medium hover:bg-gray-100 border border-transparent"
+                    (click)="prGo(-1)" type="button">← Back</button>
+           <button
+  class="px-3 py-2 rounded-xl text-sm font-medium text-white"
+  style="background-color: #0e3a4c;"
+  (click)="prGo(1)"
+  type="button"
+>
+  Review →
+</button>
+
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div *ngIf="prStep === 2" class="space-y-4">
+          <div class="rounded-xl border p-3 bg-gray-50 text-sm">
+            <p class="font-semibold mb-2">Summary</p>
+            <p><span class="font-medium">Needed By:</span> {{ prHeader.neededBy || '-' }}</p>
+            <p><span class="font-medium">Oversea:</span> {{ prHeader.oversea ? 'Yes' : 'No' }} ·
+               <span class="font-medium">Split to multiple locations:</span> {{ prHeader.multiLoc ? 'Yes' : 'No' }}</p>
+            <p class="mt-2 font-medium">Lines:</p>
+            <ul class="list-disc ml-5">
+             <li *ngFor="let l of prLines; let i = index">
+  {{ l['item'] || '(no item)' }} — {{ l['qty'] || 0 }} {{ l['uom'] || '' }} → {{ l['loc'] || '-' }} · {{ l['budget'] || '' }}
+</li>
+
+              <li *ngIf="prLines.length === 0">No lines</li>
+            </ul>
+          </div>
+          <div class="flex justify-between">
+            <button class="px-3 py-2 rounded-xl text-sm font-medium hover:bg-gray-100 border border-transparent"
+                    (click)="prGo(-1)" type="button">← Back</button>
+            <div class="flex gap-2">
+              <button class="px-3 py-2 rounded-xl text-sm font-medium border border-emerald-600 text-emerald-700 hover:bg-emerald-50" type="button"
+                      (click)="notify('Sent for HOD approval')">Send for HOD Approval</button>
+             <button
+  class="px-3 py-2 rounded-xl text-sm font-medium text-white"
+  style="background-color: #0e3a4c;"
+  type="button"
+  (click)="notify('Converted to PO/RFQ')"
+>
+  Convert to PO / RFQ
+</button>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow p-5 border border-gray-100">
+        <h2 class="text-lg font-semibold text-gray-800 mb-2">Collection from Branches / Locations (info)</h2>
+        <p class="text-sm text-gray-600">
+          This PR supports receiving requests from multiple locations, automatically consolidating common items. When converting to PO,
+          the system can split the delivery schedule by location so supplier sends to each destination directly for accurate P/L mapping.
+        </p>
+      </div>
+    </div>

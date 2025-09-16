@@ -18,6 +18,8 @@ html, body {
   padding: 0.5rem 1rem;
   border-bottom: 2px solid #e2e8f0; /* Light gray border */
   background-color: #F4F6F9;
+  font-family: lora;
+  font-weight: bold;
 }
 
 /* ------ list page css ----- */

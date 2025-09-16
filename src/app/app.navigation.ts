@@ -32,7 +32,6 @@ export const NAVIGATION = [
   {
     name: 'Sales',icon:'fas fa-hand-holding-usd',
     children: [
-      { name: 'New Sale', route: '/sales/sales/create',icon:'far fa-circle' },
       { name: 'Sales', route: '/sales/sales',icon:'fas fa-hand-holding-usd ' },
       // { name: 'Sales Quotation', route: '/sales/salesquotation' }
     ]
@@ -40,7 +39,6 @@ export const NAVIGATION = [
    {
     name: 'Purchasing',icon:'fas fa-shopping-cart',
     children: [
-       { name: 'New Purchase', route: 'purchases/purchases/create',icon:'fas fa-shopping-cart ' },
       { name: 'Purchases', route: '/purchases/purchases',icon:'fas fa-shopping-cart ' },
     ]
   },
@@ -58,7 +56,7 @@ export const NAVIGATION = [
   {
     name: 'Inventory',icon:'fas fa-file-invoice-dollar',
     children: [
-        { name: 'Products', route: '/financial/coa' , icon: 'far fa-circle'},
+        { name: 'Products', route: '/masters/incomes' , icon: 'far fa-circle'},
     ]
   },
 ];

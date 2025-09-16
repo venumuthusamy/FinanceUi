@@ -2,7 +2,10 @@
       <div class="bg-white rounded-2xl shadow p-5 border border-gray-100">
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-lg font-semibold text-gray-800">PR Wizard</h2>
-          <span [ngClass]="badgeClass('emerald')">Flow: Draft → HOD Approve → Convert to PO/RFQ</span>
+         <span [ngClass]="badgeClass('emerald')" style="color: #0e3a4c;">
+  Flow: Draft → HOD Approve → Convert to PO/RFQ
+</span>
+
         </div>
 
         <div class="flex items-center gap-2 mb-4">
@@ -231,10 +234,28 @@
       </div>
 
       <div class="bg-white rounded-2xl shadow p-5 border border-gray-100">
-        <h2 class="text-lg font-semibold text-gray-800 mb-2">Collection from Branches / Locations (info)</h2>
-        <p class="text-sm text-gray-600">
-          This PR supports receiving requests from multiple locations, automatically consolidating common items. When converting to PO,
-          the system can split the delivery schedule by location so supplier sends to each destination directly for accurate P/L mapping.
-        </p>
+        <h2 class="text-lg font-semibold text-gray-800 mb-2">Purchase Requistion List</h2>
+          <table class="min-w-full text-sm">
+            <thead class="text-white">
+
+                <tr>
+                <th class="text-left px-3 py-2 font-medium">Requester Name</th>
+                  <th class="text-left px-3 py-2 font-medium">Department</th>
+                  <th class="text-left px-3 py-2 font-medium">Needed By Date</th>
+                  <th class="text-left px-3 py-2 font-medium">Location</th>
+                  <th class="text-left px-3 py-2 font-medium">Quantity</th>
+                 
+                  <th class="text-left px-3 py-2 font-medium">Purpose</th>
+                  <th class="text-left px-3 py-2 font-medium">Remarks</th>
+                  <th class="px-3"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngIf="prLines.length === 0">
+                  <td class="px-3 py-6 text-center text-gray-400" [attr.colspan]="7">No lines yet.</td>
+                </tr>
+              
+              </tbody>
+            </table>
       </div>
     </div>

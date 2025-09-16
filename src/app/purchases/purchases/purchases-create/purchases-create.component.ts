@@ -261,14 +261,14 @@ export class PurchasesCreateComponent {
       if(!this.isEditMode){
       this.purchasesInnerService.insertPurchases(rawValue).subscribe((res :any) => {
       this.toast.showSuccess("Purchases Details saved successfully")
-      this.router.navigateByUrl('purchases/purchases');
+      this.router.navigateByUrl('purchases/list');
       },(err:any)=>{     
       this.toast.showApiError(err)
       }); 
       }else{
       this.purchasesInnerService.updatePurchases(Number(this.purchaseId),rawValue).subscribe((res :any) => {
       this.toast.showSuccess("Purchases Details updated successfully")
-      this.router.navigateByUrl('purchases/purchases');
+      this.router.navigateByUrl('purchases/list');
       },(err:any)=>{     
       this.toast.showApiError(err)
       }); 
@@ -276,10 +276,10 @@ export class PurchasesCreateComponent {
     }
   }
   backButton() {
-    this.router.navigateByUrl('purchases/purchases');
+    this.router.navigateByUrl('purchases/list');
   }
   cancel() {
-    this.router.navigateByUrl('purchases/purchases');
+    this.router.navigateByUrl('purchases/list');
   }
 }
 

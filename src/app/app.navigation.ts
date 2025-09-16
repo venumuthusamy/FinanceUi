@@ -43,6 +43,8 @@ export const NAVIGATION = [
       { name: 'PR', route: '/purchases/requisition',icon:'fas fa-shopping-cart ' },
       { name: 'PO', route: '/purchases/order',icon:'fas fa-shopping-cart ' },
       { name: 'GRN', route: '/purchases/goodreceipt',icon:'fas fa-shopping-cart ' },
+      { name: 'Supplier Invoice', route: '/purchases/supplier-invoice',icon:'fas fa-shopping-cart ' },
+      { name: 'Debit Note', route: '/purchases/debit-note',icon:'fas fa-shopping-cart ' },
     ]
   },
   {

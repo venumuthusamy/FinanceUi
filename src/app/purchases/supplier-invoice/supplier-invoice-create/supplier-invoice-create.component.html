@@ -47,7 +47,7 @@
             </tbody>
           </table>
           <div class="p-2 border-t bg-gray-50">
-            <button class="px-3 py-2 rounded-xl text-sm font-medium bg-emerald-600 hover:bg-emerald-700 text-white" (click)="pinAddRow()" type="button">+ Add line</button>
+            <button class="px-3 py-2 rounded-xl text-sm font-medium bg-emerald-600 hover:bg-emerald-700 text-white" (click)="pinAddRow()" type="button" [style.backgroundColor]="'#0e3a4c'">+ Add line</button>
           </div>
         </div>
 
@@ -55,7 +55,30 @@
           <button class="px-3 py-2 rounded-xl text-sm font-medium border border-amber-600 text-amber-700 hover:bg-amber-50"
                   (click)="notify('On Hold with reason (demo)')" type="button">Hold/Review</button>
           <button class="px-3 py-2 rounded-xl text-sm font-medium bg-emerald-600 hover:bg-emerald-700 text-white"
-                  (click)="notify('Posted to Accounts Payable (demo)')" type="button">Post to A/P</button>
+                  (click)="notify('Posted to Accounts Payable (demo)')" type="button" [style.backgroundColor]="'#0e3a4c'">Post to A/P</button>
         </div>
       </div>
+       <div class="bg-white rounded-2xl shadow p-5 border border-gray-100">
+        <h2 class="text-lg font-semibold text-gray-800 mb-2">Supplier Invoice List</h2>
+       
+          <table class="min-w-full text-sm">
+            <thead class="text-white">
+              <tr>
+                <th class="text-left px-3 py-2 font-medium">Invoice Number</th>
+                <th class="text-left px-3 py-2 font-medium">Invoice Date</th>
+                <th class="text-left px-3 py-2 font-medium">Amount</th>
+                <th class="text-left px-3 py-2 font-medium">Tax</th>
+                <th class="text-left px-3 py-2 font-medium">Remarks</th>
+                <th class="px-3"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr >
+                  <td class="px-3 py-6 text-center text-gray-400" [attr.colspan]="6">No lines yet.</td>
+                </tr>
+              
+              </tbody>
+            </table>
+            
+       </div>
     </div>

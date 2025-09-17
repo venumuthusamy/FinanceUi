@@ -7,20 +7,8 @@ type LineRow = { [k: string]: any };
   styleUrls: ['./debit-note-create.component.css']
 })
 export class DebitNoteCreateComponent {
-  pinRows: LineRow[] = [];
-
-  // Add a new row
-  pinAddRow() {
-    this.pinRows.push({
-      po: '',
-      grn: '',
-      item: '',
-      qty: 0,
-      price: 0,
-      match: 'OK'
-    });
-  }
-     // Returns
+  hover = false;
+  // Returns
   retRows: LineRow[] = [];
   retAddRow() { this.retRows = [...this.retRows, {}]; }
   retRemoveRow(i: number) { this.retRows = this.retRows.filter((_, idx) => idx !== i); }
@@ -28,25 +16,11 @@ export class DebitNoteCreateComponent {
     const copy = [...this.retRows]; copy[i] = { ...copy[i], [key]: val }; this.retRows = copy;
   }
 
-  // Remove a row
-  pinRemoveRow(i: number) {
-    this.pinRows.splice(i, 1);
-  }
-
   // Track by index for *ngFor
   trackByIndex(index: number) {
     return index;
   }
-
-  // Badge color classes
-  badgeClass(tone: 'emerald' | 'red' = 'emerald') {
-    return {
-      'inline-flex items-center px-2 py-1 rounded-full text-[10px] font-semibold': true,
-      'bg-emerald-50 text-emerald-700 border border-emerald-100': tone === 'emerald',
-      'bg-red-50 text-red-700 border border-red-100': tone === 'red'
-    };
-  }
-    gridColsClass(cols: number) {
+  gridColsClass(cols: number) {
     return {
       'grid grid-cols-1 gap-3': true,
       'md:grid-cols-1': cols === 1,

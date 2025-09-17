@@ -40,13 +40,37 @@
             </tbody>
           </table>
           <div class="p-2 border-t bg-gray-50">
-            <button class="px-3 py-2 rounded-xl text-sm font-medium bg-emerald-600 hover:bg-emerald-700 text-white" (click)="retAddRow()" type="button">+ Add line</button>
+            <button class="px-3 py-2 rounded-xl text-sm font-medium bg-emerald-600 hover:bg-emerald-700 text-white" (click)="retAddRow()" type="button" [style.backgroundColor]="'#0e3a4c'">+ Add line</button>
           </div>
         </div>
 
         <div class="flex justify-end mt-3">
           <button class="px-3 py-2 rounded-xl text-sm font-medium bg-emerald-600 hover:bg-emerald-700 text-white"
-                  (click)="notify('Debit Note created (demo)')" type="button">Create Debit Note</button>
+                  (click)="notify('Debit Note created (demo)')" type="button"(mouseenter)="hover = true"
+  (mouseleave)="hover = false"
+  [style.backgroundColor]="hover ? '#092f3f' : '#0e3a4c'">Create Debit Note</button>
         </div>
       </div>
+       <div class="bg-white rounded-2xl shadow p-5 border border-gray-100">
+        <h2 class="text-lg font-semibold text-gray-800 mb-2">Debit Note List</h2>
+       
+          <table class="min-w-full text-sm">
+            <thead class="text-white">
+              <tr>
+                <th class="text-left px-3 py-2 font-medium">Reference Number(GRN/PIN)</th>                
+                <th class="text-left px-3 py-2 font-medium">Supplier</th>
+                <th class="text-left px-3 py-2 font-medium">Reason</th>
+                <th class="text-left px-3 py-2 font-medium">Date</th>
+                <th class="px-3"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr >
+                  <td class="px-3 py-6 text-center text-gray-400" [attr.colspan]="5">No lines yet.</td>
+                </tr>
+              
+              </tbody>
+            </table>
+            
+       </div>
     </div>

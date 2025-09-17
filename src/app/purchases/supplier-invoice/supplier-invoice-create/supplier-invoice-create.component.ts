@@ -48,12 +48,6 @@ export class SupplierInvoiceCreateComponent {
     this.pinRows = this.pinRows.filter((_, idx) => idx !== i); 
   }
 
-  pinChange(i: number, key: string, val: any) {
-    const copy = [...this.pinRows];
-    copy[i] = { ...copy[i], [key]: val };
-    this.pinRows = copy;
-  }
-
   // Demo Notifications
   notify(msg: string) {
     alert(msg);

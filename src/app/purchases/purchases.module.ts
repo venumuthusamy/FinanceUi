@@ -22,6 +22,8 @@ import { PurchaseGoodreceiptComponent } from './purchase-goodreceipt/purchase-go
 import { SupplierInvoiceListComponent } from './supplier-invoice/supplier-invoice-list/supplier-invoice-list.component';
 import { SupplierInvoiceCreateComponent } from './supplier-invoice/supplier-invoice-create/supplier-invoice-create.component';
 import { DebitNoteCreateComponent } from './debit-note/debit-note-create/debit-note-create.component';
+import { RfqCreateComponent } from './rfq/rfq-create/rfq-create.component';
+import { MobileReceiveCreateComponent } from './mobile-receiving/mobile-receive-create/mobile-receive-create.component';
 
 
 const routes: Routes = [
@@ -33,6 +35,8 @@ const routes: Routes = [
    { path: 'goodreceipt', component: PurchaseGoodreceiptComponent },
   { path: 'supplier-invoice', component: SupplierInvoiceCreateComponent },
   { path: 'debit-note', component: DebitNoteCreateComponent },
+  { path: 'rfq', component: RfqCreateComponent },
+  { path: 'mobile-receive', component: MobileReceiveCreateComponent },
 ];
 @NgModule({
   declarations: [
@@ -43,7 +47,9 @@ const routes: Routes = [
          PurchaseGoodreceiptComponent,
           SupplierInvoiceListComponent,
          SupplierInvoiceCreateComponent,
-         DebitNoteCreateComponent
+         DebitNoteCreateComponent,
+         RfqCreateComponent,
+         MobileReceiveCreateComponent
   ],
   imports: [
     CommonModule,

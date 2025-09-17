@@ -45,6 +45,8 @@ export const NAVIGATION = [
       { name: 'GRN', route: '/purchases/goodreceipt',icon:'fas fa-shopping-cart ' },
       { name: 'Supplier Invoice', route: '/purchases/supplier-invoice',icon:'fas fa-shopping-cart ' },
       { name: 'Debit Note', route: '/purchases/debit-note',icon:'fas fa-shopping-cart ' },
+      { name: 'RFQ', route: '/purchases/rfq',icon:'fas fa-shopping-cart ' },
+      { name: 'Mobile Receiving', route: '/purchases/mobile-receive',icon:'fas fa-shopping-cart ' },
     ]
   },
   {

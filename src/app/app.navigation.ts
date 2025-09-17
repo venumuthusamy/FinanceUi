@@ -40,13 +40,13 @@ export const NAVIGATION = [
     name: 'Purchasing',icon:'fas fa-shopping-cart',
     children: [
       // { name: 'Purchases', route: '/purchases/list',icon:'fas fa-shopping-cart ' },
-      { name: 'PR', route: '/purchases/requisition',icon:'fas fa-shopping-cart ' },
-      { name: 'PO', route: '/purchases/order',icon:'fas fa-shopping-cart ' },
-      { name: 'GRN', route: '/purchases/goodreceipt',icon:'fas fa-shopping-cart ' },
-      { name: 'Supplier Invoice', route: '/purchases/supplier-invoice',icon:'fas fa-shopping-cart ' },
-      { name: 'Debit Note', route: '/purchases/debit-note',icon:'fas fa-shopping-cart ' },
-      { name: 'RFQ', route: '/purchases/rfq',icon:'fas fa-shopping-cart ' },
-      { name: 'Mobile Receiving', route: '/purchases/mobile-receive',icon:'fas fa-shopping-cart ' },
+      { name: 'PR', route: '/purchases/requisition',icon:'fa fa-file-alt ' },
+      { name: 'PO', route: '/purchases/order',icon:'fa fa-file-invoice-dollar' },
+      { name: 'GRN', route: '/purchases/goodreceipt',icon:'fa fa-box-open' },
+      { name: 'Supplier Invoice', route: '/purchases/supplier-invoice',icon:'fa fa-receipt' },
+      { name: 'Debit Note', route: '/purchases/debit-note',icon:'fa fa-undo-alt' },
+      { name: 'RFQ', route: '/purchases/rfq',icon:'fa fa-file-signature' },
+      { name: 'Mobile Receiving', route: '/purchases/mobile-receive',icon:'fa fa-mobile-alt' },
     ]
   },
   {

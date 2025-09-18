@@ -26,7 +26,8 @@ export const NAVIGATION = [
     name: 'Business Partners',icon:'fas fas fa-user-tie',
     children: [
       { name: 'Customers', route: '/bp/customer', icon: 'far fa-circle' },
-      { name: 'Suppliers', route: '/bp/supplier' , icon: 'far fa-circle'}
+     
+      { name: 'Suppliers', route: '/bp/profile' , icon: 'far fa-circle'}
     ]
   },
   {
@@ -45,8 +46,9 @@ export const NAVIGATION = [
       { name: 'PO', route: '/purchases/order',icon:'fa fa-file-invoice-dollar' },
       { name: 'Mobile Receiving', route: '/purchases/mobile-receive',icon:'fa fa-mobile-alt' },
       { name: 'GRN', route: '/purchases/goodreceipt',icon:'fa fa-box-open' },
-      { name: 'Supplier Invoice', route: '/purchases/supplier-invoice',icon:'fa fa-receipt' },
       { name: 'Debit Note', route: '/purchases/debit-note',icon:'fa fa-undo-alt' },
+      { name: 'Supplier Invoice', route: '/purchases/supplier-invoice',icon:'fa fa-receipt' },
+      
     ]
   },
   {

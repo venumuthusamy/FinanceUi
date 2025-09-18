@@ -7,7 +7,6 @@ import { TableModule } from 'primeng/table';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button'; 
 import { InputTextModule } from 'primeng/inputtext';
-import { SupplierRoutingModule } from './supplier-routing-module';
 import { SupplierListComponent } from './supplier-list/supplier-list.component';
 import { DropdownModule } from 'primeng/dropdown';
 import { CalendarModule } from 'primeng/calendar';
@@ -23,7 +22,6 @@ import { SupplierCreateComponent } from './supplier-create/supplier-create.compo
   ],
   imports: [
     CommonModule,
-    SupplierRoutingModule,
     ReactiveFormsModule,
     FormsModule,
     HttpClientModule, 

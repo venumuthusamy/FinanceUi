@@ -1,84 +1,115 @@
- <div class="space-y-5">
-      <div class="bg-white rounded-2xl shadow p-3 border border-gray-100">
-        <div class="flex items-center justify-between mb-3">
-          <h2 class="text-lg font-semibold text-gray-800">Supplier Invoice (PIN)</h2>
-          <span [ngClass]="badgeClass('amber')">3-way match: PO · GRN · PIN</span>
-        </div>
+<div class="space-y-5">
 
-        <div [ngClass]="gridColsClass(4)">
-          <div><label class="text-xs font-medium text-gray-600">Invoice No (OCR)</label><input class="w-full rounded-xl border px-3 py-2 text-sm" [(ngModel)]="pinHdr.invoiceNo" placeholder="Auto from OCR"/></div>
-          <div><label class="text-xs font-medium text-gray-600">Invoice Date (OCR)</label><input type="date" class="w-full rounded-xl border px-3 py-2 text-sm" [(ngModel)]="pinHdr.date"/></div>
-          <div><label class="text-xs font-medium text-gray-600">Amount (OCR)</label><input type="number" class="w-full rounded-xl border px-3 py-2 text-sm" [(ngModel)]="pinHdr.amount"/></div>
-          <div><label class="text-xs font-medium text-gray-600">Tax (OCR)</label><input type="number" class="w-full rounded-xl border px-3 py-2 text-sm" [(ngModel)]="pinHdr.tax"/></div>
-        </div>
-
-        <div class="overflow-auto border border-gray-200 rounded-xl mt-4">
-          <table class="min-w-full text-sm">
-            <thead class="bg-gray-50 text-gray-600">
-              <tr>
-                <th class="text-left px-3 py-2 font-medium">PO #</th>
-                <th class="text-left px-3 py-2 font-medium">GRN #</th>
-                <th class="text-left px-3 py-2 font-medium">Item</th>
-                <th class="text-left px-3 py-2 font-medium">Qty</th>
-                <th class="text-left px-3 py-2 font-medium">Price</th>
-                <th class="text-left px-3 py-2 font-medium">Match</th>
-                <th class="px-3"></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngIf="pinRows.length === 0">
-                <td [attr.colspan]="7" class="px-3 py-6 text-center text-gray-400">No lines yet.</td>
-              </tr>
-              <tr *ngFor="let r of pinRows; let i = index; trackBy: trackByIndex" class="border-t">
-                <td class="px-3 py-2"><input class="w-full rounded-xl border px-3 py-2 text-sm" [(ngModel)]="pinRows[i]['po']"/></td>
-                <td class="px-3 py-2"><input class="w-full rounded-xl border px-3 py-2 text-sm" [(ngModel)]="pinRows[i]['grn']"/></td>
-                <td class="px-3 py-2"><input class="w-full rounded-xl border px-3 py-2 text-sm" [(ngModel)]="pinRows[i]['item']"/></td>
-                <td class="px-3 py-2"><input type="number" class="w-full rounded-xl border px-3 py-2 text-sm" [(ngModel)]="pinRows[i]['qty']"/></td>
-                <td class="px-3 py-2"><input type="number" class="w-full rounded-xl border px-3 py-2 text-sm" [(ngModel)]="pinRows[i]['price']"/></td>
-                <td class="px-3 py-2">
-                   <span [ngClass]="badgeClass(pinRows[i]['match'] === 'Mismatch' ? 'red' : 'emerald')">
-                        {{ pinRows[i]['match'] || 'OK' }}
-                    </span>
-                </td>
-                <td class="px-3 py-2 text-right">
-                  <button class="px-3 py-2 rounded-xl text-sm font-medium hover:bg-gray-100 border border-transparent" (click)="pinRemoveRow(i)" type="button">Remove</button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <div class="p-2 border-t bg-gray-50">
-            <button class="px-3 py-2 rounded-xl text-sm font-medium bg-emerald-600 hover:bg-emerald-700 text-white" (click)="pinAddRow()" type="button" [style.backgroundColor]="'#0e3a4c'">+ Add line</button>
-          </div>
-        </div>
-
-        <div class="flex justify-end gap-2 mt-3">
-          <button class="px-3 py-2 rounded-xl text-sm font-medium border border-amber-600 text-amber-700 hover:bg-amber-50"
-                  (click)="notify('On Hold with reason (demo)')" type="button">Hold/Review</button>
-          <button class="px-3 py-2 rounded-xl text-sm font-medium bg-emerald-600 hover:bg-emerald-700 text-white"
-                  (click)="notify('Posted to Accounts Payable (demo)')" type="button" [style.backgroundColor]="'#0e3a4c'">Post to A/P</button>
-        </div>
-      </div>
-       <div class="bg-white rounded-2xl shadow p-3 border border-gray-100">
-        <h2 class="text-lg font-semibold text-gray-800 mb-2">Supplier Invoice List</h2>
-       
-          <table class="min-w-full text-sm">
-            <thead class="text-white">
-              <tr>
-                <th class="text-left px-3 py-2 font-medium">Invoice Number</th>
-                <th class="text-left px-3 py-2 font-medium">Invoice Date</th>
-                <th class="text-left px-3 py-2 font-medium">Amount</th>
-                <th class="text-left px-3 py-2 font-medium">Tax</th>
-                <th class="text-left px-3 py-2 font-medium">Remarks</th>
-                <th class="px-3"></th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr >
-                  <td class="px-3 py-6 text-center text-gray-400" [attr.colspan]="6">No lines yet.</td>
-                </tr>
-              
-              </tbody>
-            </table>
-            
-       </div>
+  <!-- Supplier Invoice Header -->
+  <div class="bg-white rounded-2xl shadow p-3 border border-gray-100">
+    <div class="flex items-center justify-between mb-3">
+      <h2 class="text-lg font-semibold text-gray-800">Supplier Invoice (PIN)</h2>
+      <span [ngClass]="badgeClass('amber')">3-way match: PO · GRN · PIN</span>
     </div>
+
+    <!-- OCR Header Fields -->
+    <div [ngClass]="gridColsClass(4)">
+      <div>
+        <label class="text-xs font-medium text-gray-600">Invoice No (OCR)</label>
+        <input class="w-full rounded-xl border px-3 py-2 text-sm" [(ngModel)]="pinHdr.invoiceNo" placeholder="Auto from OCR"/>
+      </div>
+      <div>
+        <label class="text-xs font-medium text-gray-600">Invoice Date (OCR)</label>
+        <input type="date" class="w-full rounded-xl border px-3 py-2 text-sm" [(ngModel)]="pinHdr.date"/>
+      </div>
+      <div>
+        <label class="text-xs font-medium text-gray-600">Amount (OCR)</label>
+        <input type="number" class="w-full rounded-xl border px-3 py-2 text-sm" [(ngModel)]="pinHdr.amount"/>
+      </div>
+      <div>
+        <label class="text-xs font-medium text-gray-600">Tax (OCR)</label>
+        <input type="number" class="w-full rounded-xl border px-3 py-2 text-sm" [(ngModel)]="pinHdr.tax"/>
+      </div>
+    </div>
+
+    <!-- Line Items Table -->
+    <div class="overflow-auto border border-gray-200 rounded-xl mt-4">
+      <table class="min-w-full text-sm">
+        <thead class="bg-gray-50 text-gray-600">
+          <tr>
+            <th class="text-left px-3 py-2 font-medium">PO #</th>
+            <th class="text-left px-3 py-2 font-medium">GRN #</th>
+            <th class="text-left px-3 py-2 font-medium">Item</th>
+            <th class="text-left px-3 py-2 font-medium">Qty</th>
+            <th class="text-left px-3 py-2 font-medium">Price</th>
+            <th class="text-left px-3 py-2 font-medium">Match</th>
+            <th class="text-left px-3 py-2 font-medium">Debit/Credit Note</th>
+            <th class="px-3"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngIf="pinRows.length === 0">
+            <td [attr.colspan]="8" class="px-3 py-6 text-center text-gray-400">No lines yet.</td>
+          </tr>
+          <tr *ngFor="let r of pinRows; let i = index; trackBy: trackByIndex" class="border-t">
+            <td class="px-3 py-2">
+              <input class="w-full rounded-xl border px-3 py-2 text-sm" [(ngModel)]="r['po']" (ngModelChange)="onRowChange(i,'po',$event)"/>
+            </td>
+            <td class="px-3 py-2">
+              <input class="w-full rounded-xl border px-3 py-2 text-sm" [(ngModel)]="r['grn']" (ngModelChange)="onRowChange(i,'grn',$event)"/>
+            </td>
+            <td class="px-3 py-2">
+              <input class="w-full rounded-xl border px-3 py-2 text-sm" [(ngModel)]="r['item']" (ngModelChange)="onRowChange(i,'item',$event)"/>
+            </td>
+            <td class="px-3 py-2">
+              <input type="number" class="w-full rounded-xl border px-3 py-2 text-sm" [(ngModel)]="r['qty']" (ngModelChange)="onRowChange(i,'qty',$event)"/>
+            </td>
+            <td class="px-3 py-2">
+              <input type="number" class="w-full rounded-xl border px-3 py-2 text-sm" [(ngModel)]="r['price']" (ngModelChange)="onRowChange(i,'price',$event)"/>
+            </td>
+            <td class="px-3 py-2">
+              <span [ngClass]="badgeClass(r['match'] === 'Mismatch' ? 'red' : 'emerald')">
+                {{ r['match'] || 'OK' }}
+              </span>
+              <span *ngIf="r['mismatchFields']?.length">({{ r['mismatchFields'].join(', ') }})</span>
+            </td>
+            <td class="px-3 py-2">
+              <input class="w-full rounded-xl border px-3 py-2 text-sm" [(ngModel)]="r['debitCreditNote']" placeholder="DC Note #"/>
+            </td>
+            <td class="px-3 py-2 text-right">
+              <button class="px-3 py-2 rounded-xl text-sm font-medium hover:bg-gray-100 border border-transparent" (click)="pinRemoveRow(i)" type="button">Remove</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="p-2 border-t bg-gray-50">
+        <button class="px-3 py-2 rounded-xl text-sm font-medium bg-emerald-600 hover:bg-emerald-700 text-white" (click)="pinAddRow()" type="button" [style.backgroundColor]="'#0e3a4c'">+ Add line</button>
+      </div>
+    </div>
+
+    <!-- Footer Actions -->
+    <div class="flex justify-end gap-2 mt-3">
+      <button class="px-3 py-2 rounded-xl text-sm font-medium border border-amber-600 text-amber-700 hover:bg-amber-50"
+              (click)="notify('On Hold with reason (demo)')" type="button">Hold/Review</button>
+      <button class="px-3 py-2 rounded-xl text-sm font-medium bg-emerald-600 hover:bg-emerald-700 text-white"
+              (click)="notify('Posted to Accounts Payable (demo)')" type="button" [style.backgroundColor]="'#0e3a4c'">Post to A/P</button>
+    </div>
+  </div>
+
+  <!-- Supplier Invoice List -->
+  <div class="bg-white rounded-2xl shadow p-3 border border-gray-100">
+    <h2 class="text-lg font-semibold text-gray-800 mb-2">Supplier Invoice List</h2>
+    <table class="min-w-full text-sm">
+      <thead class="text-white">
+        <tr>
+          <th class="text-left px-3 py-2 font-medium">Invoice Number</th>
+          <th class="text-left px-3 py-2 font-medium">Invoice Date</th>
+          <th class="text-left px-3 py-2 font-medium">Amount</th>
+          <th class="text-left px-3 py-2 font-medium">Tax</th>
+          <th class="text-left px-3 py-2 font-medium">Debit/Credit Note</th>
+          <th class="px-3"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="px-3 py-6 text-center text-gray-400" [attr.colspan]="6">No lines yet.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

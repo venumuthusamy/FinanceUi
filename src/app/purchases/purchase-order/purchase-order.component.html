@@ -1,196 +1,378 @@
- <div  class="space-y-5">
-      <div class="bg-white rounded-2xl shadow p-3 border border-gray-100">
-        <div class="flex items-center justify-between mb-3">
-          <h2 class="text-lg font-semibold text-gray-800">Purchase Order</h2>
-          <div class="flex gap-2">
-            <button
-  class="px-3 py-2 rounded-xl text-sm font-medium text-white"
-  style="background-color: #0e3a4c"
-  (mouseover)="hover = true"
-  (mouseout)="hover = false"
-  [style.backgroundColor]="hover ? '#092f3f' : '#0e3a4c'"
-  type="button"
-  (click)="notify('Approved (demo)')"
->
-  Approve
-</button>
-
-            <button class="px-3 py-2 rounded-xl text-sm font-medium border border-emerald-600 text-emerald-700 hover:bg-emerald-50" (click)="notify('PO PDF generated & sent')" type="button">Send (PDF/Email/WA)</button>
-          </div>
+<div class="space-y-5">
+  <!-- Purchase Order Header -->
+  <div class="bg-white rounded-2xl shadow p-3 border border-gray-100">
+    <!-- Header with Approval Workflow -->
+    <div class="flex items-center justify-between mb-3">
+      <h2 class="text-lg font-semibold text-gray-800">Purchase Order</h2>
+      <div class="flex gap-3 items-center">
+        
+        <!-- Approval Level Dropdown -->
+        <div>
+          <label class="text-xs font-medium text-gray-600">Approval Level</label>
+          <select
+            class="w-full rounded-xl border px-3 py-2 text-sm bg-white"
+            [(ngModel)]="poHdr.approvalLevel"
+          >
+            <option value="DeptHead">Department Head</option>
+            <option value="Management">Management</option>
+            <option value="Auto">Auto-Approve</option>
+          </select>
         </div>
 
-        <div [ngClass]="gridColsClass(4)">
-          <div>
-            <label class="text-xs font-medium text-gray-600">Supplier</label>
-              <input
-  class="w-full rounded-xl border focus:outline-none focus:ring-2 px-3 py-2 text-sm"
-  style="border-color: #0e3a4c"
-  placeholder="Select supplier"/>
-           
-          </div>
-          <div>
-            <label class="text-xs font-medium text-gray-600">Terms</label>
-            <select class="w-full rounded-xl border px-3 py-2 text-sm bg-white" [(ngModel)]="poHdr.terms">
-              <option>NET 30</option><option>NET 45</option><option>COD</option>
-            </select>
-          </div>
-          <div>
-            <label class="text-xs font-medium text-gray-600">Currency / FX</label>
-            <div class="flex gap-2">
-              <select class="w-full rounded-xl border px-3 py-2 text-sm bg-white" [(ngModel)]="poHdr.currency">
-                <option>SGD</option><option>USD</option><option>MYR</option><option>INR</option>
-              </select>
-              <input type="number"
-  class="w-full rounded-xl border px-3 py-2 text-sm"
-  style="border-color: #0e3a4c"
-  placeholder="FX rate"/>
-             
-            </div>
-          </div>
-          <div>
-            <label class="text-xs font-medium text-gray-600">Delivery To (WH)</label>
-              <input
-  class="w-full rounded-xl border focus:outline-none focus:ring-2 px-3 py-2 text-sm"
-  style="border-color: #0e3a4c"
-  placeholder="Central Kitchen"/>
-           
-          </div>
-        </div>
+        <!-- Approval Status Badge -->
+        <span
+          class="px-3 py-1 rounded-full text-xs font-medium"
+          [ngClass]="{
+            'bg-yellow-100 text-yellow-700': poHdr.approvalStatus === 'Pending',
+            'bg-green-100 text-green-700': poHdr.approvalStatus === 'Approved',
+            'bg-red-100 text-red-700': poHdr.approvalStatus === 'Rejected'
+          }"
+        >
+          {{ poHdr.approvalStatus || 'Pending' }}
+        </span>
 
-        <div [ngClass]="gridColsClass(4)">
-          <div>
-            <label class="text-xs font-medium text-gray-600">Incoterms</label>
-            <select class="w-full rounded-xl border px-3 py-2 text-sm bg-white" [(ngModel)]="poHdr.incoterms">
-              <option>EXW</option><option>FOB</option><option>CIF</option><option>DAP</option>
-            </select>
-          </div>
-          <div>
-            <label class="text-xs font-medium text-gray-600">PO Date</label>
-             <input type="date"
-  class="w-full rounded-xl border focus:outline-none focus:ring-2 px-3 py-2 text-sm"
-  style="border-color: #0e3a4c"
-  />
-          
-          </div>
-          <div>
-            <label class="text-xs font-medium text-gray-600">Expected Delivery</label>
-                 <input type="date"
-  class="w-full rounded-xl border focus:outline-none focus:ring-2 px-3 py-2 text-sm"
-  style="border-color: #0e3a4c"
-  />
-          </div>
-          <div>
-            <label class="text-xs font-medium text-gray-600">Remarks</label>
-           <input
-  class="w-full rounded-xl border focus:outline-none focus:ring-2 px-3 py-2 text-sm"
-  style="border-color: #0e3a4c"
-  />
-          </div>
-        </div>
+        <!-- Approve Button -->
+        <button
+          class="px-3 py-2 rounded-xl text-sm font-medium text-white"
+          style="background-color: #0e3a4c"
+          (mouseenter)="hover = true"
+          (mouseleave)="hover = false"
+          [style.backgroundColor]="hover ? '#092f3f' : '#0e3a4c'"
+          type="button"
+          (click)="setApprovalStatus('Approved')"
+        >
+          Approve
+        </button>
 
-        <div class="mt-4 overflow-auto border border-gray-200 rounded-xl">
-          <table class="min-w-full text-sm">
-            <thead class="bg-gray-50 text-gray-600">
-              <tr>
-                <th class="text-left px-3 py-2 font-medium">Item</th>
-                <th class="text-left px-3 py-2 font-medium">Qty</th>
-                <th class="text-left px-3 py-2 font-medium">Unit Price</th>
-                <th class="text-left px-3 py-2 font-medium">Discount %</th>
-                <th class="text-left px-3 py-2 font-medium">Tax Code</th>
-                <th class="px-3"></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngIf="poLines.length === 0">
-                <td [attr.colspan]="6" class="px-3 py-6 text-center text-gray-400">No lines yet.</td>
-              </tr>
-             <tr *ngFor="let r of poLines; let i = index; trackBy: trackByIndex" class="border-t">
-  <td class="px-3 py-2">
-    <input class="w-full rounded-xl border px-3 py-2 text-sm" [(ngModel)]="poLines[i]['item']" />
-  </td>
-  <td class="px-3 py-2">
-    <input type="number" class="w-full rounded-xl border px-3 py-2 text-sm" [(ngModel)]="poLines[i]['qty']" />
-  </td>
-  <td class="px-3 py-2">
-    <input type="number" class="w-full rounded-xl border px-3 py-2 text-sm" [(ngModel)]="poLines[i]['price']" />
-  </td>
-  <td class="px-3 py-2">
-    <input type="number" class="w-full rounded-xl border px-3 py-2 text-sm" [(ngModel)]="poLines[i]['disc']" />
-  </td>
-  <td class="px-3 py-2">
-    <select class="w-full rounded-xl border px-3 py-2 text-sm bg-white" [(ngModel)]="poLines[i]['tax']">
-      <option value="STD">STD</option>
-      <option value="ZRL">ZRL</option>
-      <option value="EXM">EXM</option>
-    </select>
-  </td>
-  <td class="px-3 py-2 text-right">
-    <button class="px-3 py-2 rounded-xl text-sm font-medium hover:bg-gray-100 border border-transparent" 
-            (click)="poRemoveLine(i)" type="button">Remove</button>
-  </td>
-</tr>
+        <!-- Reject Button -->
+        <button
+          class="px-3 py-2 rounded-xl text-sm font-medium border border-red-600 text-red-700 hover:bg-red-50"
+          type="button"
+          (click)="setApprovalStatus('Rejected')"
+        >
+          Reject
+        </button>
 
-            </tbody>
-          </table>
-          <div class="p-2 border-t bg-gray-50">
-          <button
-  class="px-3 py-2 rounded-xl text-sm font-medium text-white"
-  type="button"
-  (click)="poAddLine()"
-  (mouseenter)="hover = true"
-  (mouseleave)="hover = false"
-  [style.backgroundColor]="hover ? '#092f3f' : '#0e3a4c'"
->
-  + Add line
-</button>
-
-          </div>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mt-4">
-          <div class="md:col-span-2"></div>
-          <div class="space-y-2 text-sm">
-            <div class="flex justify-between"><span>Sub Total</span><span>{{ poTotals.sum.toFixed(2) }}</span></div>
-            <div class="flex justify-between items-center gap-2">
-              <span>GST (%)</span>
-              <input type="number" class="w-full rounded-xl border px-3 py-2 text-sm" [(ngModel)]="poHdr.tax"/>
-            </div>
-            <div class="flex justify-between items-center gap-2">
-              <span>Shipping Cost</span>
-              <input type="number" class="w-full rounded-xl border px-3 py-2 text-sm" [(ngModel)]="poHdr.shipping"/>
-            </div>
-            <div class="flex justify-between items-center gap-2">
-              <span>Discount (absolute)</span>
-              <input type="number" class="w-full rounded-xl border px-3 py-2 text-sm" [(ngModel)]="poHdr.discount"/>
-            </div>
-            <div class="border-t pt-2 flex justify-between font-semibold">
-              <span>Net Total</span><span>{{ poTotals.grand.toFixed(2) }} {{ poHdr.currency }}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-        <div class="bg-white rounded-2xl shadow p-3 border border-gray-100">
-        <h2 class="text-lg font-semibold text-gray-800 mb-2">Purchase Order List</h2>
-          <table class="min-w-full text-sm">
-            <thead class="text-white">
-
-                <tr>
-                <th class="text-left px-3 py-2 font-medium">Supplier Name</th>
-                  <th class="text-left px-3 py-2 font-medium">Currency /FX</th>
-                  <th class="text-left px-3 py-2 font-medium">Delivery TO</th>
-                  <th class="text-left px-3 py-2 font-medium">Incoterms</th>
-                  <th class="text-left px-3 py-2 font-medium">PO Date</th>
-                 <th class="text-left px-3 py-2 font-medium">Expected Delivery</th>
-                  <th class="text-left px-3 py-2 font-medium">Remarks</th>
-                  <th class="px-3"></th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr >
-                  <td class="px-3 py-6 text-center text-gray-400" [attr.colspan]="7">No lines yet.</td>
-                </tr>
-              
-              </tbody>
-            </table>
+        <!-- Send Button -->
+        <button
+          class="px-3 py-2 rounded-xl text-sm font-medium border border-emerald-600 text-emerald-700 hover:bg-emerald-50"
+          (click)="notify('PO PDF generated & sent')"
+          type="button"
+        >
+          Send (PDF/Email/WA)
+        </button>
       </div>
     </div>
+
+    <!-- Main Info -->
+    <div [ngClass]="gridColsClass(4)">
+      <!-- Supplier -->
+      <div>
+        <label class="text-xs font-medium text-gray-600">Supplier</label>
+        <input
+          class="w-full rounded-xl border focus:outline-none focus:ring-2 px-3 py-2 text-sm"
+          style="border-color: #0e3a4c"
+          placeholder="Select supplier"
+        />
+      </div>
+
+      <!-- Terms -->
+      <div>
+        <label class="text-xs font-medium text-gray-600">Payment Terms</label>
+        <select
+          class="w-full rounded-xl border px-3 py-2 text-sm bg-white"
+          [(ngModel)]="poHdr.terms"
+        >
+          <option>COD</option>
+          <option>NET 30</option>
+          <option>NET 45</option>
+          <option>NET 60</option>
+        </select>
+      </div>
+
+      <!-- Currency + FX Rate -->
+      <div>
+        <label class="text-xs font-medium text-gray-600">Currency / FX</label>
+        <div class="flex gap-2">
+          <select
+            class="w-full rounded-xl border px-3 py-2 text-sm bg-white"
+            [(ngModel)]="poHdr.currency"
+          >
+            <option>SGD</option>
+            <option>USD</option>
+            <option>MYR</option>
+            <option>INR</option>
+          </select>
+          <input
+            type="number"
+            class="w-full rounded-xl border px-3 py-2 text-sm"
+            style="border-color: #0e3a4c"
+            placeholder="FX rate"
+            [(ngModel)]="poHdr.fxRate"
+          />
+        </div>
+      </div>
+
+      <!-- Delivery Location -->
+      <div>
+        <label class="text-xs font-medium text-gray-600">Delivery To (WH)</label>
+        <input
+          class="w-full rounded-xl border focus:outline-none focus:ring-2 px-3 py-2 text-sm"
+          style="border-color: #0e3a4c"
+          placeholder="Central Kitchen"
+        />
+      </div>
+    </div>
+
+    <!-- More Header Info -->
+    <div [ngClass]="gridColsClass(4)">
+      <div>
+        <label class="text-xs font-medium text-gray-600">Contact Number</label>
+        <input
+          class="w-full rounded-xl border focus:outline-none focus:ring-2 px-3 py-2 text-sm"
+          style="border-color: #0e3a4c"
+          placeholder="Contact Number"
+        />
+      </div>
+      <!-- Incoterms (show only if overseas) -->
+      <div>
+        <label class="text-xs font-medium text-gray-600">Incoterms (Overseas Only)</label>
+        <select
+          class="w-full rounded-xl border px-3 py-2 text-sm bg-white"
+          [(ngModel)]="poHdr.incoterms"
+        >
+          <option>EXW</option>
+          <option>FOB</option>
+          <option>CIF</option>
+          <option>DAP</option>
+        </select>
+      </div>
+
+      <!-- PO Date (system-generated, disabled) -->
+      <div>
+        <label class="text-xs font-medium text-gray-600">PO Date</label>
+        <input
+          type="date"
+          class="w-full rounded-xl border px-3 py-2 text-sm bg-gray-100"
+          style="border-color: #0e3a4c"
+          [(ngModel)]="poHdr.poDate"
+          [disabled]="true"
+        />
+      </div>
+
+      <!-- Expected Delivery -->
+      <div>
+        <label class="text-xs font-medium text-gray-600">Delivery Date</label>
+        <input
+          type="date"
+          class="w-full rounded-xl border focus:outline-none focus:ring-2 px-3 py-2 text-sm"
+          style="border-color: #0e3a4c"
+          [(ngModel)]="poHdr.deliveryDate"
+        />
+      </div>
+
+     
+      <!-- Remarks -->
+      <div>
+        <label class="text-xs font-medium text-gray-600">Remarks</label>
+        <textarea
+          rows="2"
+          class="w-full rounded-xl border focus:outline-none focus:ring-2 px-3 py-2 text-sm"
+          style="border-color: #0e3a4c"
+          [(ngModel)]="poHdr.remarks"
+        ></textarea>
+      </div>
+      <!-- Recurring Checkbox -->
+      <div class="flex items-center gap-2 mt-2">
+        <input
+          id="recurringPO"
+          type="checkbox"
+          class="h-4 w-4 rounded border-gray-300 text-[#0e3a4c] focus:ring-[#0e3a4c]"
+          [(ngModel)]="poHdr.recurring"
+        />
+        <label for="recurringPO" class="text-xs font-medium text-gray-600">Recurring PO</label>
+      </div>
+    </div>
+ 
+
+    <!-- Line Items -->
+    <div class="mt-4 overflow-auto border border-gray-200 rounded-xl">
+      <table class="min-w-full text-sm">
+        <thead class="bg-gray-50 text-gray-600">
+          <tr>
+            <th class="text-left px-3 py-2 font-medium">Item Code</th>
+            <th class="text-left px-3 py-2 font-medium">Description</th>
+            <th class="text-left px-3 py-2 font-medium">CapEx / OpEx</th>
+            <th class="text-left px-3 py-2 font-medium">Recurring?</th>
+            <th class="text-left px-3 py-2 font-medium">Qty</th>
+            <th class="text-left px-3 py-2 font-medium">Unit Price</th>
+            <th class="text-left px-3 py-2 font-medium">Discount %</th>
+            <th class="text-left px-3 py-2 font-medium">Tax Code</th>
+            <th class="px-3"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngIf="poLines.length === 0">
+            <td [attr.colspan]="9" class="px-3 py-6 text-center text-gray-400">
+              No lines yet.
+            </td>
+          </tr>
+          <tr
+            *ngFor="let r of poLines; let i = index; trackBy: trackByIndex"
+            class="border-t"
+          >
+            <td class="px-3 py-2">
+              <input
+                class="w-full rounded-xl border px-3 py-2 text-sm"
+                [(ngModel)]="poLines[i]['itemCode']"
+                placeholder="e.g. CHK001"
+              />
+            </td>
+            <td class="px-3 py-2">
+              <input
+                class="w-full rounded-xl border px-3 py-2 text-sm"
+                [(ngModel)]="poLines[i]['itemDesc']"
+                placeholder="Item description"
+              />
+            </td>
+            <td class="px-3 py-2">
+              <select
+                class="w-full rounded-xl border px-3 py-2 text-sm bg-white"
+                [(ngModel)]="poLines[i]['capexOpex']"
+              >
+                <option value="CapEx">CapEx</option>
+                <option value="OpEx">OpEx</option>
+              </select>
+            </td>
+            <td class="px-3 py-2">
+              <select
+                class="w-full rounded-xl border px-3 py-2 text-sm bg-white"
+                [(ngModel)]="poLines[i]['recurring']"
+              >
+                <option value="OneTime">One-Time</option>
+                <option value="Recurring">Recurring</option>
+              </select>
+            </td>
+            <td class="px-3 py-2">
+              <input
+                type="number"
+                class="w-full rounded-xl border px-3 py-2 text-sm"
+                [(ngModel)]="poLines[i]['qty']"
+              />
+            </td>
+            <td class="px-3 py-2">
+              <input
+                type="number"
+                class="w-full rounded-xl border px-3 py-2 text-sm"
+                [(ngModel)]="poLines[i]['price']"
+              />
+            </td>
+            <td class="px-3 py-2">
+              <input
+                type="number"
+                class="w-full rounded-xl border px-3 py-2 text-sm"
+                [(ngModel)]="poLines[i]['disc']"
+              />
+            </td>
+            <td class="px-3 py-2">
+              <select
+                class="w-full rounded-xl border px-3 py-2 text-sm bg-white"
+                [(ngModel)]="poLines[i]['tax']"
+              >
+                <option value="STD">STD</option>
+                <option value="ZRL">ZRL</option>
+                <option value="EXM">EXM</option>
+              </select>
+            </td>
+            <td class="px-3 py-2 text-right">
+              <button
+                class="px-3 py-2 rounded-xl text-sm font-medium hover:bg-gray-100 border border-transparent"
+                (click)="poRemoveLine(i)"
+                type="button"
+              >
+                Remove
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="p-2 border-t bg-gray-50">
+        <button
+          class="px-3 py-2 rounded-xl text-sm font-medium text-white"
+          type="button"
+          (click)="poAddLine()"
+          (mouseenter)="hover = true"
+          (mouseleave)="hover = false"
+          [style.backgroundColor]="hover ? '#092f3f' : '#0e3a4c'"
+        >
+          + Add line
+        </button>
+      </div>
+    </div>
+
+    <!-- Totals -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mt-4">
+      <div class="md:col-span-2"></div>
+      <div class="space-y-2 text-sm">
+        <div class="flex justify-between">
+          <span>Sub Total</span><span>{{ poTotals.sum.toFixed(2) }}</span>
+        </div>
+        <div class="flex justify-between items-center gap-2">
+          <span>GST (%)</span>
+          <input
+            type="number"
+            class="w-full rounded-xl border px-3 py-2 text-sm"
+            [(ngModel)]="poHdr.tax"
+          />
+        </div>
+        <div class="flex justify-between items-center gap-2">
+          <span>Shipping Cost</span>
+          <input
+            type="number"
+            class="w-full rounded-xl border px-3 py-2 text-sm"
+            [(ngModel)]="poHdr.shipping"
+          />
+        </div>
+        <div class="flex justify-between items-center gap-2">
+          <span>Discount (absolute)</span>
+          <input
+            type="number"
+            class="w-full rounded-xl border px-3 py-2 text-sm"
+            [(ngModel)]="poHdr.discount"
+          />
+        </div>
+        <div class="border-t pt-2 flex justify-between font-semibold">
+          <span>Net Total</span>
+          <span>{{ poTotals.grand.toFixed(2) }} {{ poHdr.currency }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Purchase Order List -->
+  <div class="bg-white rounded-2xl shadow p-3 border border-gray-100">
+    <h2 class="text-lg font-semibold text-gray-800 mb-2">Purchase Order List</h2>
+    <table class="min-w-full text-sm">
+      <thead class="bg-gray-700 text-white">
+        <tr>
+          <th class="text-left px-3 py-2 font-medium">Supplier Name</th>
+          <th class="text-left px-3 py-2 font-medium">Currency / FX</th>
+          <th class="text-left px-3 py-2 font-medium">Delivery To</th>
+          <th class="text-left px-3 py-2 font-medium">Incoterms</th>
+          <th class="text-left px-3 py-2 font-medium">PO Date</th>
+          <th class="text-left px-3 py-2 font-medium">Expected Delivery</th>
+          <th class="text-left px-3 py-2 font-medium">Remarks</th>
+          <th class="text-left px-3 py-2 font-medium">Approval Status</th>
+          <th class="px-3"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="px-3 py-6 text-center text-gray-400" [attr.colspan]="9">
+            No lines yet.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

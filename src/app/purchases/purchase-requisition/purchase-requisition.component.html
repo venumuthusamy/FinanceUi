@@ -50,47 +50,46 @@
             
             </div>
             <div>
-              <label class="text-xs font-medium text-gray-600">Needed By</label>
+              <label class="text-xs font-medium text-gray-600">Delivery Date</label>
               <input
   type="date"
   class="w-full rounded-xl border px-3 py-2 text-sm focus:outline-none"
   style="border-color: #0e3a4c;"
   [(ngModel)]="prHeader.neededBy"
 />
-
-            </div>
-            <div>
+ </div>
+            <!-- <div>
               <label class="text-xs font-medium text-gray-600">Delivery To (Location/Warehouse)</label>
                <input
   class="w-full rounded-xl border focus:outline-none focus:ring-2 px-3 py-2 text-sm"
   style="border-color: #0e3a4c"
   placeholder="e.g., Central Kitchen"/>
              
-            </div>
+            </div> -->
           </div>
 
           <div [ngClass]="gridColsClass(4)">
             <div>
-              <label class="text-xs font-medium text-gray-600">Purpose</label>
+              <label class="text-xs font-medium text-gray-600">Description</label>
               <input
   class="w-full rounded-xl border focus:outline-none focus:ring-2 px-3 py-2 text-sm"
   style="border-color: #0e3a4c"
   placeholder="e.g., Weekly replenishment"/>
               
             </div>
-            <div>
+            <!-- <div>
               <label class="text-xs font-medium text-gray-600">Budget Line</label>
               <input
   class="w-full rounded-xl border focus:outline-none focus:ring-2 px-3 py-2 text-sm"
   style="border-color: #0e3a4c"
   placeholder="e.g., OPEX-FOOD"/>
              
-            </div>
+            </div> -->
             <div class="flex items-end gap-2">
-              <div class="flex items-center gap-2">
+              <!-- <div class="flex items-center gap-2">
                 <input id="oversea" type="checkbox" [(ngModel)]="prHeader.oversea"/>
                 <label class="text-xs font-medium text-gray-600" for="oversea">Overseas Purchase</label>
-              </div>
+              </div> -->
               <div class="flex items-center gap-2 ml-6">
                 <input id="multiloc" type="checkbox" [(ngModel)]="prHeader.multiLoc"/>
                 <label class="text-xs font-medium text-gray-600" for="multiloc">Split to multiple locations</label>
@@ -201,8 +200,13 @@
         <div *ngIf="prStep === 2" class="space-y-4">
           <div class="rounded-xl border p-3 bg-gray-50 text-sm">
             <p class="font-semibold mb-2">Summary</p>
-            <p><span class="font-medium">Needed By:</span> {{ prHeader.neededBy || '-' }}</p>
-            <p><span class="font-medium">Oversea:</span> {{ prHeader.oversea ? 'Yes' : 'No' }} ·
+            <p>
+  <span class="font-medium">Delivery Date:</span>
+  {{ prHeader.neededBy | date:'dd-MM-yyyy' || '-' }}
+</p>
+
+            <p>
+              <!-- <span class="font-medium">Oversea:</span> {{ prHeader.oversea ? 'Yes' : 'No' }} · -->
                <span class="font-medium">Split to multiple locations:</span> {{ prHeader.multiLoc ? 'Yes' : 'No' }}</p>
             <p class="mt-2 font-medium">Lines:</p>
             <ul class="list-disc ml-5">
@@ -217,8 +221,8 @@
             <button class="px-3 py-2 rounded-xl text-sm font-medium hover:bg-gray-100 border border-transparent"
                     (click)="prGo(-1)" type="button">← Back</button>
             <div class="flex gap-2">
-              <button class="px-3 py-2 rounded-xl text-sm font-medium border border-emerald-600 text-emerald-700 hover:bg-emerald-50" type="button"
-                      (click)="notify('Sent for HOD approval')">Send for HOD Approval</button>
+              <!-- <button class="px-3 py-2 rounded-xl text-sm font-medium border border-emerald-600 text-emerald-700 hover:bg-emerald-50" type="button"
+                      (click)="notify('Sent for HOD approval')">Send for HOD Approval</button> -->
              <button
   class="px-3 py-2 rounded-xl text-sm font-medium text-white"
   style="background-color: #0e3a4c;"
@@ -241,10 +245,9 @@
                 <tr>
                 <th class="text-left px-3 py-2 font-medium">Requester Name</th>
                   <th class="text-left px-3 py-2 font-medium">Department</th>
-                  <th class="text-left px-3 py-2 font-medium">Needed By Date</th>
+                  <th class="text-left px-3 py-2 font-medium">Delivery Date</th>
                   <th class="text-left px-3 py-2 font-medium">Location</th>
                   <th class="text-left px-3 py-2 font-medium">Quantity</th>
-                 
                   <th class="text-left px-3 py-2 font-medium">Purpose</th>
                   <th class="text-left px-3 py-2 font-medium">Remarks</th>
                   <th class="px-3"></th>
@@ -258,4 +261,5 @@
               </tbody>
             </table>
       </div>
+      
     </div>

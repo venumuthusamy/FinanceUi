@@ -8,7 +8,22 @@ type LineRow = { [k: string]: any };
 
 export class PurchaseOrderComponent {
    hover = false;
-poHdr = { currency: 'SGD', tax: 10, shipping: 0, discount: 0, terms: 'NET 30', incoterms: 'EXW' };
+poHdr = {
+  currency: 'SGD',
+  fxRate: 1,           
+  tax: 0,
+  shipping: 0,
+  discount: 0,
+  terms: 'NET 30',
+  incoterms: 'FOB',
+  poDate: new Date().toISOString().split('T')[0], 
+  deliveryDate: '' ,
+  remarks: ''  ,
+  approvalLevel: 'DeptHead',     
+  approvalStatus: 'Pending',
+  recurring:""     
+};
+
   poLines: LineRow[] = [];
   poAddLine() { this.poLines = [...this.poLines, { tax: 'STD' }]; }
   poRemoveLine(i: number) { this.poLines = this.poLines.filter((_, idx) => idx !== i); }
@@ -53,6 +68,11 @@ poHdr = { currency: 'SGD', tax: 10, shipping: 0, discount: 0, terms: 'NET 30', i
     };
   }
     trackByIndex = (i: number, _: any) => i;
+
+    setApprovalStatus(status: string) {
+  this.poHdr.approvalStatus = status;
+  this.notify(`PO ${status} at ${this.poHdr.approvalLevel} level`);
+}
 }
 
 

@@ -1,59 +1,89 @@
- <div class="space-y-5">
-      <div class="bg-white rounded-2xl shadow p-3 border border-gray-100">
-        <h2 class="text-lg font-semibold text-gray-800 mb-3">Mobile Receiving (PO → Scan → Qty → Save)</h2>
+<div class="space-y-5">
+  <!-- Mobile Receiving -->
+  <div class="bg-white rounded-2xl shadow p-3 border border-gray-100">
+    <h2 class="text-lg font-semibold text-gray-800 mb-3">
+      Mobile Receiving (PO → Scan → Qty → Save)
+    </h2>
 
-        <div [ngClass]="gridColsClass(4)">
-          <div>
-            <label class="text-xs font-medium text-gray-600">PO Number</label>
-            <input class="w-full rounded-xl border px-3 py-2 text-sm" [(ngModel)]="mrPo" placeholder="PO-000123"/>
-          </div>
-          <div>
-            <label class="text-xs font-medium text-gray-600">Scan Barcode</label>
-            <input class="w-full rounded-xl border px-3 py-2 text-sm" [(ngModel)]="mrBarcode" (keydown.enter)="addScan()" placeholder="Scan here…"/>
-          </div>
-          <div class="flex items-end gap-2">
-            <button class="px-3 py-2 rounded-xl text-sm font-medium bg-emerald-600 hover:bg-emerald-700 text-white" (click)="addScan()" type="button"[style.backgroundColor]="'#0e3a4c'">Add</button>
-            <button class="px-3 py-2 rounded-xl text-sm font-medium border border-emerald-600 text-emerald-700 hover:bg-emerald-50" (click)="syncMobile()" type="button">Sync</button>
-            <div class="flex items-center gap-2 ml-2">
-              <input type="checkbox" [checked]="mrOffline" (change)="toggleOffline()"/>
-              <label class="text-xs font-medium text-gray-600">Offline Save</label>
-            </div>
-          </div>
-          <div></div>
-        </div>
+    <!-- PO + Scan Controls -->
+    <div [ngClass]="gridColsClass(4)">
+      <!-- PO Number -->
+      <div>
+        <label class="text-xs font-medium text-gray-600">PO Number</label>
+        <input
+          class="w-full rounded-xl border px-3 py-2 text-sm"
+          [(ngModel)]="mrPo"
+          placeholder="PO-000123"
+        />
+      </div>
 
-        <div class="overflow-auto border rounded-xl mt-3">
-          <table class="min-w-full text-sm">
-            <thead class="bg-gray-50">
-              <tr>
-                <th class="px-3 py-2 text-left font-medium ">Time</th>
-                <th class="px-3 py-2 text-left font-medium ">PO</th>
-                <th class="px-3 py-2 text-left font-medium ">Barcode</th>
-                <th class="px-3 py-2 text-left font-medium ">Qty</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngIf="mrRows.length === 0">
-                <td [attr.colspan]="4" class="px-3 py-6 text-center text-gray-400">No scans yet.</td>
-              </tr>
-              <tr *ngFor="let r of mrRows; let i = index; trackBy: trackByIndex" class="border-t">
-                <td class="px-3 py-2">{{ (r.ts | date:'medium') || r.ts }}</td>
-                <td class="px-3 py-2">{{ r.po }}</td>
-                <td class="px-3 py-2">{{ r.barcode }}</td>
-                <td class="px-3 py-2">{{ r.qty }}</td>
-              </tr>
-            </tbody>
-          </table>
+      <!-- Barcode -->
+      <div>
+        <label class="text-xs font-medium text-gray-600">Scan Barcode</label>
+        <input
+          class="w-full rounded-xl border px-3 py-2 text-sm"
+          [(ngModel)]="mrBarcode"
+          (keydown.enter)="addScan()"
+          placeholder="Scan here…"
+        />
+      </div>
+
+      <!-- Buttons -->
+      <div class="flex items-end gap-2">
+        <button
+          class="px-3 py-2 rounded-xl text-sm font-medium bg-emerald-600 hover:bg-emerald-700 text-white"
+          type="button"
+          [style.backgroundColor]="'#0e3a4c'"
+          (click)="addScan()"
+        >
+          Add
+        </button>
+        <button
+          class="px-3 py-2 rounded-xl text-sm font-medium border border-emerald-600 text-emerald-700 hover:bg-emerald-50"
+          (click)="syncMobile()"
+          type="button"
+        >
+          Sync
+        </button>
+        <div class="flex items-center gap-2 ml-2">
+          <input type="checkbox" [checked]="mrOffline" (change)="toggleOffline()" />
+          <label class="text-xs font-medium text-gray-600">Offline Save</label>
         </div>
       </div>
-<!-- 
-      <div class="bg-white rounded-2xl shadow p-5 border border-gray-100">
-        <h2 class="text-lg font-semibold text-gray-800 mb-2">How it works (demo)</h2>
-        <ol class="text-sm list-decimal ml-5 text-gray-700 space-y-1">
-          <li>Enter/scan <span class="font-medium">PO Number</span>.</li>
-          <li>Scan <span class="font-medium">item barcode</span> to fetch PO line (simulated here).</li>
-          <li>Quantity defaults to 1 per scan; adjust on the server/UI integrating with PO lines.</li>
-          <li>When offline, scans are cached to local storage. Use <span class="font-medium">Sync</span> when back online.</li>
-        </ol>
-      </div> -->
+      <div></div>
     </div>
+
+    <!-- Scan Table -->
+    <div class="overflow-auto border rounded-xl mt-3">
+      <table class="min-w-full text-sm">
+        <thead class="bg-gray-50">
+          <tr>
+            <th class="px-3 py-2 text-left font-medium">Time</th>
+            <th class="px-3 py-2 text-left font-medium">PO</th>
+            <th class="px-3 py-2 text-left font-medium">Barcode</th>
+            <th class="px-3 py-2 text-left font-medium">Qty</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngIf="mrRows.length === 0">
+            <td [attr.colspan]="4" class="px-3 py-6 text-center text-gray-400">
+              No scans yet.
+            </td>
+          </tr>
+          <tr
+            *ngFor="let r of mrRows; let i = index; trackBy: trackByIndex"
+            class="border-t"
+          >
+            <td class="px-3 py-2">{{ (r.ts | date: 'medium') || r.ts }}</td>
+            <td class="px-3 py-2">{{ r.po }}</td>
+            <td class="px-3 py-2">{{ r.barcode }}</td>
+            <td class="px-3 py-2">{{ r.qty }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+
+  
+</div>

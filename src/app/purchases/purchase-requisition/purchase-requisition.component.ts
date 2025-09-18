@@ -42,4 +42,5 @@ export class PurchaseRequisitionComponent {
       'bg-gray-50 text-gray-700 border border-gray-200': tone === 'gray',
     };
   }
+  
 }

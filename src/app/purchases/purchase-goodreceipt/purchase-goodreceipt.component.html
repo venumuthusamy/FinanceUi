@@ -1,117 +1,127 @@
- <div class="space-y-5">
-      <div class="bg-white rounded-2xl shadow p-3 border border-gray-100">
-        <div class="flex items-center justify-between mb-3">
-          <h2 class="text-lg font-semibold text-gray-800">Goods Receipt (GRN)</h2>
-       
-   <button
-  class="px-3 py-2 rounded-xl text-sm font-medium text-white"
-  type="button"
- (click)="notify('Posted to Inventory (demo)')"
-  (mouseenter)="hover = true"
-  (mouseleave)="hover = false"
-  [style.backgroundColor]="hover ? '#092f3f' : '#0e3a4c'"
->
-   Post Inventory
-</button>
-        </div>
+<div class="space-y-5">
+  <!-- GRN Header -->
+  <div class="bg-white rounded-2xl shadow p-3 border border-gray-100">
+    <div class="flex items-center justify-between mb-3">
+      <h2 class="text-lg font-semibold text-gray-800">Goods Receipt (GRN)</h2>
+      <button
+        class="px-3 py-2 rounded-xl text-sm font-medium text-white"
+        type="button"
+        (click)="notify('Posted to Inventory (demo)')"
+        (mouseenter)="hover = true"
+        (mouseleave)="hover = false"
+        [style.backgroundColor]="hover ? '#092f3f' : '#0e3a4c'"
+      >
+        Post Inventory
+      </button>
+    </div>
 
-        <div [ngClass]="gridColsClass(4)">
-          <div><label class="text-xs font-medium text-gray-600">From PO</label>
-            <input
-  class="w-full rounded-xl border focus:outline-none focus:ring-2 px-3 py-2 text-sm"
-  style="border-color: #0e3a4c"
-  /></div>
-          <div><label class="text-xs font-medium text-gray-600">Receipt Date</label>
-             <input type="date"
-  class="w-full rounded-xl border focus:outline-none focus:ring-2 px-3 py-2 text-sm"
-  style="border-color: #0e3a4c"
-  /></div>
-          <div><label class="text-xs font-medium text-gray-600">Over-receipt Tolerance (%)</label>
-             <input type="number"
-  class="w-full rounded-xl border focus:outline-none focus:ring-2 px-3 py-2 text-sm"
-  style="border-color: #0e3a4c" placeholder="5"
-  />
-            </div>
-          <div class="flex items-end"><button class="px-3 py-2 rounded-xl text-sm font-medium border border-emerald-600 text-emerald-700 hover:bg-emerald-50" (click)="notify('Issues flagged to Requestor')" type="button">Flag Issues</button></div>
-        </div>
-
-        <div class="overflow-auto border border-gray-200 rounded-xl mt-4">
-          <table class="min-w-full text-sm">
-            <thead class="bg-gray-50 text-gray-600">
-              <tr>
-                <th class="text-left px-3 py-2 font-medium">PO #</th>
-                <th class="text-left px-3 py-2 font-medium">Item</th>
-                <th class="text-left px-3 py-2 font-medium">Batch/Serial</th>
-                <th class="text-left px-3 py-2 font-medium">Expiry</th>
-                <th class="text-left px-3 py-2 font-medium">Qty Received</th>
-                <th class="text-left px-3 py-2 font-medium">QC</th>
-                <th class="text-left px-3 py-2 font-medium">Remarks</th>
-                <th class="px-3"></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngIf="grnRows.length === 0">
-                <td [attr.colspan]="8" class="px-3 py-6 text-center text-gray-400">No lines yet.</td>
-              </tr>
-             <tr *ngFor="let r of grnRows; let i = index; trackBy: trackByIndex" class="border-t">
-  <td class="px-3 py-2"><input class="w-full rounded-xl border px-3 py-2 text-sm" [(ngModel)]="grnRows[i]['po']"/></td>
-  <td class="px-3 py-2"><input class="w-full rounded-xl border px-3 py-2 text-sm" [(ngModel)]="grnRows[i]['item']"/></td>
-  <td class="px-3 py-2"><input class="w-full rounded-xl border px-3 py-2 text-sm" [(ngModel)]="grnRows[i]['batch']"/></td>
-  <td class="px-3 py-2"><input type="date" class="w-full rounded-xl border px-3 py-2 text-sm" [(ngModel)]="grnRows[i]['expiry']"/></td>
-  <td class="px-3 py-2"><input type="number" class="w-full rounded-xl border px-3 py-2 text-sm" [(ngModel)]="grnRows[i]['qty']"/></td>
-  <td class="px-3 py-2">
-    <select class="w-full rounded-xl border px-3 py-2 text-sm bg-white" [(ngModel)]="grnRows[i]['qc']">
-      <option>Pass</option>
-      <option>Not Pass</option>
-      <option>Verify</option>
-    </select>
-  </td>
-  <td class="px-3 py-2"><input class="w-full rounded-xl border px-3 py-2 text-sm" [(ngModel)]="grnRows[i]['remarks']"/></td>
-  <td class="px-3 py-2 text-right">
-    <button class="px-3 py-2 rounded-xl text-sm font-medium hover:bg-gray-100 border border-transparent" (click)="grnRemoveRow(i)" type="button">Remove</button>
-  </td>
-</tr>
-
-            </tbody>
-          </table>
-          <div class="p-2 border-t bg-gray-50">
-        
-       <button
-  class="px-3 py-2 rounded-xl text-sm font-medium text-white"
-  type="button"
-  (click)="grnAddRow()"
-  (mouseenter)="hover = true"
-  (mouseleave)="hover = false"
-  [style.backgroundColor]="hover ? '#092f3f' : '#0e3a4c'"
->
-  + Add line
-</button>
-          </div>
-        </div>
+    <div [ngClass]="gridColsClass(4)">
+      <div>
+        <label class="text-xs font-medium text-gray-600">From PO</label>
+        <input class="w-full rounded-xl border px-3 py-2 text-sm" style="border-color: #0e3a4c" />
       </div>
-       <div class="bg-white rounded-2xl shadow p-3 border border-gray-100">
-        <h2 class="text-lg font-semibold text-gray-800 mb-2">Purchase GoodReceipt List</h2>
-       
-          <table class="min-w-full text-sm">
-            <thead class="text-white">
-              <tr>
-                <th class="text-left px-3 py-2 font-medium">PO</th>
-                  <th class="text-left px-3 py-2 font-medium">Item</th>
-                  <th class="text-left px-3 py-2 font-medium">Receipt Date</th>
-                 <th class="text-left px-3 py-2 font-medium">Batch/Serial</th>
-                 <th class="text-left px-3 py-2 font-medium">Expiry</th>
-                 <th class="text-left px-3 py-2 font-medium">Qty Received</th>
-                 <th class="text-left px-3 py-2 font-medium">Remarks</th>
-                  <th class="px-3"></th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr >
-                  <td class="px-3 py-6 text-center text-gray-400" [attr.colspan]="7">No lines yet.</td>
-                </tr>
-              
-              </tbody>
-            </table>
-            
+      <div>
+        <label class="text-xs font-medium text-gray-600">Receipt Date</label>
+        <input type="date" class="w-full rounded-xl border px-3 py-2 text-sm" style="border-color: #0e3a4c" />
+      </div>
+      <div>
+        <label class="text-xs font-medium text-gray-600">Over-receipt Tolerance (%)</label>
+        <input type="number" class="w-full rounded-xl border px-3 py-2 text-sm" style="border-color: #0e3a4c" placeholder="5" />
+      </div>
+      <div class="flex items-end">
+        <button
+          class="px-3 py-2 rounded-xl text-sm font-medium border border-emerald-600 text-emerald-700 hover:bg-emerald-50"
+          (click)="notify('Issues flagged to Requestor')"
+          type="button"
+        >
+          Flag Issues
+        </button>
       </div>
     </div>
+
+    <!-- GRN Line Items -->
+    <div class="overflow-auto border border-gray-200 rounded-xl mt-4">
+      <table class="min-w-full text-sm">
+        <thead class="bg-gray-50 text-gray-600">
+          <tr>
+            <th class="text-left px-3 py-2 font-medium">PO #</th>
+            <th class="text-left px-3 py-2 font-medium">Item</th>
+            <th class="text-left px-3 py-2 font-medium">Batch/Serial</th>
+            <th class="text-left px-3 py-2 font-medium">Expiry</th>
+            <th class="text-left px-3 py-2 font-medium">Qty Received</th>
+            <th class="text-left px-3 py-2 font-medium">QC</th>
+            <th class="text-left px-3 py-2 font-medium">Temperature (°C)</th>
+            <th class="text-left px-3 py-2 font-medium">Location</th>
+            <th class="text-left px-3 py-2 font-medium">Photos</th>
+            <th class="text-left px-3 py-2 font-medium">Inspectors</th>
+            <th class="text-left px-3 py-2 font-medium">Remarks</th>
+            <th class="px-3"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngIf="grnRows.length === 0">
+            <td [attr.colspan]="12" class="px-3 py-6 text-center text-gray-400">No lines yet.</td>
+          </tr>
+
+          <tr *ngFor="let r of grnRows; let i = index; trackBy: trackByIndex" class="border-t">
+            <td class="px-3 py-2"><input class="w-full rounded-xl border px-3 py-2 text-sm" [(ngModel)]="r['po']" /></td>
+            <td class="px-3 py-2"><input class="w-full rounded-xl border px-3 py-2 text-sm" [(ngModel)]="r['item']" /></td>
+            <td class="px-3 py-2"><input class="w-full rounded-xl border px-3 py-2 text-sm" [(ngModel)]="r['batch']" /></td>
+            <td class="px-3 py-2"><input type="date" class="w-full rounded-xl border px-3 py-2 text-sm" [(ngModel)]="r['expiry']" /></td>
+            <td class="px-3 py-2"><input type="number" class="w-full rounded-xl border px-3 py-2 text-sm" [(ngModel)]="r['qty']" /></td>
+
+            <!-- Quality Check -->
+            <td class="px-3 py-2">
+              <select class="w-full rounded-xl border px-3 py-2 text-sm bg-white" [(ngModel)]="r['qc']">
+                <option>Pass</option>
+                <option>Not Pass</option>
+                <option>Verify</option>
+              </select>
+            </td>
+
+            <!-- Temperature -->
+            <td class="px-3 py-2">
+              <input type="number" class="w-full rounded-xl border px-3 py-2 text-sm" [(ngModel)]="r['temperature']" placeholder="°C" />
+            </td>
+
+            <!-- Storage Location -->
+            <td class="px-3 py-2"><input class="w-full rounded-xl border px-3 py-2 text-sm" [(ngModel)]="r['location']" placeholder="Warehouse/Shelf" /></td>
+
+            <!-- Photos -->
+            <td class="px-3 py-2">
+              <input type="file" multiple (change)="uploadPhoto($event, i)" />
+              <div *ngIf="r['photos']?.length">
+                <span *ngFor="let p of r['photos']; let pi=index" class="block text-xs text-gray-500">{{ p.name }}</span>
+              </div>
+            </td>
+
+            <!-- Multi-inspector approval -->
+            <td class="px-3 py-2">
+              <input class="w-full rounded-xl border px-3 py-2 text-sm" [(ngModel)]="r['inspectors']" placeholder="Inspector1, Inspector2" />
+            </td>
+
+            <!-- Remarks -->
+            <td class="px-3 py-2"><input class="w-full rounded-xl border px-3 py-2 text-sm" [(ngModel)]="r['remarks']" /></td>
+
+            <td class="px-3 py-2 text-right">
+              <button class="px-3 py-2 rounded-xl text-sm font-medium hover:bg-gray-100 border border-transparent" (click)="grnRemoveRow(i)" type="button">Remove</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="p-2 border-t bg-gray-50">
+        <button
+          class="px-3 py-2 rounded-xl text-sm font-medium text-white"
+          type="button"
+          (click)="grnAddRow()"
+          (mouseenter)="hover = true"
+          (mouseleave)="hover = false"
+          [style.backgroundColor]="hover ? '#092f3f' : '#0e3a4c'"
+        >
+          + Add line
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

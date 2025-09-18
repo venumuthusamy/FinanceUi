@@ -9,7 +9,7 @@ type LineRow = { [k: string]: any };
 })
 export class SupplierInvoiceCreateComponent {
 
-// PIN Header
+  // PIN Header
   pinHdr = { invoiceNo: '', date: '', amount: 0, tax: 0 };
 
   // PIN Line Items
@@ -41,7 +41,7 @@ export class SupplierInvoiceCreateComponent {
 
   // Row Operations
   pinAddRow() { 
-    this.pinRows = [...this.pinRows, { match: 'OK' }]; 
+    this.pinRows = [...this.pinRows, { match: 'OK', mismatchFields: [] }];
   }
 
   pinRemoveRow(i: number) { 
@@ -51,5 +51,38 @@ export class SupplierInvoiceCreateComponent {
   // Demo Notifications
   notify(msg: string) {
     alert(msg);
+  }
+
+  // -------------------------------
+  // Automatic 3-Way Match Check
+  // -------------------------------
+  checkMismatch(r: LineRow) {
+    const mismatchFields: string[] = [];
+
+    // Example checks
+    if (r['qty'] !== r['poQty'] || r['qty'] !== r['grnQty']) mismatchFields.push('Qty');
+    if (r['price'] !== r['poPrice'] || r['price'] !== r['grnPrice']) mismatchFields.push('Price');
+
+    // Update status
+    if (mismatchFields.length) {
+      r['match'] = 'Mismatch';
+      r['mismatchFields'] = mismatchFields;
+    } else {
+      r['match'] = 'OK';
+      r['mismatchFields'] = [];
+    }
+  }
+
+  // Call this whenever a row changes
+  onRowChange(i: number, key: string, value: any) {
+    const row = this.pinRows[i];
+    row[key] = value;
+
+    // Optional: parse numbers for comparison
+    if (key === 'qty' || key === 'poQty' || key === 'grnQty' || key === 'price' || key === 'poPrice' || key === 'grnPrice') {
+      row[key] = Number(value);
+    }
+
+    this.checkMismatch(row);
   }
 }

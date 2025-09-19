@@ -29,172 +29,286 @@
         </div>
 
         <!-- Step 0 -->
-        <div *ngIf="prStep === 0" class="space-y-4">
-          <div [ngClass]="gridColsClass(4)">
-            <div>
-              <label class="text-xs font-medium text-gray-600">Requester</label>
-              <input
-  class="w-full rounded-xl border focus:outline-none focus:ring-2 px-3 py-2 text-sm"
-  style="border-color: #0e3a4c"
-  placeholder="Your name"/>
+      <div *ngIf="prStep === 0" class="space-y-4">
+  <div [ngClass]="gridColsClass(3)">
+    <!-- Requester -->
+    <div>
+      <label class="text-xs font-medium text-gray-600">Requester</label>
+      <input
+        class="w-full rounded-xl border focus:outline-none focus:ring-2 px-4 py-2 text-sm"
+        style="border-color: #0e3a4c"
+        placeholder="Your name"
+        [(ngModel)]="prHeader.requester"
+        name="requester"
+      />
+    </div>
+
+  <div class="relative">
+  <label class="text-xs font-medium text-gray-600">Department</label>
+
+  <!-- Search Input with dropdown toggle -->
+  <div class="relative">
+    <input
+      type="text"
+      [(ngModel)]="searchText"
+      (input)="filterDepartments()"
+      (focus)="toggleDropdown(true)"
+      placeholder="Search Department..."
+      class="w-full rounded-xl border focus:outline-none focus:ring-2 px-4 py-2 text-sm"
+      style="border-color: #0e3a4c"
+    />
+
+    <!-- Dropdown Icon -->
+    <button
+      type="button"
+      (click)="toggleDropdown()"
+      class="absolute inset-y-0 right-2 flex items-center text-gray-500 px-2"
+    >
+      ▼
+    </button>
+  </div>
+
+  <!-- Dropdown Options -->
+  <ul
+    *ngIf="dropdownOpen"
+    class="absolute top-full left-0 right-0 bg-white border rounded-xl mt-1 shadow z-10 max-h-40 overflow-y-auto"
+  >
+    <li
+      *ngFor="let dept of filteredDepartments"
+      (click)="selectDepartment(dept)"
+      class="px-3 py-2 hover:bg-blue-100 cursor-pointer text-sm"
+    >
+      {{ dept.name }}
+    </li>
+  </ul>
+</div>
 
 
-            </div>
-            <div>
-              <label class="text-xs font-medium text-gray-600">Department</label>
-               <input
-  class="w-full rounded-xl border focus:outline-none focus:ring-2 px-3 py-2 text-sm"
-  style="border-color: #0e3a4c"
-  placeholder="e.g., Operations"/>
 
-            
-            </div>
-            <div>
-              <label class="text-xs font-medium text-gray-600">Delivery Date</label>
-              <input
-  type="date"
-  class="w-full rounded-xl border px-3 py-2 text-sm focus:outline-none"
-  style="border-color: #0e3a4c;"
-  [(ngModel)]="prHeader.neededBy"
+    <!-- Delivery Date -->
+    <div>
+      <label class="text-xs font-medium text-gray-600">Delivery Date</label>
+      <input
+        type="date"
+        class="w-full rounded-xl border px-3 py-2 text-sm focus:outline-none"
+        style="border-color: #0e3a4c;"
+        [(ngModel)]="prHeader.neededBy"
+        name="deliveryDate"
+      />
+    </div>
+  </div>
+
+  <!-- Second row -->
+  <div [ngClass]="gridColsClass(3)">
+    <!-- Description -->
+    <div>
+      <label class="text-xs font-medium text-gray-600">Description</label>
+      <input
+        class="w-full rounded-xl border focus:outline-none focus:ring-2 px-3 py-2 text-sm"
+        style="border-color: #0e3a4c"
+        placeholder="e.g., Weekly replenishment"
+        [(ngModel)]="prHeader.description"
+        name="description"
+      />
+    </div>
+
+    <!-- Multi Location Checkbox -->
+    <div class="flex items-end gap-2 ml-6">
+      <input
+        id="multiloc"
+        type="checkbox"
+        [(ngModel)]="prHeader.multiLoc"
+        name="multiLoc"
+      />
+      <label class="text-xs font-medium text-gray-600" for="multiloc">Split to multiple locations</label>
+    </div>
+
+    <div></div>
+  </div>
+
+  <!-- Oversea section -->
+  <div *ngIf="prHeader.oversea" class="rounded-xl border p-3 bg-emerald-50">
+    <p class="text-sm font-medium text-emerald-800 mb-2">Oversea details</p>
+    <div [ngClass]="gridColsClass(4)">
+      <div><label class="text-xs font-medium text-gray-600">Port of Loading</label><input class="w-full rounded-xl border px-3 py-2 text-sm"/></div>
+      <div><label class="text-xs font-medium text-gray-600">Port of Destination</label><input class="w-full rounded-xl border px-3 py-2 text-sm"/></div>
+      <div><label class="text-xs font-medium text-gray-600">Customs Agency Fees</label><input type="number" class="w-full rounded-xl border px-3 py-2 text-sm" placeholder="0.00"/></div>
+      <div><label class="text-xs font-medium text-gray-600">Both-side Tax (%)</label><input type="number" class="w-full rounded-xl border px-3 py-2 text-sm" placeholder="0"/></div>
+    </div>
+    <div [ngClass]="gridColsClass(4)">
+      <div><label class="text-xs font-medium text-gray-600">Shipping Cost</label><input type="number" class="w-full rounded-xl border px-3 py-2 text-sm" placeholder="0.00"/></div>
+      <div><label class="text-xs font-medium text-gray-600">Packaging List Ref</label><input class="w-full rounded-xl border px-3 py-2 text-sm"/></div>
+      <div><label class="text-xs font-medium text-gray-600">Delivery Order Ref</label><input class="w-full rounded-xl border px-3 py-2 text-sm"/></div>
+      <div><label class="text-xs font-medium text-gray-600">Remarks</label><input class="w-full rounded-xl border px-3 py-2 text-sm"/></div>
+    </div>
+  </div>
+
+  <!-- Buttons -->
+  <div class="flex justify-end">
+    <button
+      class="px-3 py-2 rounded-xl text-sm font-medium border border-emerald-600 text-emerald-700 hover:bg-emerald-50"
+      (click)="prStep = 1"
+      type="button"
+    >
+      Next: Lines →
+    </button>
+  </div>
+</div>
+
+
+      <div *ngIf="prStep === 1" class="space-y-4">
+  <div class="border border-gray-600 rounded-xxl">
+    <table class="min-w-full text-sm">
+      <thead class="text-white">
+        <tr>
+          <th class="text-left px-3 py-2 font-medium">ItemName/ItemCode</th>
+          <th class="text-left px-3 py-2 font-medium">Qty</th>
+          <th class="text-left px-3 py-2 font-medium">UOM</th>
+          <th class="text-left px-3 py-2 font-medium">Location</th>
+          <th class="text-left px-3 py-2 font-medium">Budget Line</th>
+          <th class="text-left px-3 py-2 font-medium">Remarks</th>
+          <th class="px-3">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngIf="prLines.length === 0">
+          <td class="px-3 py-6 text-center text-gray-400" [attr.colspan]="7">No lines yet.</td>
+        </tr>
+
+        <tr *ngFor="let row of prLines; let i = index; trackBy: trackByIndex" class="border-t">
+          <!-- Item Dropdown -->
+         <!-- Item Column -->
+<td class="px-3 py-2 relative">
+  <!-- Search Input -->
+  <input
+  type="text"
+  [(ngModel)]="prLines[i].itemSearch"
+  (focus)="onItemFocus(i)"
+  (input)="filterItems(i)"
+  placeholder="Search Item..."
+  class="w-full rounded-xl border px-3 py-2 text-sm focus:ring-2 focus:ring-[#0e3a4c] outline-none"
 />
- </div>
-            <!-- <div>
-              <label class="text-xs font-medium text-gray-600">Delivery To (Location/Warehouse)</label>
-               <input
-  class="w-full rounded-xl border focus:outline-none focus:ring-2 px-3 py-2 text-sm"
-  style="border-color: #0e3a4c"
-  placeholder="e.g., Central Kitchen"/>
-             
-            </div> -->
-          </div>
 
-          <div [ngClass]="gridColsClass(4)">
-            <div>
-              <label class="text-xs font-medium text-gray-600">Description</label>
-              <input
-  class="w-full rounded-xl border focus:outline-none focus:ring-2 px-3 py-2 text-sm"
-  style="border-color: #0e3a4c"
-  placeholder="e.g., Weekly replenishment"/>
-              
-            </div>
-            <!-- <div>
-              <label class="text-xs font-medium text-gray-600">Budget Line</label>
-              <input
-  class="w-full rounded-xl border focus:outline-none focus:ring-2 px-3 py-2 text-sm"
-  style="border-color: #0e3a4c"
-  placeholder="e.g., OPEX-FOOD"/>
-             
-            </div> -->
-            <div class="flex items-end gap-2">
-              <!-- <div class="flex items-center gap-2">
-                <input id="oversea" type="checkbox" [(ngModel)]="prHeader.oversea"/>
-                <label class="text-xs font-medium text-gray-600" for="oversea">Overseas Purchase</label>
-              </div> -->
-              <div class="flex items-center gap-2 ml-6">
-                <input id="multiloc" type="checkbox" [(ngModel)]="prHeader.multiLoc"/>
-                <label class="text-xs font-medium text-gray-600" for="multiloc">Split to multiple locations</label>
-              </div>
-            </div>
-            <div></div>
-          </div>
-
-          <div *ngIf="prHeader.oversea" class="rounded-xl border p-3 bg-emerald-50">
-            <p class="text-sm font-medium text-emerald-800 mb-2">Oversea details</p>
-            <div [ngClass]="gridColsClass(4)">
-              <div><label class="text-xs font-medium text-gray-600">Port of Loading</label><input class="w-full rounded-xl border px-3 py-2 text-sm"/></div>
-              <div><label class="text-xs font-medium text-gray-600">Port of Destination</label><input class="w-full rounded-xl border px-3 py-2 text-sm"/></div>
-              <div><label class="text-xs font-medium text-gray-600">Customs Agency Fees</label><input type="number" class="w-full rounded-xl border px-3 py-2 text-sm" placeholder="0.00"/></div>
-              <div><label class="text-xs font-medium text-gray-600">Both-side Tax (%)</label><input type="number" class="w-full rounded-xl border px-3 py-2 text-sm" placeholder="0"/></div>
-            </div>
-            <div [ngClass]="gridColsClass(4)">
-              <div><label class="text-xs font-medium text-gray-600">Shipping Cost</label><input type="number" class="w-full rounded-xl border px-3 py-2 text-sm" placeholder="0.00"/></div>
-              <div><label class="text-xs font-medium text-gray-600">Packaging List Ref</label><input class="w-full rounded-xl border px-3 py-2 text-sm"/></div>
-              <div><label class="text-xs font-medium text-gray-600">Delivery Order Ref</label><input class="w-full rounded-xl border px-3 py-2 text-sm"/></div>
-              <div><label class="text-xs font-medium text-gray-600">Remarks</label><input class="w-full rounded-xl border px-3 py-2 text-sm"/></div>
-            </div>
-          </div>
-
-          <div class="flex justify-end">
-            <button class="px-3 py-2 rounded-xl text-sm font-medium border border-emerald-600 text-emerald-700 hover:bg-emerald-50"
-                    (click)="prStep = 1" type="button">Next: Lines →</button>
-          </div>
-        </div>
-
-        <!-- Step 1 -->
-        <div *ngIf="prStep === 1" class="space-y-4">
-          <div class="overflow-auto border border-gray-200 rounded-xl">
-            <table class="min-w-full text-sm">
-            <thead class="text-white">
-
-                <tr>
-                  <th class="text-left px-3 py-2 font-medium">Item/Description</th>
-                  <th class="text-left px-3 py-2 font-medium">Qty</th>
-                  <th class="text-left px-3 py-2 font-medium">UOM</th>
-                  <th class="text-left px-3 py-2 font-medium">Location</th>
-                  <th class="text-left px-3 py-2 font-medium">Budget Line</th>
-                  <th class="text-left px-3 py-2 font-medium">Remarks</th>
-                  <th class="px-3"></th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngIf="prLines.length === 0">
-                  <td class="px-3 py-6 text-center text-gray-400" [attr.colspan]="7">No lines yet.</td>
-                </tr>
-                <tr *ngFor="let row of prLines; let i = index; trackBy: trackByIndex" class="border-t">
-                 <td class="px-3 py-2">
-  <input class="w-full rounded-xl border px-3 py-2 text-sm" [(ngModel)]="prLines[i]['item']" />
-</td>
-<td class="px-3 py-2">
-  <input type="number" class="w-full rounded-xl border px-3 py-2 text-sm" [(ngModel)]="prLines[i]['qty']" />
-</td>
-<td class="px-3 py-2">
-  <input class="w-full rounded-xl border px-3 py-2 text-sm" [(ngModel)]="prLines[i]['uom']" />
-</td>
-<td class="px-3 py-2">
-  <input class="w-full rounded-xl border px-3 py-2 text-sm" [(ngModel)]="prLines[i]['loc']" />
-</td>
-<td class="px-3 py-2">
-  <input class="w-full rounded-xl border px-3 py-2 text-sm" [(ngModel)]="prLines[i]['budget']" />
-</td>
-<td class="px-3 py-2">
-  <input class="w-full rounded-xl border px-3 py-2 text-sm" [(ngModel)]="prLines[i]['remarks']" />
-</td>
-
-                  <td class="px-3 py-2 text-right">
-                    <button class="px-3 py-2 rounded-xl text-sm font-medium hover:bg-gray-100 border border-transparent"
-                            (click)="prRemoveLine(i)" type="button">Remove</button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-            <div class="p-2 border-t bg-gray-50">
-             <button 
-  class="px-3 py-2 rounded-xl text-sm font-medium text-white"
-  style="background-color: #0e3a4c;"
-  (mouseenter)="hover=true" (mouseleave)="hover=false"
-  [style.background-color]="hover ? '#0b2e3d' : '#0e3a4c'" 
-  (click)="prAddLine()" 
-  type="button"
+<div
+  *ngIf="prLines[i].dropdownOpen && prLines[i].filteredItems.length"
+  class="absolute left-0 top-full mt-1 w-full bg-white border border-gray-200 rounded-xl shadow-lg max-h-48 overflow-y-auto z-50"
 >
-  + Add line
-</button>
+  <div
+    *ngFor="let item of prLines[i].filteredItems"
+    (click)="selectItem(i, item)"
+    class="px-3 py-2 cursor-pointer hover:bg-gray-100 text-sm"
+  >
+    {{ item }}
+  </div>
+</div>
 
-            </div>
-          </div>
-          <div class="flex justify-between">
+  <!-- Dropdown Results -->
+ 
+</td>
+  <!-- Quantity -->
+          <td class="px-3 py-2">
+            <input type="number" class="w-full rounded-xl border px-3 py-2 text-sm" [(ngModel)]="prLines[i]['qty']" />
+          </td>
+
+          <!-- UOM -->
+          <td class="px-3 py-2 relative">
+  <!-- Search Input for UOM -->
+  <input
+    type="text"
+    class="w-full rounded-xl border px-3 py-2 text-sm focus:ring-2 focus:ring-[#0e3a4c] outline-none"
+    placeholder="Search UOM..."
+    [(ngModel)]="prLines[i].uomSearch"
+    (focus)="onUomFocus(i)"
+    (input)="filterUoms(i)"
+  />
+
+  <!-- Dropdown Results -->
+  <div
+    *ngIf="prLines[i].uomDropdownOpen && prLines[i].filteredUoms?.length"
+    class="absolute left-0 top-full mt-1 w-full bg-white border border-gray-200 rounded-xl shadow-lg max-h-48 overflow-y-auto z-50"
+  >
+    <div
+      *ngFor="let uom of prLines[i].filteredUoms"
+      (click)="selectUom(i, uom)"
+      class="px-3 py-2 cursor-pointer hover:bg-gray-100 text-sm"
+    >
+      {{ uom }}
+    </div>
+  </div>
+</td>
+
+
+         <td class="px-3 py-2 relative">
+  <!-- Search Input for Location -->
+  <input
+    type="text"
+    class="w-full rounded-xl border px-3 py-2 text-sm focus:ring-2 focus:ring-[#0e3a4c] outline-none"
+    placeholder="Search Location..."
+    [(ngModel)]="prLines[i].locationSearch"
+    (focus)="onLocationFocus(i)"
+    (input)="filterLocations(i)"
+  />
+
+  <!-- Dropdown Results -->
+  <div
+    *ngIf="prLines[i].filteredLocations?.length"
+    class="absolute left-0 top-full mt-1 w-full bg-white border border-gray-200 rounded-xl shadow-lg max-h-48 overflow-y-auto z-50"
+  >
+    <div
+      *ngFor="let location of prLines[i].filteredLocations"
+      (click)="selectLocation(i, location)"
+      class="px-3 py-2 cursor-pointer hover:bg-gray-100 text-sm"
+    >
+      {{ location }}
+    </div>
+  </div>
+</td>
+
+          <!-- Budget -->
+          <td class="px-3 py-2">
+            <input class="w-full rounded-xl border px-3 py-2 text-sm" [(ngModel)]="prLines[i]['budget']" />
+          </td>
+
+          <!-- Remarks -->
+          <td class="px-3 py-2">
+            <input class="w-full rounded-xl border px-3 py-2 text-sm" [(ngModel)]="prLines[i]['remarks']" />
+          </td>
+
+          <!-- Remove Button -->
+          <td class="px-3 py-2 text-right">
             <button class="px-3 py-2 rounded-xl text-sm font-medium hover:bg-gray-100 border border-transparent"
-                    (click)="prGo(-1)" type="button">← Back</button>
-           <button
-  class="px-3 py-2 rounded-xl text-sm font-medium text-white"
-  style="background-color: #0e3a4c;"
-  (click)="prGo(1)"
-  type="button"
->
-  Review →
-</button>
+              (click)="prRemoveLine(i)" type="button">Remove</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
 
-          </div>
-        </div>
+    <!-- Add Line -->
+    <div class="p-2 border-t bg-gray-50">
+      <button class="px-3 py-2 rounded-xl text-sm font-medium text-white"
+        style="background-color: #0e3a4c;"
+        (mouseenter)="hover=true" (mouseleave)="hover=false"
+        [style.background-color]="hover ? '#0b2e3d' : '#0e3a4c'"
+        (click)="prAddLine()" type="button">
+        + Add line
+      </button>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <div class="flex justify-between">
+    <button class="px-3 py-2 rounded-xl text-sm font-medium hover:bg-gray-100 border border-transparent"
+      (click)="prGo(-1)" type="button">← Back</button>
+
+    <button class="px-3 py-2 rounded-xl text-sm font-medium text-white"
+      style="background-color: #0e3a4c;"
+      (click)="prGo(1)" type="button">
+      Review →
+    </button>
+  </div>
+</div>
+
+
 
         <!-- Step 2 -->
         <div *ngIf="prStep === 2" class="space-y-4">
@@ -227,7 +341,7 @@
   class="px-3 py-2 rounded-xl text-sm font-medium text-white"
   style="background-color: #0e3a4c;"
   type="button"
-  (click)="notify('Converted to PO/RFQ')"
+  (click)="saveRequest()"
 >
   Convert to PO / RFQ
 </button>
@@ -243,22 +357,99 @@
             <thead class="text-white">
 
                 <tr>
+                  <th class="text-left px-3 py-2 font-medium">Purchase Order Number</th>
                 <th class="text-left px-3 py-2 font-medium">Requester Name</th>
                   <th class="text-left px-3 py-2 font-medium">Department</th>
                   <th class="text-left px-3 py-2 font-medium">Delivery Date</th>
-                  <th class="text-left px-3 py-2 font-medium">Location</th>
-                  <th class="text-left px-3 py-2 font-medium">Quantity</th>
-                  <th class="text-left px-3 py-2 font-medium">Purpose</th>
-                  <th class="text-left px-3 py-2 font-medium">Remarks</th>
-                  <th class="px-3"></th>
+                  <!-- <th class="text-left px-3 py-2 font-medium">Location</th>
+                  <th class="text-left px-3 py-2 font-medium">Quantity</th> -->
+                  <th class="text-left px-3 py-2 font-medium">Description</th>
+                  <!-- <th class="text-left px-3 py-2 font-medium">Remarks</th> -->
+                  <th class="text-left px-3 py-2 font-medium">Action</th>
+                  
                 </tr>
               </thead>
               <tbody>
-                <tr *ngIf="prLines.length === 0">
-                  <td class="px-3 py-6 text-center text-gray-400" [attr.colspan]="7">No lines yet.</td>
-                </tr>
-              
-              </tbody>
+  <tr *ngIf="!purchaseRequests || purchaseRequests.length === 0">
+    <td class="px-3 py-6 text-center text-gray-400" [attr.colspan]="7">No requests found.</td>
+  </tr>
+
+<tr *ngFor="let req of purchaseRequests">
+  <td>
+    <!-- PR Number Button -->
+    <div class="flex items-center space-x-2">
+  <!-- Purchase Order Number -->
+   <button (click)="toggleLines(req)" class="p-1 rounded hover:bg-gray-100" title="View Details">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+    </svg>
+  </button>
+  <span class="text-gray-800 font-medium">{{ req.purchaseRequestNo }}</span>
+
+  <!-- Details Icon -->
+  
+</div>
+
+
+    <!-- Lines Table -->
+    <div *ngIf="req.showLines" class="lines-container">
+      <table class="lines-table">
+        <thead>
+          <tr>
+            <th>Location</th>
+            <th>Qty</th>
+            <th>Remarks</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let line of req.prLines">
+            <td>{{ line.location }}</td>
+            <td>{{ line.qty }}</td>
+            <td>{{ line.remarks }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </td>
+  <td>{{ req.requester }}</td>
+  <td>{{ req.departmentName }}</td>
+  <td>{{ req.deliveryDate | date:'dd-MM-yyyy' }}</td>
+   <td>{{ req.description || '-' }}</td>
+
+  <!-- <td colspan="4">
+    <button (click)="req.showLines = !req.showLines">
+      {{ req.showLines ? 'Hide Lines' : 'Show Lines' }}
+    </button>
+    <div *ngIf="req.showLines">
+      <table>
+        <tr *ngFor="let line of req.prLines">
+          <td>{{ line.location }}</td>
+          <td>{{ line.qty }}</td>
+          <td>{{ line.remarks }}</td>
+        </tr>
+      </table>
+    </div>
+  </td> -->
+  <td>
+  <div class="space-x-2">
+            <i class="fas fa-pen"
+                style="color: #05a743; margin-right: 15px; cursor: pointer;"
+                (click)="editRequest(req.id)">
+            </i>
+            <i class="fas fa-trash"
+                style="color: red; cursor: pointer;"
+                (click)="deleteRequest(req.id)">
+            </i>
+          </div>
+</td>
+</tr>
+
+</tbody>
+
+
             </table>
       </div>
       

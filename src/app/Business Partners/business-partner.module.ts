@@ -1,8 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
-import { SupplierListComponent } from '../Business Partners/supplier/supplier-list/supplier-list.component';
-import { SupplierCreateComponent } from '../Business Partners/supplier/supplier-create/supplier-create.component';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
@@ -15,23 +13,26 @@ import { CalendarModule } from 'primeng/calendar';
 import { ConfirmDialogModule  } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
 import { SupplierProfileComponent } from './supplier-profile/supplier-profile.component';
+import { CustomerListComponent } from './customer/customer-list/customer-list.component';
+import { CustomerCreateComponent } from './customer/customer-create/customer-create.component';
 
 
 const routes: Routes = [
-  { path: '', component: SupplierListComponent },
-  { path: 'create', component: SupplierCreateComponent },
-  { path: 'edit/:id', component: SupplierCreateComponent },  
+  { path: 'customer', component: CustomerListComponent },
+  { path: 'customer/create', component: CustomerCreateComponent },
+  { path: 'customer/edit/:id', component: CustomerCreateComponent },  
   { path: "profile", component:SupplierProfileComponent}
 ];
 
 @NgModule({
   declarations: [
+    CustomerListComponent,
+    CustomerCreateComponent,
     SupplierProfileComponent
   ],
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
-    CommonModule,
          ReactiveFormsModule,
         FormsModule,
         HttpClientModule, 
@@ -43,7 +44,7 @@ const routes: Routes = [
         DropdownModule,
         CalendarModule,
         ConfirmDialogModule,
-        
+        ToastModule
   ]
 })
 export class BusinessPartnerModule { }

@@ -24,7 +24,7 @@ import { SupplierInvoiceCreateComponent } from './supplier-invoice/supplier-invo
 import { DebitNoteCreateComponent } from './debit-note/debit-note-create/debit-note-create.component';
 import { RfqCreateComponent } from './rfq/rfq-create/rfq-create.component';
 import { MobileReceiveCreateComponent } from './mobile-receiving/mobile-receive-create/mobile-receive-create.component';
-import { NgSelectModule } from '@ng-select/ng-select';
+
 
 
 const routes: Routes = [
@@ -67,7 +67,6 @@ const routes: Routes = [
         CalendarModule,
         ConfirmDialogModule,
         ToastModule,
-        NgSelectModule
   ]
 })
 export class PurchasesModule { }

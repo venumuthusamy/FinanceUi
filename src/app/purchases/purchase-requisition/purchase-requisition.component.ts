@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { PurchaseRequisitionService } from './purchase-requisition.service';
 import Swal from 'sweetalert2';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-purchase-requisition',
@@ -38,19 +39,19 @@ departments = [
   { id: 3, name: 'HR' },
   { id: 4, name: 'IT' }
 ];
-itemsList: string[] = [
-  "Laptop",
-  "Monitor",
-  "Keyboard",
-  "Mouse",
-  "Printer"
+itemsList = [
+  { code: 'ITM001', name: 'Laptop' },
+  { code: 'ITM002', name: 'Monitor' },
+  { code: 'ITM003', name: 'Keyboard' },
+  { code: 'ITM004', name: 'Mouse' },
+  { code: 'ITM005', name: 'Printer' }
 ];
 
 dropdownOpen = false;
 searchText: string = '';
 filteredDepartments = [...this.departments];
-
-  constructor(private purchaseService: PurchaseRequisitionService) {}
+public prid:any;
+  constructor(private purchaseService: PurchaseRequisitionService,private router: Router,private route:ActivatedRoute) {}
  gridColsClass(cols: number) {
     return {
       'grid grid-cols-1 gap-3': true,
@@ -65,9 +66,43 @@ filteredDepartments = [...this.departments];
     badgeClass(color: string) {
     return `px-2 py-1 rounded-full text-xs font-medium bg-${color}-100 text-${color}-800`;
   }
-  ngOnInit(): void {
+  ngOnInit() {
+    debugger
     this.loadRequests();
-  }
+  // this.purchaseService.currentRequest.subscribe(req => {
+  //   if (req) {
+  //     // Populate form
+  //     this.prHeader = {
+  //       id: req.id,
+  //       requester: req.requester,
+  //       departmentID: req.departmentID,
+  //       neededBy: req.deliveryDate ? req.deliveryDate.split('T')[0] : null,
+  //       description: req.description,
+  //       multiLoc: req.multiLoc,
+  //       oversea: req.oversea
+  //     };
+  //     this.prLines = [...req.prLines];
+  //   } else {
+  //     this.resetForm(); // new request
+  //   }
+  // });
+  this.filteredDepartments = [...this.departments];
+  // const nav = this.router.getCurrentNavigation();
+  // const state = nav?.extras?.state as { request: any };
+  // if (state?.request) {
+  //   this.editRequest(state.request);
+  // }
+  this.route.paramMap.subscribe((params:any)=>{
+    this.prid=parseInt(params.get('id'));
+    if(this.prid){
+      this.isEditMode = true;
+      this.purchaseService.GetPurchaseById(this.prid).subscribe((data:any)=>{
+       this.editRequest(data);
+      this.prStep = 0;
+      })
+    }
+  })
+}
 
 prAddLine() {
   this.prLines.push({
@@ -125,6 +160,7 @@ prAddLine() {
         });
         this.loadRequests();
         this.resetForm();
+         this.router.navigateByUrl(`/purchases/PRList`)
       },
       error: (err: any) => {
         console.error('Error updating request', err);
@@ -148,6 +184,7 @@ prAddLine() {
         });
         this.loadRequests();
         this.resetForm();
+        this.router.navigateByUrl(`/purchases/PRList`)
       },
       error: (err: any) => {
         console.error('Error saving request', err);
@@ -201,23 +238,44 @@ prAddLine() {
 }
 
 
- editRequest(id: number) {
-  debugger
-  const req = this.purchaseRequests.find((r: any) => r.id === id);
+//  editRequest(id: number) {
+//   debugger
+//   const req = this.purchaseRequests.find((r: any) => r.id === id);
 
-  if (req) {
-    this.prHeader = {
-      id: req.id, // keep id to detect update
-      requester: req.requester,
-      departmentID: req.departmentID,
-      neededBy: req.deliveryDate ? req.deliveryDate.split('T')[0] : null,
-      description: req.description,
-      multiLoc: req.multiLoc,
-      oversea: req.oversea,
-    };
+//   if (req) {
+//     this.prHeader = {
+//       id: req.id, // keep id to detect update
+//       requester: req.requester,
+//       departmentID: req.departmentID,
+//       neededBy: req.deliveryDate ? req.deliveryDate.split('T')[0] : null,
+//       description: req.description,
+//       multiLoc: req.multiLoc,
+//       oversea: req.oversea,
+//     };
 
-    this.prLines = [...req.prLines]; // load existing lines
-  }
+//     this.prLines = [...req.prLines]; // load existing lines
+//   }
+// }
+
+editRequest(res: any) {
+  const data = res.data;
+
+  this.prHeader = {
+    id: data.id,
+    requester: data.requester,
+    departmentID: data.departmentID,
+    neededBy: data.deliveryDate ? data.deliveryDate.split('T')[0] : null,
+    description: data.description,
+    multiLoc: data.multiLoc,
+    oversea: data.oversea,
+    purchaseRequestNo: data.purchaseRequestNo
+  };
+
+  // Set department name for UI
+  this.searchText = this.departments.find(d => d.id === data.departmentID)?.name || '';
+
+  // Parse prLines
+  this.prLines = data.prLines ? JSON.parse(data.prLines) : [];
 }
 
 
@@ -285,26 +343,31 @@ selectDepartment(dept: any) {
   this.dropdownOpen = false;         // close dropdown
 }
 
-onItemFocus(index: number) {
-  this.prLines[index].filteredItems = [...this.itemsList]; // copy full list
-  this.prLines[index].dropdownOpen = true;
+onItemFocus(i: number) {
+  this.prLines[i].dropdownOpen = true;
+  this.prLines[i].filteredItems = [...this.itemsList]; // show all
 }
-filterItems(index: number) {
-  const search = this.prLines[index].itemSearch?.toLowerCase() || '';
-  this.prLines[index].filteredItems = this.itemsList.filter(item =>
-    item.toLowerCase().includes(search)
+
+filterItems(i: number) {
+  const query = this.prLines[i].itemSearch.toLowerCase();
+  this.prLines[i].filteredItems = this.itemsList.filter(
+    item =>
+      item.name.toLowerCase().includes(query) ||
+      item.code.toLowerCase().includes(query)
   );
+}
+
+selectItem(i: number, item: any) {
+  this.prLines[i].itemSearch = item.name;
+  this.prLines[i].itemCode = item.code;
+  this.prLines[i].itemName = item.name;
+  this.prLines[i].dropdownOpen = false;
 }
 onLocationFocus(index: number) {
   this.prLines[index].filteredLocations = [...this.locationList]; // copy full list
   this.prLines[index].locationDropdownOpen = true;
 }
-selectItem(index: number, item: string) {
-  this.prLines[index].itemSearch = item;
-  this.prLines[index].item = item;
-  this.prLines[index].filteredItems = [];
-  this.prLines[index].dropdownOpen = false;
-}
+
 
 // Filter locations based on search input
 filterLocations(index: number) {

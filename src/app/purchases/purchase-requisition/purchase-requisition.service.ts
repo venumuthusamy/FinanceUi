@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { PurchaseAPIUrls } from 'src/app/Urls/PurchaseAPIUrls';
 
 import { environment } from 'src/environments/environment';
@@ -10,6 +10,8 @@ import { environment } from 'src/environments/environment';
 })
 export class PurchaseRequisitionService {
 private url = environment.apiUrl
+ private requestSource = new BehaviorSubject<any>(null);
+  currentRequest = this.requestSource.asObservable();
   constructor(private http: HttpClient) { }
    getAll(): Observable<any> {
     return this.http.get<any[]>(this.url + PurchaseAPIUrls.GetAllPurchaseRequests);
@@ -28,5 +30,11 @@ update(id: number, data: any): Observable<any> {
   // DELETE
   delete(id: number): Observable<any> {
     return this.http.delete(`${this.url + PurchaseAPIUrls.DeletePurchaseRequest}${id}`);
+  }
+  GetPurchaseById(id: number): Observable<any> {
+    return this.http.get(`${this.url + PurchaseAPIUrls.GetPurchaseRequestById}${id}`);
+  }
+  setRequest(request: any) {
+    this.requestSource.next(request);
   }
 }

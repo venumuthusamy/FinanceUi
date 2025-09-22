@@ -44,7 +44,8 @@ export const NAVIGATION = [
     name: 'Purchasing',icon:'fas fa-shopping-cart',
     children: [
       // { name: 'Purchases', route: '/purchases/list',icon:'fas fa-shopping-cart ' },
-      { name: 'PR', route: '/purchases/requisition',icon:'fa fa-file-alt ' },
+      // { name: 'PR', route: '/purchases/requisition',icon:'fa fa-file-alt ' },
+      { name: 'PR', route: '/purchases/PRList',icon:'fa fa-file-alt ' },
       { name: 'RFQ', route: '/purchases/rfq',icon:'fa fa-file-signature' },
       { name: 'PO', route: '/purchases/order',icon:'fa fa-file-invoice-dollar' },
       { name: 'Mobile Receiving', route: '/purchases/mobile-receive',icon:'fa fa-mobile-alt' },

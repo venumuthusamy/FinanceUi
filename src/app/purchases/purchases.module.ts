@@ -24,7 +24,8 @@ import { SupplierInvoiceCreateComponent } from './supplier-invoice/supplier-invo
 import { DebitNoteCreateComponent } from './debit-note/debit-note-create/debit-note-create.component';
 import { RfqCreateComponent } from './rfq/rfq-create/rfq-create.component';
 import { MobileReceiveCreateComponent } from './mobile-receiving/mobile-receive-create/mobile-receive-create.component';
-
+import { NgSelectModule } from '@ng-select/ng-select';
+import { PurchseRequisitionListComponent } from './purchase-requisition/purchse-requisition-list/purchse-requisition-list.component';
 
 
 const routes: Routes = [
@@ -32,12 +33,14 @@ const routes: Routes = [
   { path: 'create', component: PurchasesCreateComponent },
   { path: 'edit/:id', component: PurchasesCreateComponent },
   { path: 'requisition', component: PurchaseRequisitionComponent },
+  { path: 'requisition/edit/:id', component: PurchaseRequisitionComponent },
    { path: 'order', component: PurchaseOrderComponent },
    { path: 'goodreceipt', component: PurchaseGoodreceiptComponent },
   { path: 'supplier-invoice', component: SupplierInvoiceCreateComponent },
   { path: 'debit-note', component: DebitNoteCreateComponent },
   { path: 'rfq', component: RfqCreateComponent },
   { path: 'mobile-receive', component: MobileReceiveCreateComponent },
+  { path: 'PRList', component: PurchseRequisitionListComponent },
 ];
 @NgModule({
   declarations: [
@@ -50,7 +53,8 @@ const routes: Routes = [
          SupplierInvoiceCreateComponent,
          DebitNoteCreateComponent,
          RfqCreateComponent,
-         MobileReceiveCreateComponent
+         MobileReceiveCreateComponent,
+         PurchseRequisitionListComponent
   ],
   imports: [
     CommonModule,

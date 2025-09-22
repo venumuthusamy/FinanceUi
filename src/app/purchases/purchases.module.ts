@@ -71,7 +71,6 @@ const routes: Routes = [
         CalendarModule,
         ConfirmDialogModule,
         ToastModule,
-        NgSelectModule
   ]
 })
 export class PurchasesModule { }

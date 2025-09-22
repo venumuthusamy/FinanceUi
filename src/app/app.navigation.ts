@@ -14,6 +14,9 @@ export const NAVIGATION = [
       { name: 'Warehouses', route: '/masters/warehouses', icon: 'far fa-circle' },
       { name: 'Deductions', route: '/masters/deductions', icon: 'far fa-circle' },
       { name: 'Incomes', route: '/masters/incomes' , icon: 'far fa-circle'},
+      { name: 'Department', route: '/masters/department' , icon: 'far fa-circle'},
+      { name: 'Uom', route: '/masters/uom' , icon: 'far fa-circle'},
+      { name: 'Items', route: '/masters/item' , icon: 'far fa-circle'},
     ]
   },
   { 

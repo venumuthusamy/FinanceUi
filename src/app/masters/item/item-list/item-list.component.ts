@@ -4,6 +4,7 @@ import { FormGroup, FormBuilder } from '@angular/forms';
 import { ToastService } from 'src/app/toaster/toaster/toaster.service';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ItemService } from '../item-service';
+import { ChartOfAccountService } from 'src/app/financial/coa/coa-service';
 
 @Component({
   selector: 'app-item-list',
@@ -18,22 +19,61 @@ export class ItemListComponent {
   itemsPerPage: number = 10; // Items per page
   searchItemName: string = '';
   filteredList: any;
+  parentHeadList:any
+  accountHeads: any;
 
   constructor(private formBuilder : FormBuilder,
     private router : Router,
     private itemService : ItemService,
     private toast: ToastService,
-    private confirmationService: ConfirmationService
+    private confirmationService: ConfirmationService,
+    private chartOfAccountService : ChartOfAccountService,
   ){
 
   }
 
   ngOnInit(){
 
-    this.headervalue = 'Item';
-    this.itemService.getItem().subscribe((data :any) => {
+    this.loadAccountHeads();
+    this.headervalue = 'Item'; 
+  }
+
+  loadAccountHeads() {
+  this.chartOfAccountService.getChartOfAccount().subscribe((data) => {
+    this.accountHeads = data;
+    this.parentHeadList = this.accountHeads.map((head:any)=> ({
+      value: head.id,
+      label: this.buildFullPath(head)
+    }));
+
+
+
+      this.itemService.getItem().subscribe((data :any) => {
             this.itemsList = data
+            this.itemsList = this.itemsList.map((item: any) => {
+            const matched = this.parentHeadList.find(
+              (head: any) => head.value == item.budgetLineId
+            );
+
+            return {
+              ...item,
+              label: matched ? matched.label : null   // add the label if found
+            };
+          });
+          console.log(this.itemsList)
     });  
+    
+  });
+  }
+
+  buildFullPath(item:any): string {
+    let path = item.headName;
+    let current = this.accountHeads.find((x:any) => x.id === item.parentHead);
+    while (current) {
+      path = `${current.headName} >> ${path}`;
+      current = this.accountHeads.find((x:any) => x.id === current.parentHead);
+    }
+    return path;
   }
 
   createItem(){
@@ -55,7 +95,8 @@ export class ItemListComponent {
       this.filteredList = data
         if (this.searchItemName) {
         this.filteredList = this.filteredList?.filter((items: any) =>
-          (!this.searchItemName || items.name.toLowerCase().includes(this.searchItemName.toLowerCase()))
+          (!this.searchItemName || items.itemCode.toLowerCase().includes(this.searchItemName.toLowerCase())
+          || items.itemName.toLowerCase().includes(this.searchItemName.toLowerCase()))
 
         );
         }

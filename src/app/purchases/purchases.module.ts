@@ -36,7 +36,6 @@ const routes: Routes = [
   { path: 'edit/:id', component: PurchasesCreateComponent },
   { path: 'requisition', component: PurchaseRequisitionComponent },
   { path: 'requisition/edit/:id', component: PurchaseRequisitionComponent },
-   { path: 'order', component: PurchaseOrderComponent },
    { path: 'goodreceipt', component: PurchaseGoodreceiptlistComponent },
    { path: 'addreceipt', component: PurchaseGoodreceiptComponent },
   { path: 'supplier-invoice', component: SupplierInvoiceCreateComponent },

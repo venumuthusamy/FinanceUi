@@ -91,6 +91,9 @@ const routes: Routes = [
       { path: 'item/edit/:id',component: ItemCreateComponent },
       { path: 'incoterms',component: IncotermsComponent },
       { path: 'flag-issues',component: FlagIssuesComponent },
+      { path: 'approvalLevel',component: ApprovalLevelComponent },
+      { path: 'paymentTerms',component: PaymentTermsComponent },
+      { path: 'currency',component: CurrencyComponent },
     ]
   }
 ];

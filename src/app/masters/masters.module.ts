@@ -38,6 +38,13 @@ import { DepartmentComponent } from './department/department/department.componen
 import { UomComponent } from './uom/uom/uom.component';
 import { ItemListComponent } from './item/item-list/item-list.component';
 import { ItemCreateComponent } from './item/item-create/item-create.component';
+import { IncotermsComponent } from './incoterms/incoterms.component';
+import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { FlagIssuesComponent } from './flag-issues/flag-issues.component';
+import { ApprovalLevelComponent } from './approval-level/approval-level.component';
+import { ConfirmationService } from 'primeng/api';
+import { PaymentTermsComponent } from './paymentterms/paymentterms.component';
+import { CurrencyComponent } from './currency/currency.component';
 
 const routes: Routes = [
   {
@@ -82,6 +89,8 @@ const routes: Routes = [
       { path: 'item',component: ItemListComponent },
       { path: 'item/create',component: ItemCreateComponent },
       { path: 'item/edit/:id',component: ItemCreateComponent },
+      { path: 'incoterms',component: IncotermsComponent },
+      { path: 'flag-issues',component: FlagIssuesComponent },
     ]
   }
 ];
@@ -114,7 +123,12 @@ const routes: Routes = [
     DepartmentComponent,
     UomComponent,
     ItemListComponent,
-    ItemCreateComponent
+    ItemCreateComponent,
+    IncotermsComponent,
+    FlagIssuesComponent,
+     ApprovalLevelComponent,
+    PaymentTermsComponent,
+    CurrencyComponent
   ],
   imports: [
     CommonModule,
@@ -130,7 +144,8 @@ const routes: Routes = [
     DropdownModule,
     CalendarModule,
     ConfirmDialogModule,
-    ToastModule
+    ToastModule,
+    NgxDatatableModule
   ]
 })
 export class MastersModule { }

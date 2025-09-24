@@ -5,149 +5,350 @@
       <h2 class="text-lg font-semibold text-gray-800">Goods Receipt (GRN)</h2>
       <button
         class="px-3 py-2 rounded-xl text-sm font-medium text-white"
+        *ngIf="!isPostInventoryDisabled"
         type="button"
-        (click)="notify('Posted to Inventory (demo)')"
+        (click)="saveGRN()"
         (mouseenter)="hover = true"
         (mouseleave)="hover = false"
-        [style.backgroundColor]="hover ? '#092f3f' : '#0e3a4c'"
-      >
+        [style.backgroundColor]="hover ? '#092f3f' : '#0e3a4c'">
         Post Inventory
       </button>
     </div>
 
-    <div [ngClass]="gridColsClass(4)">
+    <!-- Header Inputs -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+      <!-- From PO -->
       <div>
         <label class="text-xs font-medium text-gray-600">From PO</label>
-        <input class="w-full rounded-xl border px-3 py-2 text-sm" style="border-color: #0e3a4c" />
+        <select
+          [(ngModel)]="selectedPO"
+          class="w-full rounded-xl border px-3 py-2 text-sm"
+          style="border-color: #0e3a4c">
+          <option [ngValue]="null" disabled selected>Select PO</option>
+          <option *ngFor="let po of poOptions" [ngValue]="po.id">
+            PO-{{ po.id }}
+          </option>
+        </select>
       </div>
+
+      <!-- Receipt Date -->
       <div>
         <label class="text-xs font-medium text-gray-600">Receipt Date</label>
-        <input type="date" class="w-full rounded-xl border px-3 py-2 text-sm" style="border-color: #0e3a4c" />
+        <input
+          type="date"
+          [(ngModel)]="receiptDate"
+          class="w-full rounded-xl border px-3 py-2 text-sm"
+          style="border-color: #0e3a4c" />
       </div>
+
+      <!-- Over-receipt Tolerance -->
       <div>
-        <label class="text-xs font-medium text-gray-600">Over-receipt Tolerance (%)</label>
-        <input type="number" class="w-full rounded-xl border px-3 py-2 text-sm" style="border-color: #0e3a4c" placeholder="5" />
+        <label class="text-xs font-medium text-gray-600"
+          >Over-receipt Tolerance (%)</label
+        >
+        <input
+          type="number"
+          [(ngModel)]="overReceiptTolerance"
+          class="w-full rounded-xl border px-3 py-2 text-sm"
+          style="border-color: #0e3a4c"
+          min="0"
+          max="5"
+          placeholder="5" />
       </div>
+
+      <!-- Flag Issues Button -->
       <div class="flex items-end">
         <button
           class="px-3 py-2 rounded-xl text-sm font-medium border border-emerald-600 text-emerald-700 hover:bg-emerald-50"
-          (click)="notify('Issues flagged to Requestor')"
-          type="button"
-        >
+          (click)="openFlagModal()"
+          type="button">
           Flag Issues
         </button>
       </div>
     </div>
 
-    <!-- GRN Line Items -->
+    <!-- GRN Line Items Table -->
     <div class="overflow-auto border border-gray-200 rounded-xl mt-4">
       <table class="min-w-full text-sm">
         <thead class="bg-gray-50 text-gray-600">
           <tr>
-            <th class="text-left px-3 py-2 font-medium">PO #</th>
-            <th class="text-left px-3 py-2 font-medium">Item</th>
-            <th class="text-left px-3 py-2 font-medium">Batch/Serial</th>
+            <th class="text-left px-3 py-2 font-medium">Item / Product</th>
+            <th class="text-left px-3 py-2 font-medium">Supplier Names</th>
+            <th class="text-left px-3 py-2 font-medium">Frozen/Chilled/Dry</th>
+            <th class="text-left px-3 py-2 font-medium">Surface Temp</th>
             <th class="text-left px-3 py-2 font-medium">Expiry</th>
-            <th class="text-left px-3 py-2 font-medium">Qty Received</th>
-            <th class="text-left px-3 py-2 font-medium">QC</th>
-            <th class="text-left px-3 py-2 font-medium">Temperature (°C)</th>
-            <th class="text-left px-3 py-2 font-medium">Location</th>
-            <th class="text-left px-3 py-2 font-medium">Photos</th>
-            <th class="text-left px-3 py-2 font-medium">Inspectors</th>
+            <th class="text-left px-3 py-2 font-medium">No of pest / Sign</th>
+            <th class="text-left px-3 py-2 font-medium">Dry / Spillage</th>
+            <th class="text-left px-3 py-2 font-medium">Odor</th>
+            <th class="text-left px-3 py-2 font-medium">Plate Number</th>
+            <th class="text-left px-3 py-2 font-medium">Defective Labels</th>
+            <th class="text-left px-3 py-2 font-medium">Damaged Package</th>
+            <th class="text-left px-3 py-2 font-medium">Time</th>
+            <th class="text-left px-3 py-2 font-medium">Initial</th>
             <th class="text-left px-3 py-2 font-medium">Remarks</th>
-            <th class="px-3"></th>
           </tr>
         </thead>
         <tbody>
-          <tr *ngIf="grnRows.length === 0">
-            <td [attr.colspan]="12" class="px-3 py-6 text-center text-gray-400">No lines yet.</td>
-          </tr>
-
-          <tr *ngFor="let r of grnRows; let i = index; trackBy: trackByIndex" class="border-t">
-            <td class="px-3 py-2"><input class="w-full rounded-xl border px-3 py-2 text-sm" [(ngModel)]="r['po']" /></td>
-            <td class="px-3 py-2"><input class="w-full rounded-xl border px-3 py-2 text-sm" [(ngModel)]="r['item']" /></td>
-            <td class="px-3 py-2"><input class="w-full rounded-xl border px-3 py-2 text-sm" [(ngModel)]="r['batch']" /></td>
-            <td class="px-3 py-2"><input type="date" class="w-full rounded-xl border px-3 py-2 text-sm" [(ngModel)]="r['expiry']" /></td>
-            <td class="px-3 py-2"><input type="number" class="w-full rounded-xl border px-3 py-2 text-sm" [(ngModel)]="r['qty']" /></td>
-
-            <!-- Quality Check -->
+          <tr
+            *ngFor="let r of grnRows; let i = index; trackBy: trackByIndex"
+            class="border-t">
+            <!-- Item -->
             <td class="px-3 py-2">
-              <select class="w-full rounded-xl border px-3 py-2 text-sm bg-white" [(ngModel)]="r['qc']">
-                <option>Pass</option>
-                <option>Not Pass</option>
-                <option>Verify</option>
+              <select
+                [(ngModel)]="r.item"
+                class="w-full p-2 border rounded-xl outline-none"
+                required>
+                <option [ngValue]="null" disabled hidden>Select</option>
+                <option *ngFor="let item of items" [ngValue]="item.id">
+                  {{ item.name }}
+                </option>
               </select>
             </td>
 
-            <!-- Temperature -->
+            <!-- Supplier -->
             <td class="px-3 py-2">
-              <input type="number" class="w-full rounded-xl border px-3 py-2 text-sm" [(ngModel)]="r['temperature']" placeholder="°C" />
+              <select
+                [(ngModel)]="r.supplier"
+                class="w-full p-2 border rounded-xl outline-none"
+                required>
+                <option [ngValue]="null" disabled hidden>Select</option>
+                <option *ngFor="let s of suppliers" [ngValue]="s.id">
+                  {{ s.name }}
+                </option>
+              </select>
             </td>
 
-            <!-- Storage Location -->
-            <td class="px-3 py-2"><input class="w-full rounded-xl border px-3 py-2 text-sm" [(ngModel)]="r['location']" placeholder="Warehouse/Shelf" /></td>
-
-            <!-- Photos -->
+            <!-- Storage Type -->
             <td class="px-3 py-2">
-              <input type="file" multiple (change)="uploadPhoto($event, i)" />
-              <div *ngIf="r['photos']?.length">
-                <span *ngFor="let p of r['photos']; let pi=index" class="block text-xs text-gray-500">{{ p.name }}</span>
+              <select
+                class="w-full rounded-xl border px-3 py-2 text-sm bg-white"
+                [(ngModel)]="r.storageType">
+                <option value="">Select</option>
+                <option value="Frozen">Frozen</option>
+                <option value="Chilled">Chilled</option>
+                <option value="Dry">Dry</option>
+              </select>
+            </td>
+
+            <td class="px-3 py-2">
+              <input
+                type="text"
+                class="w-full rounded-xl border px-3 py-2 text-sm"
+                [(ngModel)]="r.surfaceTemp"
+                placeholder="°C" />
+            </td>
+
+            <td class="px-3 py-2">
+              <input
+                type="date"
+                class="w-full rounded-xl border px-3 py-2 text-sm"
+                [(ngModel)]="r.expiry" />
+            </td>
+
+            <td class="px-3 py-2">
+              <select
+                class="w-full rounded-xl border px-3 py-2 text-sm bg-white"
+                [(ngModel)]="r.pestSign">
+                <option value="">Select</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+            </td>
+
+            <td class="px-3 py-2">
+              <select
+                class="w-full rounded-xl border px-3 py-2 text-sm bg-white"
+                [(ngModel)]="r.drySpillage">
+                <option value="">Select</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+            </td>
+
+            <td class="px-3 py-2">
+              <select
+                class="w-24 rounded-xl border px-2 py-1 text-sm bg-white"
+                [(ngModel)]="r.odor">
+                <option value="">Select</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+            </td>
+
+            <td class="px-3 py-2">
+              <input
+                class="w-full rounded-xl border px-3 py-2 text-sm"
+                [(ngModel)]="r.plateNumber" />
+            </td>
+
+            <td class="px-3 py-2">
+              <select
+                class="w-full rounded-xl border px-3 py-2 text-sm bg-white"
+                [(ngModel)]="r.defectLabels">
+                <option value="">Select</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+            </td>
+
+            <td class="px-3 py-2">
+              <select
+                class="w-full rounded-xl border px-3 py-2 text-sm bg-white"
+                [(ngModel)]="r.damagedPackage">
+                <option value="">Select</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+            </td>
+
+            <td class="px-3 py-2">
+              <input
+                type="time"
+                class="w-full rounded-xl border px-3 py-2 text-sm"
+                [(ngModel)]="r.time" />
+            </td>
+
+            <!-- Initial -->
+            <td class="px-3 py-2">
+              <div (click)="openInitialModal(r)" class="cursor-pointer">
+                <img
+                  *ngIf="r.initial"
+                  [src]="r.initial"
+                  alt="Initial"
+                  class="h-12 w-12 object-contain rounded" />
+                <span *ngIf="!r.initial" class="text-gray-400">Initial</span>
               </div>
             </td>
 
-            <!-- Multi-inspector approval -->
             <td class="px-3 py-2">
-              <input class="w-full rounded-xl border px-3 py-2 text-sm" [(ngModel)]="r['inspectors']" placeholder="Inspector1, Inspector2" />
-            </td>
-
-            <!-- Remarks -->
-            <td class="px-3 py-2"><input class="w-full rounded-xl border px-3 py-2 text-sm" [(ngModel)]="r['remarks']" /></td>
-
-            <td class="px-3 py-2 text-right">
-              <button class="px-3 py-2 rounded-xl text-sm font-medium hover:bg-gray-100 border border-transparent" (click)="grnRemoveRow(i)" type="button">Remove</button>
+              <input
+                class="w-full rounded-xl border px-3 py-2 text-sm"
+                [(ngModel)]="r.remarks" />
             </td>
           </tr>
         </tbody>
       </table>
+    </div>
+  </div>
+</div>
 
-      <div class="p-2 border-t bg-gray-50">
-        <button
-          class="px-3 py-2 rounded-xl text-sm font-medium text-white"
-          type="button"
-          (click)="grnAddRow()"
-          (mouseenter)="hover = true"
-          (mouseleave)="hover = false"
-          [style.backgroundColor]="hover ? '#092f3f' : '#0e3a4c'"
+<!-- ✅ Flag Issues Modal -->
+<div
+  *ngIf="isFlagModalOpen"
+  class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
+  <div class="bg-white rounded-xl shadow-lg w-96 p-5 relative">
+    <button
+      class="absolute top-2 right-2 text-gray-500 hover:text-gray-800"
+      (click)="closeFlagModal()">
+      ✕
+    </button>
+    <h2 class="text-lg font-semibold mb-4">Select a Flag Issue</h2>
+
+    <!-- Dropdown from API -->
+    <select
+      [(ngModel)]="selectedReason"
+      class="w-full border rounded-lg p-2 mb-4">
+      <option value="" disabled selected>Select reason</option>
+      <option
+        *ngFor="let issue of flagIssuesList"
+        [value]="issue.id">
+        {{ issue.flagIssuesNames }}
+      </option>
+    </select>
+
+    <div class="flex justify-end gap-2">
+      <button
+        class="px-4 py-2 bg-gray-200 rounded-lg"
+        type="button"
+        (click)="closeFlagModal()">
+        Cancel
+      </button>
+      <button
+        class="px-4 py-2 bg-emerald-600 text-white rounded-lg"
+        [disabled]="isPostInventoryDisabled"
+        type="button"
+        (click)="submitFlag()">
+        Submit
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ✅ Initial Modal (Image / Signature Tabs) -->
+<div
+  *ngIf="showInitialModal"
+  class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+  <div class="bg-white rounded-2xl w-11/12 md:w-3/4 max-w-4xl p-5 relative">
+    <button
+      class="absolute top-3 right-3 text-gray-500 hover:text-gray-800"
+      (click)="showInitialModal = false">
+      ✕
+    </button>
+
+    <!-- Tabs -->
+    <div class="flex justify-center border-b mb-3 gap-4">
+      <button
+        class="px-4 py-2 -mb-px border-b-2 font-medium"
+        [class.border-blue-600]="activeTab === 'image'"
+        [class.text-blue-600]="activeTab === 'image'"
+        [class.border-transparent]="activeTab !== 'image'"
+        (click)="switchTab('image')">
+        Image
+      </button>
+      <button
+        class="px-4 py-2 -mb-px border-b-2 font-medium"
+        [class.border-blue-600]="activeTab === 'signature'"
+        [class.text-blue-600]="activeTab === 'signature'"
+        [class.border-transparent]="activeTab !== 'signature'"
+        (click)="switchTab('signature')">
+        Signature
+      </button>
+    </div>
+
+    <!-- Image Tab -->
+    <div
+      *ngIf="activeTab === 'image'"
+      class="flex flex-col items-center justify-center gap-3">
+      <div
+        class="border rounded-xl p-2 w-full md:w-1/2 flex items-center justify-center">
+        <img
+          *ngIf="uploadedImage"
+          [src]="uploadedImage"
+          alt="Uploaded"
+          class="max-h-64 object-contain" />
+        <span *ngIf="!uploadedImage" class="text-gray-400"
+          >No image selected</span
         >
-          + Add line
+      </div>
+      <input type="file" (change)="onImageSelected($event)" class="mt-2" />
+      <button
+        class="px-3 py-1 rounded-xl bg-green-600 text-white text-sm mt-2"
+        (click)="saveImage()">
+        Save Image
+      </button>
+    </div>
+
+    <!-- Signature Tab -->
+    <div
+      *ngIf="activeTab === 'signature'"
+      class="flex flex-col items-center gap-3">
+      <canvas
+        #signaturePad
+        class="border rounded-xl w-full md:w-1/2"
+        style="height: 256px; touch-action: none"></canvas>
+
+      <div class="flex gap-2">
+        <button
+          class="px-3 py-1 rounded-xl bg-red-500 text-white text-sm"
+          (click)="clearSignature()">
+          Clear
+        </button>
+        <button
+          class="px-3 py-1 rounded-xl bg-green-600 text-white text-sm"
+          (click)="saveSignature()">
+          Save Signature
         </button>
       </div>
     </div>
   </div>
 </div>
- <div class="bg-white rounded-2xl shadow p-3 border border-gray-100">
-        <h2 class="text-lg font-semibold text-gray-800 mb-2">Purchase GoodReceipt List</h2>
-       
-          <table class="min-w-full text-sm">
-            <thead class="text-white">
-              <tr>
-                <th class="text-left px-3 py-2 font-medium">PO</th>
-                  <th class="text-left px-3 py-2 font-medium">Item</th>
-                  <th class="text-left px-3 py-2 font-medium">Receipt Date</th>
-                 <th class="text-left px-3 py-2 font-medium">Batch/Serial</th>
-                 <th class="text-left px-3 py-2 font-medium">Expiry</th>
-                 <th class="text-left px-3 py-2 font-medium">Qty Received</th>
-                 <th class="text-left px-3 py-2 font-medium">Remarks</th>
-                  <th class="px-3"></th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr >
-                  <td class="px-3 py-6 text-center text-gray-400" [attr.colspan]="7">No lines yet.</td>
-                </tr>
-              
-              </tbody>
-            </table>
-            
-      </div>
-  

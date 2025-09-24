@@ -12,6 +12,7 @@ import { RouterModule } from '@angular/router';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
+import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 
 
 
@@ -32,7 +33,8 @@ import { OverlayPanelModule } from 'primeng/overlaypanel';
     BrowserAnimationsModule,
     DialogModule,
     ButtonModule,
-    OverlayPanelModule
+    OverlayPanelModule,
+    NgxDatatableModule
   ],
   providers: [],
   bootstrap: [AppComponent]

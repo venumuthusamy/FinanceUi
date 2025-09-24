@@ -1,6 +1,28 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
+import { PurchaseGoodreceiptServiceService } from './purchase-goodreceipt-service.service';
+import Swal from 'sweetalert2';
+import SignaturePad from 'signature_pad';
+import { FlagIssuesService } from 'src/app/masters/flag-issues/flag-issues.service';
 
-type LineRow = { [k: string]: any };
+type LineRow = {
+   item: string | null;
+  supplier: string | null;
+  storageType: string;    // Frozen / Chilled / Dry
+  surfaceTemp: string;
+  expiry: string;         // Date string
+  pestSign: string;       // Yes / No
+  drySpillage: string;
+  odor: string;
+  plateNumber: string;
+  defectLabels: string;
+  damagedPackage: string;
+  time: string;
+  initial: string;
+  remarks: string;
+  createdAt: Date;
+  photos: File[];
+
+};
 
 @Component({
   selector: 'app-purchase-goodreceipt',
@@ -9,91 +31,255 @@ type LineRow = { [k: string]: any };
 })
 export class PurchaseGoodreceiptComponent {
   hover = false;
-  grnRows: LineRow[] = [];
+ showInitialModal = false;
+  selectedRow: any;
+  activeTab: 'image' | 'signature' = 'image';
+  uploadedImage: string | ArrayBuffer | null = null;
+  isFlagModalOpen = false;
+  selectedReason: string = '';
+isPostInventoryDisabled = false;
+  @ViewChild('signaturePad') signaturePadElement: any;
+  signaturePad!: SignaturePad;
+  selectedPO: number | null = null;
+  receiptDate: string = '';
+  overReceiptTolerance: number = 0;
+    grnRows: LineRow[] = [
+    {
+      item: null,
+      supplier: null,
+      storageType: '',
+      surfaceTemp: '',
+      expiry: '',
+      pestSign: '',
+      drySpillage: '',
+      odor: '',
+      plateNumber: '',
+      defectLabels: '',
+      damagedPackage: '',
+      time: '',
+      initial: '',
+      remarks: '',
+      createdAt: new Date(),
+      photos: []
+    }
+  ];
+
+items = [
+  { id: 1, name: 'Item A' },
+  { id: 2, name: 'Item B' }
+];
+  poOptions = [
+    { id: 1001 },
+    { id: 1002 },
+    { id: 1003 },
+    { id: 1004 }
+  ];
+suppliers = [
+  { id: 1, name: 'Supplier A' },
+  { id: 2, name: 'Supplier B' }
+];
+  purchaseRequests: any;
+  flagIssuesList: any;
+constructor(private purchaseGoodReceiptService: PurchaseGoodreceiptServiceService,
+  private flagIssuesService: FlagIssuesService
+){
+
+}
 
   ngOnInit() {
-  setInterval(() => {
-    this.checkPendingInspections();
-  }, 60 * 60 * 1000); // every 1 hour
+    this.loadFlagIssues();
+  }
+
+  // Add a new line with all fields initialized
+
+saveGRN() {
+  if (!this.selectedPO) {
+    alert('Please select a PO.');
+    return;
+  }
+
+  const grnToSave = {
+    poid: this.selectedPO, // selected PO ID
+    receptionDate: this.receiptDate ? new Date(this.receiptDate) : new Date(),
+    overReceiptTolerance: this.overReceiptTolerance,
+    grnJson: JSON.stringify(this.grnRows),
+    flagIssuesID: 0
+  };
+
+  this.purchaseGoodReceiptService.create(grnToSave).subscribe({
+  next: (res) => {
+    Swal.fire({
+      icon: 'success',
+      title: 'Created',
+      text: res.message || 'Your purchase GoodReceipts has been created.',
+      confirmButtonColor: '#0e3a4c'
+    });
+    this.resetForm()
+  },
+  error: (err) => console.error('Save failed', err)
+});
+
 }
 
 
-  // Add a new line
-  grnAddRow() {
-    const newRow: LineRow = {
-      po: '',
-      item: '',
-      batch: '',
-      expiry: '',
-      qty: 0,
-      qc: 'Verify',
-      temperature: null,
-      location: '',
-      photos: [],
-      inspectors: '',
-      remarks: '',
-      createdAt: new Date() // for reminders
-    };
-    this.grnRows = [...this.grnRows, newRow];
+  openFlagModal() {
+    this.isFlagModalOpen = true;
   }
 
-  // Remove a line
+  closeFlagModal() {
+    this.isFlagModalOpen = false;
+  }
+
+
+ loadFlagIssues() {
+  this.flagIssuesService.getFlagIssues().subscribe((data: any[]) => {
+    // Only keep active issues
+    this.flagIssuesList = data.filter(issue => issue.isActive === true);
+  });
+}
+ 
+
+
+ submitFlag() {
+  if (!this.selectedReason) {
+    alert('Please select a reason.');
+    return;
+  }
+
+  const grnToSave = {
+    poid: this.selectedPO, // selected PO ID
+    receptionDate: this.receiptDate ? new Date(this.receiptDate) : new Date(),
+    overReceiptTolerance: this.overReceiptTolerance,
+    grnJson: "",                // ✅ send as empty
+    flagIssuesID: this.selectedReason
+  };
+
+  this.purchaseGoodReceiptService.create(grnToSave).subscribe({
+    next: (res) => {
+      Swal.fire({
+        icon: 'success',
+        title: 'Created',
+        text: res.message || 'Flag Issue has been created.',
+        confirmButtonColor: '#0e3a4c'
+      });
+      this.resetForm();
+    },
+    error: (err) => console.error('Save failed', err)
+  });
+
+  this.closeFlagModal();
+}
+
+ openInitialModal(row: any) {
+    this.selectedRow = row;
+    this.activeTab = 'image';
+    this.uploadedImage = row.imageUrl || null;
+    this.showInitialModal = true;
+
+    setTimeout(() => {
+      if (this.signaturePadElement) {
+        this.signaturePad = new SignaturePad(this.signaturePadElement.nativeElement);
+      }
+    });
+  }
+
+  
+  switchTab(tab: 'image' | 'signature') {
+    this.activeTab = tab;
+    if (tab === 'signature') {
+      setTimeout(() => {
+        if (this.signaturePadElement) {
+          this.signaturePad = new SignaturePad(this.signaturePadElement.nativeElement);
+        }
+      });
+    }
+  }
+
+  
+  onImageSelected(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+    reader.onload = e => {
+  this.uploadedImage = e.target?.result ?? null; // fallback to null if undefined
+};
+
+      reader.readAsDataURL(file);
+    }
+  }
+
+  clearSignature() {
+    if (this.signaturePad) this.signaturePad.clear();
+  }
+
+saveSignature() {
+  if (this.signaturePad && !this.signaturePad.isEmpty()) {
+    const dataURL = this.signaturePad.toDataURL();
+    // Store signature in grnRows[0].initial
+    this.grnRows[0].initial = dataURL;
+    this.showInitialModal = false;
+  } else {
+    alert('Please provide a signature first.');
+  }
+}
+
+saveImage() {
+  if (this.uploadedImage) {
+    if (typeof this.uploadedImage === 'string') {
+      this.grnRows[0].initial = this.uploadedImage; // safe
+      this.showInitialModal = false;
+    } else {
+      console.error('Uploaded file is not a string');
+      alert('Error: Invalid image format.');
+    }
+  } else {
+    alert('Please select an image first.');
+  }
+}
+
+
+resetForm() {
+  this.selectedPO = null;
+  this.receiptDate = '';
+  this.overReceiptTolerance = 0;
+
+  this.grnRows = [
+    {
+      item: null,
+      supplier: null,
+      storageType: '',
+      surfaceTemp: '',
+      expiry: '',
+      pestSign: '',
+      drySpillage: '',
+      odor: '',
+      plateNumber: '',
+      defectLabels: '',
+      damagedPackage: '',
+      time: '',
+      initial: '',
+      remarks: '',
+      createdAt: new Date(),
+      photos: []
+    }
+  ];
+}
+
+  // Remove a line by index
   grnRemoveRow(i: number) {
     this.grnRows = this.grnRows.filter((_, idx) => idx !== i);
   }
-
-  // Upload photos per line
-  uploadPhoto(event: any, index: number) {
-    const files = Array.from(event.target.files);
-    this.grnRows[index]['photos'] = files;
-  }
-
-  // Notify alerts
+  // Simple notification alert
   notify(msg: string) {
     alert(msg);
   }
 
-  // Grid helper
-  gridColsClass(cols: number) {
-    return {
-      'grid grid-cols-1 gap-3': true,
-      'md:grid-cols-1': cols === 1,
-      'md:grid-cols-2': cols === 2,
-      'md:grid-cols-3': cols === 3,
-      'md:grid-cols-4': cols === 4,
-      'md:grid-cols-5': cols === 5,
-      'md:grid-cols-6': cols === 6,
-    };
-  }
+  
 
+  // TrackBy function for ngFor
   trackByIndex = (i: number, _: any) => i;
 
-checkPendingInspections() {
-  const now = new Date().getTime();
 
-  this.grnRows.forEach((r) => {
-    if (r['qc'] === 'Verify') {
-      const created = new Date(r['createdAt']).getTime();
-      const diffHours = (now - created) / 1000 / 60 / 60; // difference in hours
 
-      if (diffHours >= 24 && diffHours < 48) {
-        console.warn(`Reminder: QC pending for item "${r['item']}" for ${Math.floor(diffHours)} hours.`);
-      } else if (diffHours >= 48) {
-        console.error(`Alert: QC pending for item "${r['item']}" for more than 48 hours!`);
-      }
-    }
-  });
-}
-isPending24to48(r: any) {
-  if (r['qc'] !== 'Verify') return false;
-  const diffHours = (new Date().getTime() - new Date(r['createdAt']).getTime()) / 1000 / 60 / 60;
-  return diffHours >= 24 && diffHours < 48;
-}
-
-isPending48Plus(r: any) {
-  if (r['qc'] !== 'Verify') return false;
-  const diffHours = (new Date().getTime() - new Date(r['createdAt']).getTime()) / 1000 / 60 / 60;
-  return diffHours >= 48;
-}
 
 }

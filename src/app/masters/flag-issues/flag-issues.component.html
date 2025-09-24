@@ -1,0 +1,101 @@
+<div class="flex gap-6">
+  <!-- Left: Department List -->
+  <div class="w-1/2">
+    <div class="bg-white shadow rounded-xl p-4">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-lg font-semibold text-[#0e3a4c]" >Flag-Issues List</h2>
+         <button
+          class="bg-green-600 text-white px-2 py-1 text-sm rounded-lg"
+          (click)="createFlagIssues()"
+        >
+          Create
+        </button>
+      </div>
+
+    <div *ngIf="flagIssuesList.length > 0; else noDept">
+  <ng-container *ngFor="let item of flagIssuesList">
+    <div *ngIf="item.isActive" class="flex justify-between items-center border-b py-1 last:border-b-0">
+      
+      <!-- Dept Info -->
+      <div>
+        <p class="text-sm text-gray-800">{{ item.flagIssuesNames }}</p>
+      </div>
+
+      <!-- Actions -->
+      <div class="space-x-2">
+        <i class="fas fa-pen" 
+           style="color: #05a743; margin-right: 15px; cursor: pointer;" 
+           (click)="editFlagISsues(item)">
+        </i>
+        <i class="fas fa-trash" 
+           style="color: red; cursor: pointer;" 
+           (click)="confirmFlagIssues(item)">
+        </i>
+      </div>
+
+    </div>
+  </ng-container>
+</div>
+
+<ng-template #noDept>
+  <p class="text-gray-500">No Flag-Issues found.</p>
+</ng-template>
+
+
+
+      <ng-template #noDept>
+        <p class="text-gray-500 text-sm text-center py-6">
+          No department found
+        </p>
+      </ng-template>
+    </div>
+  </div>
+
+  <!-- Right: Create/Edit Form -->
+  <div class="w-1/2" *ngIf="showForm">
+    <div class="bg-white shadow rounded-xl p-4">
+      <h2 class="text-lg font-semibold text-[#0e3a4c] mb-4">
+        {{ isEditMode ? "Edit Flag-Issues" : "Create Flag-Issues" }}
+      </h2>
+
+      <form [formGroup]="addForm" (ngSubmit)="onSubmit()">
+        <!-- <div class="mb-4">
+          <label class="block text-gray-600 text-sm !font-light mb-1">Department Code<span style="color: red;">*</span></label>
+          <input
+            type="text"
+            formControlName="departmentCode"
+            class="w-full border rounded-lg px-3 py-2"
+          />
+        </div> -->
+
+        <div class="mb-4">
+          <label class="block text-gray-600 text-sm !font-light mb-1">Flag-Issues Name<span style="color: red;">*</span></label>
+          <input
+            type="text"
+            formControlName="flagIssuesName"
+            class="w-full border rounded-lg px-3 py-2"
+          />
+        </div>
+
+        <div class="flex justify-end space-x-3" >
+          <button
+            type="submit"
+            
+            class="bg-green-600 text-white px-2 py-1 text-sm rounded-lg"
+          >
+            {{ isEditMode ? "Update" : "Save" }}
+          </button>
+          <button
+            type="button"
+            class="bg-gray-400 text-white px-2 py-1 text-sm rounded-lg"
+            (click)="cancel()"
+          >
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<p-confirmDialog></p-confirmDialog>
+<p-toast></p-toast>

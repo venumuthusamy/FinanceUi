@@ -17,6 +17,11 @@ export const NAVIGATION = [
       { name: 'Department', route: '/masters/department' , icon: 'far fa-circle'},
       { name: 'Uom', route: '/masters/uom' , icon: 'far fa-circle'},
       { name: 'Items', route: '/masters/item' , icon: 'far fa-circle'},
+       { name: 'Incoterms ', route: '/masters/incoterms' , icon: 'far fa-circle'},
+      { name: 'Flag-Issues ', route: '/masters/flag-issues' , icon: 'far fa-circle'},
+       { name: 'ApprovalLevel', route: '/masters/approvalLevel' , icon: 'far fa-circle'},
+      { name: 'PaymentTerms', route: '/masters/paymentTerms' , icon: 'far fa-circle'},
+      { name: 'Currency', route: '/masters/currency' , icon: 'far fa-circle'},
     ]
   },
   { 
@@ -69,7 +74,7 @@ export const NAVIGATION = [
   {
     name: 'Inventory',icon:'fas fa-file-invoice-dollar',
     children: [
-        { name: 'Products', route: '/masters/incomes' , icon: 'far fa-circle'},
+       { name: 'inventory', route: '/purchases/inventory' , icon: 'far fa-circle'},
     ]
   },
 ];

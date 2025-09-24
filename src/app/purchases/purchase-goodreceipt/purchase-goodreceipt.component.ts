@@ -121,6 +121,7 @@ saveGRN() {
 
 }
 
+
   openFlagModal() {
     this.isFlagModalOpen = true;
   }
@@ -128,7 +129,7 @@ saveGRN() {
   closeFlagModal() {
     this.isFlagModalOpen = false;
   }
-  
+
 
  loadFlagIssues() {
   this.flagIssuesService.getFlagIssues().subscribe((data: any[]) => {

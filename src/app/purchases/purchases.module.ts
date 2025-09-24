@@ -64,7 +64,7 @@ const routes: Routes = [
          MobileReceiveCreateComponent,
          PurchseRequisitionListComponent,
          PurchaseGoodreceiptlistComponent,
-         InventoryComponent,
+        
          PurchaseOrderListComponent
   ],
   imports: [

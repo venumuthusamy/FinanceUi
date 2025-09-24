@@ -7,16 +7,49 @@
       <div class="flex gap-3 items-center">
         
         <!-- Approval Level Dropdown -->
-        <div>
+        <div class="relative">
           <label class="text-xs font-medium text-gray-600">Approval Level</label>
-          <select
-            class="w-full rounded-xl border px-3 py-2 text-sm bg-white"
-            [(ngModel)]="poHdr.approvalLevel"
-          >
-            <option value="DeptHead">Department Head</option>
-            <option value="Management">Management</option>
-            <option value="Auto">Auto-Approve</option>
-          </select>
+            <div class="relative">
+        <input
+          type="text"
+          [(ngModel)]="searchTexts['approval']"
+          (input)="filter('approval')"
+          (focus)="toggleDropdown('approval', true)"
+          placeholder="Search Approval..."
+          class="w-full rounded-xl border focus:outline-none focus:ring-2 px-4 py-2 text-sm"
+          style="border-color: #0e3a4c"
+        />
+        <button
+          *ngIf="searchTexts['approval']"
+          type="button"
+          (click)="onClearSearch('approval')"
+          class="absolute inset-y-0 right-7 flex items-center text-gray-400 hover:text-gray-600 px-2"
+        >
+        ✕
+        </button>
+        <!-- Dropdown Icon -->
+        <button
+          type="button"
+          (click)="toggleDropdown('approval')"
+          class="absolute inset-y-0 right-2 flex items-center text-gray-500 px-2"
+        >
+          ▼
+        </button>
+        </div>
+
+      <!-- Dropdown Options -->
+      <ul
+        *ngIf="dropdownOpen['approval']"
+        class="absolute top-full left-0 right-0 bg-white border rounded-xl mt-1 shadow z-10 max-h-40 overflow-y-auto"
+      >
+        <li
+          *ngFor="let item of filteredLists['approval']"
+          (click)="select('approval', item)"
+          class="px-3 py-2 hover:bg-blue-100 cursor-pointer text-sm"
+        >
+          {{ item.name }}
+        </li>
+      </ul>
         </div>
 
         <!-- Approval Status Badge -->
@@ -67,60 +100,204 @@
     <!-- Main Info -->
     <div [ngClass]="gridColsClass(4)">
       <!-- Supplier -->
-      <div>
+      <div class="relative">
         <label class="text-xs font-medium text-gray-600">Supplier</label>
+        <div class="relative">
         <input
-          class="w-full rounded-xl border focus:outline-none focus:ring-2 px-3 py-2 text-sm"
+          type="text"
+          [(ngModel)]="searchTexts['supplier']"
+          (input)="filter('supplier')"
+          (focus)="toggleDropdown('supplier', true)"
+          placeholder="Search Supplier..."
+          class="w-full rounded-xl border focus:outline-none focus:ring-2 px-4 py-2 text-sm"
           style="border-color: #0e3a4c"
-          placeholder="Select supplier"
         />
+        <button
+          *ngIf="searchTexts['supplier']"
+          type="button"
+          (click)="onClearSearch('supplier')"
+          class="absolute inset-y-0 right-7 flex items-center text-gray-400 hover:text-gray-600 px-2"
+        >
+        ✕
+        </button>
+        <!-- Dropdown Icon -->
+        <button
+          type="button"
+          (click)="toggleDropdown('supplier')"
+          class="absolute inset-y-0 right-2 flex items-center text-gray-500 px-2"
+        >
+          ▼
+        </button>
+        </div>
+
+      <!-- Dropdown Options -->
+      <ul
+        *ngIf="dropdownOpen['supplier']"
+        class="absolute top-full left-0 right-0 bg-white border rounded-xl mt-1 shadow z-10 max-h-40 overflow-y-auto"
+      >
+        <li
+          *ngFor="let item of filteredLists['supplier']"
+          (click)="select('supplier', item)"
+          class="px-3 py-2 hover:bg-blue-100 cursor-pointer text-sm"
+        >
+          {{ item.name }}
+        </li>
+      </ul>
       </div>
 
       <!-- Terms -->
-      <div>
+      <div class="relative">
         <label class="text-xs font-medium text-gray-600">Payment Terms</label>
-        <select
-          class="w-full rounded-xl border px-3 py-2 text-sm bg-white"
-          [(ngModel)]="poHdr.terms"
+         <div class="relative">
+        <input
+          type="text"
+          [(ngModel)]="searchTexts['paymentTerms']"
+          (input)="filter('paymentTerms')"
+          (focus)="toggleDropdown('paymentTerms', true)"
+          placeholder="Search Payment Terms..."
+          class="w-full rounded-xl border focus:outline-none focus:ring-2 px-4 py-2 text-sm"
+          style="border-color: #0e3a4c"
+        />
+        <button
+          *ngIf="searchTexts['paymentTerms']"
+          type="button"
+          (click)="onClearSearch('paymentTerms')"
+          class="absolute inset-y-0 right-7 flex items-center text-gray-400 hover:text-gray-600 px-2"
         >
-          <option>COD</option>
-          <option>NET 30</option>
-          <option>NET 45</option>
-          <option>NET 60</option>
-        </select>
+        ✕
+        </button>
+        <!-- Dropdown Icon -->
+        <button
+          type="button"
+          (click)="toggleDropdown('paymentTerms')"
+          class="absolute inset-y-0 right-2 flex items-center text-gray-500 px-2"
+        >
+          ▼
+        </button>
+        </div>
+
+      <!-- Dropdown Options -->
+      <ul
+        *ngIf="dropdownOpen['paymentTerms']"
+        class="absolute top-full left-0 right-0 bg-white border rounded-xl mt-1 shadow z-10 max-h-40 overflow-y-auto"
+      >
+        <li
+          *ngFor="let item of filteredLists['paymentTerms']"
+          (click)="select('paymentTerms', item)"
+          class="px-3 py-2 hover:bg-blue-100 cursor-pointer text-sm"
+        >
+          {{ item.name }}
+        </li>
+      </ul>
       </div>
 
       <!-- Currency + FX Rate -->
-      <div>
-        <label class="text-xs font-medium text-gray-600">Currency / FX</label>
-        <div class="flex gap-2">
-          <select
-            class="w-full rounded-xl border px-3 py-2 text-sm bg-white"
-            [(ngModel)]="poHdr.currency"
-          >
-            <option>SGD</option>
-            <option>USD</option>
-            <option>MYR</option>
-            <option>INR</option>
-          </select>
+        <div class="flex gap-4">
+      <!-- Currency Dropdown (Left Half) -->
+      <div class="relative w-1/2">
+        <label class="text-xs font-medium text-gray-600">Currency</label>
+        <div class="relative">
           <input
-            type="number"
-            class="w-full rounded-xl border px-3 py-2 text-sm"
+            type="text"
+            [(ngModel)]="searchTexts['currency']"
+            (input)="filter('currency')"
+            (focus)="toggleDropdown('currency', true)"
+            placeholder="Search Currency..."
+            class="w-full rounded-xl border focus:outline-none focus:ring-2 px-4 py-2 text-sm"
             style="border-color: #0e3a4c"
-            placeholder="FX rate"
-            [(ngModel)]="poHdr.fxRate"
           />
+          <!-- Clear Button -->
+          <button
+            *ngIf="searchTexts['currency']"
+            type="button"
+            (click)="onClearSearch('currency')"
+            class="absolute inset-y-0 right-7 flex items-center text-gray-400 hover:text-gray-600 px-2"
+          >
+            ✕
+          </button>
+          <!-- Dropdown Icon -->
+          <button
+            type="button"
+            (click)="toggleDropdown('currency')"
+            class="absolute inset-y-0 right-2 flex items-center text-gray-500 px-2"
+          >
+            ▼
+          </button>
         </div>
+
+        <!-- Dropdown Options -->
+        <ul
+          *ngIf="dropdownOpen['currency']"
+          class="absolute top-full left-0 right-0 bg-white border rounded-xl mt-1 shadow z-10 max-h-40 overflow-y-auto"
+        >
+          <li
+            *ngFor="let item of filteredLists['currency']"
+            (click)="select('currency', item)"
+            class="px-3 py-2 hover:bg-blue-100 cursor-pointer text-sm"
+          >
+            {{ item.name }}
+          </li>
+        </ul>
       </div>
 
-      <!-- Delivery Location -->
-      <div>
-        <label class="text-xs font-medium text-gray-600">Delivery To (WH)</label>
+      <!-- FX Rate Textbox (Right Half) -->
+      <div class="w-1/2">
+        <label class="text-xs font-medium text-gray-600">FX Rate</label>
         <input
-          class="w-full rounded-xl border focus:outline-none focus:ring-2 px-3 py-2 text-sm"
+          type="number"
+          [(ngModel)]="poHdr.fxRate"
+          placeholder="Enter FX Rate"
+          class="w-full rounded-xl border focus:outline-none focus:ring-2 px-4 py-2 text-sm"
           style="border-color: #0e3a4c"
-          placeholder="Central Kitchen"
         />
+      </div>
+        </div>
+
+
+      <!-- Delivery Location -->
+      <div class="relative">
+        <label class="text-xs font-medium text-gray-600">Delivery To (WH)</label>
+         <div class="relative">
+        <input
+          type="text"
+          [(ngModel)]="searchTexts['delivery']"
+          (input)="filter('delivery')"
+          (focus)="toggleDropdown('delivery', true)"
+          placeholder="Search Delivery..."
+          class="w-full rounded-xl border focus:outline-none focus:ring-2 px-4 py-2 text-sm"
+          style="border-color: #0e3a4c"
+        />
+        <button
+          *ngIf="searchTexts['delivery']"
+          type="button"
+          (click)="onClearSearch('delivery')"
+          class="absolute inset-y-0 right-7 flex items-center text-gray-400 hover:text-gray-600 px-2"
+        >
+        ✕
+        </button>
+        <!-- Dropdown Icon -->
+        <button
+          type="button"
+          (click)="toggleDropdown('delivery')"
+          class="absolute inset-y-0 right-2 flex items-center text-gray-500 px-2"
+        >
+          ▼
+        </button>
+          </div>
+
+          <!-- Dropdown Options -->
+          <ul
+            *ngIf="dropdownOpen['delivery']"
+            class="absolute top-full left-0 right-0 bg-white border rounded-xl mt-1 shadow z-10 max-h-40 overflow-y-auto"
+          >
+            <li
+              *ngFor="let item of filteredLists['delivery']"
+              (click)="select('delivery', item)"
+              class="px-3 py-2 hover:bg-blue-100 cursor-pointer text-sm"
+            >
+              {{ item.name }}
+            </li>
+          </ul>
       </div>
     </div>
 
@@ -132,30 +309,63 @@
           class="w-full rounded-xl border focus:outline-none focus:ring-2 px-3 py-2 text-sm"
           style="border-color: #0e3a4c"
           placeholder="Contact Number"
+          [(ngModel)]="poHdr.contactNumber"
         />
       </div>
       <!-- Incoterms (show only if overseas) -->
-      <div>
+      <div class="relative">
         <label class="text-xs font-medium text-gray-600">Incoterms (Overseas Only)</label>
-        <select
-          class="w-full rounded-xl border px-3 py-2 text-sm bg-white"
-          [(ngModel)]="poHdr.incoterms"
+         <div class="relative">
+        <input
+          type="text"
+          [(ngModel)]="searchTexts['incoterms']"
+          (input)="filter('incoterms')"
+          (focus)="toggleDropdown('incoterms', true)"
+          placeholder="Search Incoterms..."
+          class="w-full rounded-xl border focus:outline-none focus:ring-2 px-4 py-2 text-sm"
+          style="border-color: #0e3a4c"
+        />
+        <button
+          *ngIf="searchTexts['incoterms']"
+          type="button"
+          (click)="onClearSearch('incoterms')"
+          class="absolute inset-y-0 right-7 flex items-center text-gray-400 hover:text-gray-600 px-2"
         >
-          <option>EXW</option>
-          <option>FOB</option>
-          <option>CIF</option>
-          <option>DAP</option>
-        </select>
+        ✕
+        </button>
+        <!-- Dropdown Icon -->
+        <button
+          type="button"
+          (click)="toggleDropdown('incoterms')"
+          class="absolute inset-y-0 right-2 flex items-center text-gray-500 px-2"
+        >
+          ▼
+        </button>
+          </div>
+
+          <!-- Dropdown Options -->
+          <ul
+            *ngIf="dropdownOpen['incoterms']"
+            class="absolute top-full left-0 right-0 bg-white border rounded-xl mt-1 shadow z-10 max-h-40 overflow-y-auto"
+          >
+            <li
+              *ngFor="let item of filteredLists['incoterms']"
+              (click)="select('incoterms', item)"
+              class="px-3 py-2 hover:bg-blue-100 cursor-pointer text-sm"
+            >
+              {{ item.name }}
+            </li>
+          </ul>
       </div>
 
       <!-- PO Date (system-generated, disabled) -->
       <div>
         <label class="text-xs font-medium text-gray-600">PO Date</label>
         <input
-          type="date"
+          type="text"
           class="w-full rounded-xl border px-3 py-2 text-sm bg-gray-100"
           style="border-color: #0e3a4c"
-          [(ngModel)]="poHdr.poDate"
+          [value]="formatDate(poHdr.poDate)"
           [disabled]="true"
         />
       </div>
@@ -183,7 +393,7 @@
         ></textarea>
       </div>
       <!-- Recurring Checkbox -->
-      <div class="flex items-center gap-2 mt-2">
+      <!-- <div class="flex items-center gap-2 mt-2">
         <input
           id="recurringPO"
           type="checkbox"
@@ -191,7 +401,7 @@
           [(ngModel)]="poHdr.recurring"
         />
         <label for="recurringPO" class="text-xs font-medium text-gray-600">Recurring PO</label>
-      </div>
+      </div> -->
     </div>
  
 
@@ -200,20 +410,22 @@
       <table class="min-w-full text-sm">
         <thead class="bg-gray-50 text-gray-600">
           <tr>
+            <th class="text-left px-3 py-2 font-medium">PR Number</th>
             <th class="text-left px-3 py-2 font-medium">Item Code</th>
             <th class="text-left px-3 py-2 font-medium">Description</th>
-            <th class="text-left px-3 py-2 font-medium">CapEx / OpEx</th>
+            <!-- <th class="text-left px-3 py-2 font-medium">CapEx / OpEx</th> -->
+            <th class="text-left px-3 py-2 font-medium">Budget</th>
             <th class="text-left px-3 py-2 font-medium">Recurring?</th>
             <th class="text-left px-3 py-2 font-medium">Qty</th>
             <th class="text-left px-3 py-2 font-medium">Unit Price</th>
             <th class="text-left px-3 py-2 font-medium">Discount %</th>
             <th class="text-left px-3 py-2 font-medium">Tax Code</th>
-            <th class="px-3"></th>
+            <th class="px-3">Action</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngIf="poLines.length === 0">
-            <td [attr.colspan]="9" class="px-3 py-6 text-center text-gray-400">
+            <td [attr.colspan]="10" class="px-3 py-6 text-center text-gray-400">
               No lines yet.
             </td>
           </tr>
@@ -221,68 +433,109 @@
             *ngFor="let r of poLines; let i = index; trackBy: trackByIndex"
             class="border-t"
           >
-            <td class="px-3 py-2">
-              <input
-                class="w-full rounded-xl border px-3 py-2 text-sm"
-                [(ngModel)]="poLines[i]['itemCode']"
-                placeholder="e.g. CHK001"
-              />
+          <td class="px-3 py-2 relative">
+              <input type="text" [(ngModel)]="poLines[i].prNo"
+                (focus)="openDropdown(i, 'prNo')" (input)="filterOptions(i, 'prNo')"
+                placeholder="Search PO No..."
+                class="w-[150px] rounded-xl border px-3 py-2 text-sm"/>
+
+              <div *ngIf="poLines[i].dropdownOpen === 'prNo'" 
+                  class="absolute left-0 top-full mt-1 w-full bg-white border rounded-xl shadow-lg max-h-48 overflow-y-auto z-50">
+                <div *ngFor="let option of poLines[i].filteredOptions"
+                    (click)="selectOption(i, 'prNo', option)"
+                    class="px-3 py-2 cursor-pointer hover:bg-gray-100 text-sm">
+                  {{ option }}
+                </div>
+              </div>
+            </td>
+            <td class="px-3 py-2 relative">
+              <input type="text" [(ngModel)]="poLines[i].item"
+              (focus)="openDropdown(i, 'item')" (input)="filterOptions(i, 'item')"
+              placeholder="Search Item..."
+              class="w-[150px] rounded-xl border px-3 py-2 text-sm" />
+
+              <div *ngIf="poLines[i].dropdownOpen === 'item'" 
+                  class="absolute left-0 top-full mt-1 w-full bg-white border rounded-xl shadow-lg max-h-48 overflow-y-auto z-50">
+                <div *ngFor="let option of poLines[i].filteredOptions"
+                    (click)="selectOption(i, 'item', option)"
+                    class="px-3 py-2 cursor-pointer hover:bg-gray-100 text-sm flex justify-between">
+                  <span>{{ option.code }}</span>
+                  <span class="text-gray-500 text-xs">{{ option.name }}</span>
+                </div>
+              </div>
             </td>
             <td class="px-3 py-2">
               <input
-                class="w-full rounded-xl border px-3 py-2 text-sm"
-                [(ngModel)]="poLines[i]['itemDesc']"
+                class="w-[150px] rounded-xl border px-3 py-2 text-sm"
+                [(ngModel)]="poLines[i]['description']"
                 placeholder="Item description"
               />
             </td>
-            <td class="px-3 py-2">
-              <select
-                class="w-full rounded-xl border px-3 py-2 text-sm bg-white"
-                [(ngModel)]="poLines[i]['capexOpex']"
-              >
-                <option value="CapEx">CapEx</option>
-                <option value="OpEx">OpEx</option>
-              </select>
+            <td class="px-3 py-2 relative">
+              <input type="text" [(ngModel)]="poLines[i].budget"
+                (focus)="openDropdown(i, 'budget')" (input)="filterOptions(i, 'budget')"
+                placeholder="Search Budget..."
+                class="w-[150px] rounded-xl border px-3 py-2 text-sm" />
+
+              <div *ngIf="poLines[i].dropdownOpen === 'budget'" 
+                  class="absolute left-0 top-full mt-1 w-full bg-white border rounded-xl shadow-lg max-h-48 overflow-y-auto z-50">
+                <div *ngFor="let option of poLines[i].filteredOptions"
+                    (click)="selectOption(i, 'budget', option)"
+                    class="px-3 py-2 cursor-pointer hover:bg-gray-100 text-sm">
+                  {{ option }}
+                </div>
+              </div>
             </td>
-            <td class="px-3 py-2">
-              <select
-                class="w-full rounded-xl border px-3 py-2 text-sm bg-white"
-                [(ngModel)]="poLines[i]['recurring']"
-              >
-                <option value="OneTime">One-Time</option>
-                <option value="Recurring">Recurring</option>
-              </select>
+            <td class="px-3 py-2 relative">
+                <input type="text" [(ngModel)]="poLines[i].recurring"
+                  (focus)="openDropdown(i, 'recurring')" (input)="filterOptions(i, 'recurring')"
+                  placeholder="Search Recurring..."
+                  class="w-[150px] rounded-xl border px-3 py-2 text-sm" />
+
+                <div *ngIf="poLines[i].dropdownOpen === 'recurring'" 
+                    class="absolute left-0 top-full mt-1 w-full bg-white border rounded-xl shadow-lg max-h-48 overflow-y-auto z-50">
+                  <div *ngFor="let option of poLines[i].filteredOptions"
+                      (click)="selectOption(i, 'recurring', option)"
+                      class="px-3 py-2 cursor-pointer hover:bg-gray-100 text-sm">
+                    {{ option }}
+                  </div>
+                </div>
             </td>
             <td class="px-3 py-2">
               <input
                 type="number"
-                class="w-full rounded-xl border px-3 py-2 text-sm"
+                class="w-[100px] rounded-xl border px-3 py-2 text-sm"
                 [(ngModel)]="poLines[i]['qty']"
               />
             </td>
             <td class="px-3 py-2">
               <input
                 type="number"
-                class="w-full rounded-xl border px-3 py-2 text-sm"
+                class="w-[100px] rounded-xl border px-3 py-2 text-sm"
                 [(ngModel)]="poLines[i]['price']"
               />
             </td>
             <td class="px-3 py-2">
               <input
                 type="number"
-                class="w-full rounded-xl border px-3 py-2 text-sm"
-                [(ngModel)]="poLines[i]['disc']"
+                class="w-[100px] rounded-xl border px-3 py-2 text-sm"
+                [(ngModel)]="poLines[i]['discount']"
               />
             </td>
-            <td class="px-3 py-2">
-              <select
-                class="w-full rounded-xl border px-3 py-2 text-sm bg-white"
-                [(ngModel)]="poLines[i]['tax']"
-              >
-                <option value="STD">STD</option>
-                <option value="ZRL">ZRL</option>
-                <option value="EXM">EXM</option>
-              </select>
+            <td class="px-3 py-2 relative">
+                <input type="text" [(ngModel)]="poLines[i].taxCode"
+                (focus)="openDropdown(i, 'taxCode')" (input)="filterOptions(i, 'taxCode')"
+                placeholder="Search Tax Code..."
+                class="w-[150px] rounded-xl border px-3 py-2 text-sm" />
+
+              <div *ngIf="poLines[i].dropdownOpen === 'taxCode'" 
+                  class="absolute left-0 top-full mt-1 w-full bg-white border rounded-xl shadow-lg max-h-48 overflow-y-auto z-50">
+                <div *ngFor="let option of poLines[i].filteredOptions"
+                    (click)="selectOption(i, 'taxCode', option)"
+                    class="px-3 py-2 cursor-pointer hover:bg-gray-100 text-sm">
+                  {{ option }}
+                </div>
+              </div>
             </td>
             <td class="px-3 py-2 text-right">
               <button
@@ -343,36 +596,9 @@
         </div>
         <div class="border-t pt-2 flex justify-between font-semibold">
           <span>Net Total</span>
-          <span>{{ poTotals.grand.toFixed(2) }} {{ poHdr.currency }}</span>
+          <span>{{ poTotals.grand.toFixed(2) }} {{ poHdr.currencyId }}</span>
         </div>
       </div>
     </div>
-  </div>
-
-  <!-- Purchase Order List -->
-  <div class="bg-white rounded-2xl shadow p-3 border border-gray-100">
-    <h2 class="text-lg font-semibold text-gray-800 mb-2">Purchase Order List</h2>
-    <table class="min-w-full text-sm">
-      <thead class="bg-gray-700 text-white">
-        <tr>
-          <th class="text-left px-3 py-2 font-medium">Supplier Name</th>
-          <th class="text-left px-3 py-2 font-medium">Currency / FX</th>
-          <th class="text-left px-3 py-2 font-medium">Delivery To</th>
-          <th class="text-left px-3 py-2 font-medium">Incoterms</th>
-          <th class="text-left px-3 py-2 font-medium">PO Date</th>
-          <th class="text-left px-3 py-2 font-medium">Expected Delivery</th>
-          <th class="text-left px-3 py-2 font-medium">Remarks</th>
-          <th class="text-left px-3 py-2 font-medium">Approval Status</th>
-          <th class="px-3"></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td class="px-3 py-6 text-center text-gray-400" [attr.colspan]="9">
-            No lines yet.
-          </td>
-        </tr>
-      </tbody>
-    </table>
   </div>
 </div>

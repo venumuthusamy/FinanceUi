@@ -1,0 +1,96 @@
+<div class="bg-white rounded-2xl shadow p-3 border border-gray-100">
+  <div class="flex items-center justify-between mb-2">
+    <h2 class="text-lg font-semibold text-gray-800">Purchase GoodReceipt List</h2>
+
+    <button class="px-3 py-2 rounded-xl text-sm font-medium text-white"
+      style="background-color: #0e3a4c;"
+      (mouseenter)="hover=true" (mouseleave)="hover=false"
+      [style.background-color]="hover ? '#0b2e3d' : '#0e3a4c'"
+      (click)="goToRequisition()" type="button">
+      + Create
+    </button>
+  </div>
+
+  <div class="overflow-x-auto">
+    <table class="min-w-full text-sm border border-gray-200">
+      <thead class="text-white bg-[#0e3a4c]">
+        <tr>
+          <th class="text-left px-3 py-2 font-medium">Product</th>
+          <th class="text-left px-3 py-2 font-medium">Supplier</th>
+          <th class="text-left px-3 py-2 font-medium">Frozen/Chilled/Dry</th>
+          <th class="text-left px-3 py-2 font-medium">Surface Temp</th>
+          <th class="text-left px-3 py-2 font-medium">Expiry Date</th>
+          <th class="text-left px-3 py-2 font-medium">No of pest / Sign of pest</th>
+          <th class="text-left px-3 py-2 font-medium">Dry / No chemical Spillage</th>
+          <th class="text-left px-3 py-2 font-medium">Odor</th>
+          <th class="text-left px-3 py-2 font-medium">Plate Number</th>
+          <th class="text-left px-3 py-2 font-medium">Defective Package Size and Labels</th>
+          <th class="text-left px-3 py-2 font-medium">Torn/Leakage/Damaged Package</th>
+          <th class="text-left px-3 py-2 font-medium">Time</th>
+          <th class="text-left px-3 py-2 font-medium">Initial</th>
+          <th class="text-left px-3 py-2 font-medium">Remarks</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <!-- Loop over each GRN -->
+        <ng-container *ngFor="let req of purchaseRequests">
+          <!-- Loop over each row inside GRN -->
+          <tr *ngFor="let row of req.grn" class="border-t">
+            <td class="px-3 py-2">{{ row.item }}</td>
+            <td class="px-3 py-2">{{ row.supplier }}</td>
+            <td class="px-3 py-2">{{ row.storageType }}</td>
+            <td class="px-3 py-2">{{ row.surfaceTemp }}&deg;c</td>
+            <td class="px-3 py-2">{{ row.expiry }}</td>
+            <td class="px-3 py-2">{{ row.pestSign }}</td>
+            <td class="px-3 py-2">{{ row.drySpillage }}</td>
+            <td class="px-3 py-2">{{ row.odor }}</td>
+            <td class="px-3 py-2">{{ row.plateNumber }}</td>
+            <td class="px-3 py-2">{{ row.defectLabels }}</td>
+            <td class="px-3 py-2">{{ row.damagedPackage }}</td>
+            <td class="px-3 py-2">{{ row.time }}</td>
+
+            <!-- Initial column with clickable image -->
+            <td class="px-3 py-2">
+              <ng-container *ngIf="row.initial?.startsWith('data:image'); else textInitial">
+                <img
+                  [src]="row.initial"
+                  alt="Signature"
+                  class="w-20 h-16 object-cover rounded border cursor-pointer"
+                  (click)="openImageModal(row.initial)"
+                />
+              </ng-container>
+              <ng-template #textInitial>
+                {{ row.initial }}
+              </ng-template>
+            </td>
+
+            <td class="px-3 py-2">{{ row.remarks }}</td>
+          </tr>
+        </ng-container>
+
+        <!-- Show message if no data -->
+      <tr *ngIf="!purchaseRequests || purchaseRequests.length === 0">
+  <td colspan="14" class="px-3 py-6 text-center text-gray-400">No records found.</td>
+</tr>
+
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Image Modal -->
+<div
+  *ngIf="showImageModal"
+  class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+>
+  <div class="bg-white rounded-lg p-4 relative max-w-lg w-full">
+    <button
+      class="absolute top-2 right-2 text-gray-500 hover:text-gray-800 text-lg font-bold"
+      (click)="closeImageModal()"
+    >
+      ✕
+    </button>
+    <img [src]="selectedImage" alt="Signature" class="w-full h-auto rounded" />
+  </div>
+</div>

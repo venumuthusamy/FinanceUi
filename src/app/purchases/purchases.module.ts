@@ -26,7 +26,9 @@ import { RfqCreateComponent } from './rfq/rfq-create/rfq-create.component';
 import { MobileReceiveCreateComponent } from './mobile-receiving/mobile-receive-create/mobile-receive-create.component';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { PurchseRequisitionListComponent } from './purchase-requisition/purchse-requisition-list/purchse-requisition-list.component';
-
+import { PurchaseGoodreceiptlistComponent } from './purchase-goodreceipt/purchase-goodreceiptlist/purchase-goodreceiptlist.component';
+import { InventoryComponent } from '../inventory/inventory.component';
+import { PurchaseOrderListComponent } from './purchase-order/purchase-order-list/purchase-order-list.component';
 
 const routes: Routes = [
   { path: 'list', component: PurchasesListComponent },
@@ -35,12 +37,18 @@ const routes: Routes = [
   { path: 'requisition', component: PurchaseRequisitionComponent },
   { path: 'requisition/edit/:id', component: PurchaseRequisitionComponent },
    { path: 'order', component: PurchaseOrderComponent },
-   { path: 'goodreceipt', component: PurchaseGoodreceiptComponent },
+   { path: 'goodreceipt', component: PurchaseGoodreceiptlistComponent },
+   { path: 'addreceipt', component: PurchaseGoodreceiptComponent },
   { path: 'supplier-invoice', component: SupplierInvoiceCreateComponent },
   { path: 'debit-note', component: DebitNoteCreateComponent },
   { path: 'rfq', component: RfqCreateComponent },
   { path: 'mobile-receive', component: MobileReceiveCreateComponent },
   { path: 'PRList', component: PurchseRequisitionListComponent },
+   { path: 'inventory', component: InventoryComponent },
+    { path: 'order', component: PurchaseOrderListComponent },
+   { path: 'order/create', component: PurchaseOrderComponent },
+   { path: 'order/edit/:id', component: PurchaseOrderComponent },
+   
 ];
 @NgModule({
   declarations: [
@@ -54,7 +62,10 @@ const routes: Routes = [
          DebitNoteCreateComponent,
          RfqCreateComponent,
          MobileReceiveCreateComponent,
-         PurchseRequisitionListComponent
+         PurchseRequisitionListComponent,
+         PurchaseGoodreceiptlistComponent,
+         InventoryComponent,
+         PurchaseOrderListComponent
   ],
   imports: [
     CommonModule,

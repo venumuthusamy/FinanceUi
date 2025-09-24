@@ -58,16 +58,18 @@
       <table class="lines-table">
         <thead>
           <tr>
+            <th>ItemName</th>
             <th>Location</th>
             <th>Qty</th>
-            <th>Remarks</th>
+            
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let line of req.prLines">
+            <td>{{ line.itemName }}</td>
             <td>{{ line.location }}</td>
             <td>{{ line.qty }}</td>
-            <td>{{ line.remarks }}</td>
+            
           </tr>
         </tbody>
       </table>

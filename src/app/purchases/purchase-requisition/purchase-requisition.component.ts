@@ -1,7 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { PurchaseRequisitionService } from './purchase-requisition.service';
 import Swal from 'sweetalert2';
 import { ActivatedRoute, Router } from '@angular/router';
+import { DepartmentService } from 'src/app/masters/department/department/departmet-service';
+import { ItemService } from 'src/app/masters/item/item-service';
+import { ChartOfAccountService } from 'src/app/financial/coa/coa-service';
+import { UomService } from 'src/app/masters/uom/uom/uom-service';
+import { LocationService } from 'src/app/masters/location/location-service';
 
 @Component({
   selector: 'app-purchase-requisition',
@@ -17,7 +22,7 @@ export class PurchaseRequisitionComponent implements OnInit {
   showEditForm: boolean = false;
 selectedDepartmentID: string = ''; // binds to the dropdown
 allPurchaseRequests: any[] = [];   // store all PRs
- uomList = ['KG', 'Litre', 'Piece', 'Box', 'Pack'];
+
   prHeader: any = {
     requester: '',
     departmentID: 0,
@@ -29,29 +34,38 @@ allPurchaseRequests: any[] = [];   // store all PRs
 
   prLines: any[] = [];
  
-  locationList = ['Warehouse 1', 'Warehouse 2']; // demo
+
 
   purchaseRequests: any[] = []; // List to display from API
 isEditMode = false;
-departments = [
-  { id: 1, name: 'Operations' },
-  { id: 2, name: 'Finance' },
-  { id: 3, name: 'HR' },
-  { id: 4, name: 'IT' }
-];
-itemsList = [
-  { code: 'ITM001', name: 'Laptop' },
-  { code: 'ITM002', name: 'Monitor' },
-  { code: 'ITM003', name: 'Keyboard' },
-  { code: 'ITM004', name: 'Mouse' },
-  { code: 'ITM005', name: 'Printer' }
-];
+departments: any[] = [];
 
+activeDropdown: string | null = null;
 dropdownOpen = false;
 searchText: string = '';
 filteredDepartments = [...this.departments];
+parentHeadList:any;
+accountHeads: any;
+ itemsList : any = []
+ uomList : any = []
 public prid:any;
-  constructor(private purchaseService: PurchaseRequisitionService,private router: Router,private route:ActivatedRoute) {}
+  locationList: any;
+  minDate: string = '';
+  constructor(private purchaseService: PurchaseRequisitionService,private router: Router,private route:ActivatedRoute,
+    private deptService: DepartmentService,
+  private itemService : ItemService,
+private chartOfAccountService : ChartOfAccountService,
+private uomService: UomService,
+private locationService : LocationService) {}
+ @HostListener('document:click', ['$event'])
+    onClickOutside(event: Event) {
+    const target = event.target as HTMLElement;
+ 
+    // if the click is NOT inside the main wrapper (div.relative)
+    if (!target.closest('.relative')) {
+      this.dropdownOpen = false;
+    }
+  }
  gridColsClass(cols: number) {
     return {
       'grid grid-cols-1 gap-3': true,
@@ -67,31 +81,13 @@ public prid:any;
     return `px-2 py-1 rounded-full text-xs font-medium bg-${color}-100 text-${color}-800`;
   }
   ngOnInit() {
-    debugger
+    this.mindate();
     this.loadRequests();
-  // this.purchaseService.currentRequest.subscribe(req => {
-  //   if (req) {
-  //     // Populate form
-  //     this.prHeader = {
-  //       id: req.id,
-  //       requester: req.requester,
-  //       departmentID: req.departmentID,
-  //       neededBy: req.deliveryDate ? req.deliveryDate.split('T')[0] : null,
-  //       description: req.description,
-  //       multiLoc: req.multiLoc,
-  //       oversea: req.oversea
-  //     };
-  //     this.prLines = [...req.prLines];
-  //   } else {
-  //     this.resetForm(); // new request
-  //   }
-  // });
+    this.loadDepartments();
+    this.loadItems();
+    this.loadUom();
+    this.loadLocation();
   this.filteredDepartments = [...this.departments];
-  // const nav = this.router.getCurrentNavigation();
-  // const state = nav?.extras?.state as { request: any };
-  // if (state?.request) {
-  //   this.editRequest(state.request);
-  // }
   this.route.paramMap.subscribe((params:any)=>{
     this.prid=parseInt(params.get('id'));
     if(this.prid){
@@ -103,7 +99,60 @@ public prid:any;
     }
   })
 }
+loadDepartments() {
+  this.deptService.getDepartment().subscribe((data: any) => {
+    this.departments = data;           // full list
+    this.filteredDepartments = data;   // initialize filtered list
+  });
+}
+ 
+    loadItems() {
+  this.chartOfAccountService.getChartOfAccount().subscribe((data) => {
+    this.accountHeads = data;
+    this.parentHeadList = this.accountHeads.map((head:any)=> ({
+      value: head.id,
+      label: this.buildFullPath(head)
+    }));
+    this.itemService.getItem().subscribe((data :any) => {
+            this.itemsList = data
+            this.itemsList = this.itemsList.map((item: any) => {
+            const matched = this.parentHeadList.find(
+              (head: any) => head.value == item.budgetLineId
+            );
 
+            return {
+              ...item,
+              label: matched ? matched.label : null   // add the label if found
+            };
+          });
+         
+    });  
+    
+  });
+  }
+   loadUom() {
+    debugger
+    this.uomService.getUom().subscribe((data :any) => {
+            this.uomList = data
+            console.log("uom",this.uomList)
+      });
+     
+  }
+  loadLocation(){
+     this.locationService.getLocation().subscribe((data :any) => {
+            this.locationList = data
+    }); 
+    console.log("locationlist",this.locationList)
+  }
+   buildFullPath(item:any): string {
+    let path = item.headName;
+    let current = this.accountHeads.find((x:any) => x.id === item.parentHead);
+    while (current) {
+      path = `${current.headName} >> ${path}`;
+      current = this.accountHeads.find((x:any) => x.id === current.parentHead);
+    }
+    return path;
+  }
 prAddLine() {
   this.prLines.push({
     // Standard fields
@@ -134,7 +183,13 @@ prAddLine() {
   trackByIndex(index: number): number {
     return index;
   }
-
+mindate(){
+   const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0'); // months start at 0!
+    const dd = String(today.getDate()).padStart(2, '0');
+    this.minDate = `${yyyy}-${mm}-${dd}`;
+}
   // ➤ Create new PR
  saveRequest() {
   const payload = {
@@ -238,25 +293,6 @@ prAddLine() {
 }
 
 
-//  editRequest(id: number) {
-//   debugger
-//   const req = this.purchaseRequests.find((r: any) => r.id === id);
-
-//   if (req) {
-//     this.prHeader = {
-//       id: req.id, // keep id to detect update
-//       requester: req.requester,
-//       departmentID: req.departmentID,
-//       neededBy: req.deliveryDate ? req.deliveryDate.split('T')[0] : null,
-//       description: req.description,
-//       multiLoc: req.multiLoc,
-//       oversea: req.oversea,
-//     };
-
-//     this.prLines = [...req.prLines]; // load existing lines
-//   }
-// }
-
 editRequest(res: any) {
   const data = res.data;
 
@@ -272,7 +308,7 @@ editRequest(res: any) {
   };
 
   // Set department name for UI
-  this.searchText = this.departments.find(d => d.id === data.departmentID)?.name || '';
+  this.searchText = this.departments.find(d => d.id === data.departmentID)?.departmentName || '';
 
   // Parse prLines
   this.prLines = data.prLines ? JSON.parse(data.prLines) : [];
@@ -329,18 +365,17 @@ editRequest(res: any) {
 filterDepartments() {
   const query = this.searchText.toLowerCase();
   this.filteredDepartments = this.departments.filter(d =>
-    d.name.toLowerCase().includes(query)
+    d.departmentName.toLowerCase().includes(query)
   );
 }
-
 toggleDropdown(force?: boolean) {
   this.dropdownOpen = force !== undefined ? force : !this.dropdownOpen;
 }
 
 selectDepartment(dept: any) {
-  this.searchText = dept.name;       // show name in input
-  this.prHeader.departmentID = dept.id; // save ID for payload
-  this.dropdownOpen = false;         // close dropdown
+  this.prHeader.departmentID = dept.id;
+  this.searchText = dept.departmentName;
+  this.dropdownOpen = false;
 }
 
 onItemFocus(i: number) {
@@ -351,55 +386,69 @@ onItemFocus(i: number) {
 filterItems(i: number) {
   const query = this.prLines[i].itemSearch.toLowerCase();
   this.prLines[i].filteredItems = this.itemsList.filter(
-    item =>
-      item.name.toLowerCase().includes(query) ||
-      item.code.toLowerCase().includes(query)
+    (item:any) =>
+      item.itemName.toLowerCase().includes(query) ||
+      item.itemCode.toLowerCase().includes(query)
   );
 }
 
-selectItem(i: number, item: any) {
-  this.prLines[i].itemSearch = item.name;
-  this.prLines[i].itemCode = item.code;
-  this.prLines[i].itemName = item.name;
-  this.prLines[i].dropdownOpen = false;
+selectItem(index: number, item: any) {
+  // Set item name & code
+  this.prLines[index].itemSearch = item.itemName;
+  this.prLines[index].itemName = item.itemName;
+  this.prLines[index].itemCode = item.itemCode;
+
+  // Auto-fill UOM
+  this.prLines[index].uom = item.uomName;        // save for backend
+  this.prLines[index].uomSearch = item.uomName;  // show in input
+
+  // Auto-fill Budget Line
+  this.prLines[index].budget = item.label || ''; 
+
+  // Close dropdown
+  this.prLines[index].dropdownOpen = false;
 }
+
+
+// Open dropdown
 onLocationFocus(index: number) {
-  this.prLines[index].filteredLocations = [...this.locationList]; // copy full list
+  this.prLines[index].filteredLocations = [...this.locationList];
   this.prLines[index].locationDropdownOpen = true;
 }
 
-
-// Filter locations based on search input
+// Filter locations by name
 filterLocations(index: number) {
   const search = this.prLines[index].locationSearch?.toLowerCase() || '';
-  this.prLines[index].filteredLocations = this.locationList.filter(loc =>
-    loc.toLowerCase().includes(search)
+  this.prLines[index].filteredLocations = this.locationList.filter(
+    (loc: any) => loc.name.toLowerCase().includes(search)
   );
+  this.prLines[index].locationDropdownOpen = true; // keep dropdown open
 }
 
-// Select a location from the dropdown
-selectLocation(index: number, location: string) {
-  this.prLines[index].locationSearch = location;   // display selected location
-  this.prLines[index].location = location;         // save in your model
-  this.prLines[index].filteredLocations = [];      // hide dropdown
+// Select location
+selectLocation(index: number, location: any) {
+  this.prLines[index].locationSearch = location.name; // show in input
+  this.prLines[index].location = location.name;         // save ID to model
+  this.prLines[index].locationDropdownOpen = false;   // close dropdown
 }
+
 onUomFocus(index: number) {
-  this.prLines[index].filteredUoms = [...this.uomList];
+  this.prLines[index].filteredUoms = [...this.uomList]; // all UOMs
   this.prLines[index].uomDropdownOpen = true;
 }
 
-// Filter UOM as user types
 filterUoms(index: number) {
   const search = this.prLines[index].uomSearch?.toLowerCase() || '';
-  this.prLines[index].filteredUoms = this.uomList.filter(u =>
-    u.toLowerCase().includes(search)
+  this.prLines[index].filteredUoms = this.uomList.filter((u: any) =>
+    u.name.toLowerCase().includes(search)
   );
 }
 
-// Select UOM
-selectUom(index: number, uom: string) {
-  this.prLines[index].uomSearch = uom; // show in input
-  this.prLines[index].uom = uom;       // save in model
-  this.prLines[index].uomDropdownOpen = false; // close dropdown
+selectUom(index: number, uom: any) {
+  this.prLines[index].uom = uom.name;       // ✅ save the name (string only)
+  this.prLines[index].uomSearch = uom.name; // ✅ also show in input field
+  this.prLines[index].uomDropdownOpen = false;
 }
+
+
 }

@@ -45,10 +45,7 @@ export class ItemListComponent {
       value: head.id,
       label: this.buildFullPath(head)
     }));
-
-
-
-      this.itemService.getItem().subscribe((data :any) => {
+     this.itemService.getItem().subscribe((data :any) => {
             this.itemsList = data
             this.itemsList = this.itemsList.map((item: any) => {
             const matched = this.parentHeadList.find(

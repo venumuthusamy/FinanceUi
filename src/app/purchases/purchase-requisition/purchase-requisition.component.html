@@ -78,7 +78,7 @@
       (click)="selectDepartment(dept)"
       class="px-3 py-2 hover:bg-blue-100 cursor-pointer text-sm"
     >
-      {{ dept.name }}
+      {{ dept.departmentName }}
     </li>
   </ul>
 </div>
@@ -87,15 +87,17 @@
 
     <!-- Delivery Date -->
     <div>
-      <label class="text-xs font-medium text-gray-600">Delivery Date</label>
-      <input
-        type="date"
-        class="w-full rounded-xl border px-3 py-2 text-sm focus:outline-none"
-        style="border-color: #0e3a4c;"
-        [(ngModel)]="prHeader.neededBy"
-        name="deliveryDate"
-      />
-    </div>
+  <label class="text-xs font-medium text-gray-600">Delivery Date</label>
+  <input
+    type="date"
+    class="w-full rounded-xl border px-3 py-2 text-sm focus:outline-none"
+    style="border-color: #0e3a4c;"
+    [(ngModel)]="prHeader.neededBy"
+    name="deliveryDate"
+    [min]="minDate"
+  />
+</div>
+
   </div>
 
   <!-- Second row -->
@@ -189,40 +191,42 @@
     class="w-full rounded-xl border px-3 py-2 text-sm focus:ring-2 focus:ring-[#0e3a4c] outline-none"
   />
 
-  <!-- Dropdown -->
+<div
+  *ngIf="prLines[i].dropdownOpen && prLines[i].filteredItems.length"
+  class="absolute left-0 top-full mt-1 w-full bg-white border border-gray-200 rounded-xl shadow-lg max-h-48 overflow-y-auto z-50"
+>
   <div
-    *ngIf="prLines[i].dropdownOpen && prLines[i].filteredItems.length"
-    class="absolute left-0 top-full mt-1 w-full bg-white border border-gray-200 rounded-xl shadow-lg max-h-48 overflow-y-auto z-50"
+    *ngFor="let item of prLines[i].filteredItems"
+    (click)="selectItem(i, item)"
+    class="px-3 py-2 cursor-pointer hover:bg-gray-100 text-sm flex justify-between"
   >
-    <div
-      *ngFor="let item of prLines[i].filteredItems"
-      (click)="selectItem(i, item)"
-      class="px-3 py-2 cursor-pointer hover:bg-gray-100 text-sm flex justify-between"
-    >
-      <span>{{ item.name }}</span>
-      <span class="text-gray-500 text-xs">{{ item.code }}</span>
-    </div>
+    <span>{{ item.itemName }}</span>
+    <span class="text-gray-500 text-xs">{{ item.itemCode }}</span>
   </div>
+</div>
+
 </td>
 
   <!-- Quantity -->
-          <td class="px-3 py-2">
-            <input type="number" class="w-full rounded-xl border px-3 py-2 text-sm" [(ngModel)]="prLines[i]['qty']" />
-          </td>
+         <td class="px-3 py-2" style="min-width: 100px;">
+  <input 
+    type="number" 
+    class="w-full rounded-xl border px-3 py-2 text-sm" 
+    [(ngModel)]="prLines[i]['qty']" 
+    style=" font-size: 14px;"
+  />
+</td>
 
-          <!-- UOM -->
-          <td class="px-3 py-2 relative">
-  <!-- Search Input for UOM -->
+
+  <td class="px-3 py-2 relative min-w-[150px]">
   <input
     type="text"
-    class="w-full rounded-xl border px-3 py-2 text-sm focus:ring-2 focus:ring-[#0e3a4c] outline-none"
-    placeholder="Search UOM..."
     [(ngModel)]="prLines[i].uomSearch"
     (focus)="onUomFocus(i)"
     (input)="filterUoms(i)"
+    placeholder="Search UOM..."
+    class="w-full min-w-[80px] rounded-xl border px-3 py-2 text-sm focus:ring-2 focus:ring-[#0e3a4c] outline-none"
   />
-
-  <!-- Dropdown Results -->
   <div
     *ngIf="prLines[i].uomDropdownOpen && prLines[i].filteredUoms?.length"
     class="absolute left-0 top-full mt-1 w-full bg-white border border-gray-200 rounded-xl shadow-lg max-h-48 overflow-y-auto z-50"
@@ -232,26 +236,27 @@
       (click)="selectUom(i, uom)"
       class="px-3 py-2 cursor-pointer hover:bg-gray-100 text-sm"
     >
-      {{ uom }}
+      {{ uom.name }}
     </div>
   </div>
 </td>
 
 
-         <td class="px-3 py-2 relative">
-  <!-- Search Input for Location -->
+
+
+
+
+   <td class="px-3 py-2 relative min-w-[180px]">
   <input
     type="text"
-    class="w-full rounded-xl border px-3 py-2 text-sm focus:ring-2 focus:ring-[#0e3a4c] outline-none"
-    placeholder="Search Location..."
     [(ngModel)]="prLines[i].locationSearch"
     (focus)="onLocationFocus(i)"
     (input)="filterLocations(i)"
+    placeholder="Search Location..."
+    class="w-full min-w-[160px] rounded-xl border px-3 py-2 text-sm focus:ring-2 focus:ring-[#0e3a4c] outline-none"
   />
-
-  <!-- Dropdown Results -->
   <div
-    *ngIf="prLines[i].filteredLocations?.length"
+    *ngIf="prLines[i].locationDropdownOpen && prLines[i].filteredLocations?.length"
     class="absolute left-0 top-full mt-1 w-full bg-white border border-gray-200 rounded-xl shadow-lg max-h-48 overflow-y-auto z-50"
   >
     <div
@@ -259,14 +264,18 @@
       (click)="selectLocation(i, location)"
       class="px-3 py-2 cursor-pointer hover:bg-gray-100 text-sm"
     >
-      {{ location }}
+      {{ location.name }}
     </div>
   </div>
 </td>
 
           <!-- Budget -->
           <td class="px-3 py-2">
-            <input class="w-full rounded-xl border px-3 py-2 text-sm" [(ngModel)]="prLines[i]['budget']" />
+            <input
+  class="w-full rounded-xl border px-3 py-2 text-sm"
+  [(ngModel)]="prLines[i].budget"
+/>
+
           </td>
 
           <!-- Remarks -->

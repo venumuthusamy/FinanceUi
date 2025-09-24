@@ -30,15 +30,43 @@
             <input class="w-full rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 px-3 py-2 text-sm"
                    [(ngModel)]="supplier.code" placeholder="AUTO or custom"/>
           </div>
-          <div>
-            <label class="text-xs font-medium text-gray-600">Status</label>
-            <select class="w-full rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 px-3 py-2 text-sm bg-white"
-                    [(ngModel)]="supplier.status">
-              <option>Active</option>
-              <option>On Hold</option>
-              <option>Archived</option>
-            </select>
-          </div>
+        <div class="relative">
+  <label class="text-xs font-medium text-gray-600">Status</label>
+
+  <div class="relative">
+    <input
+      type="text"
+      [(ngModel)]="statusSearch"
+      (input)="filterStatus()"
+      (focus)="statusDropdownOpen = true"
+      placeholder="Search Status..."
+      class="w-full rounded-xl border focus:outline-none focus:ring-2 px-4 py-2 text-sm"
+      style="border-color: #0e3a4c"
+    />
+
+    <button
+      type="button"
+      (click)="statusDropdownOpen = !statusDropdownOpen"
+      class="absolute inset-y-0 right-2 flex items-center text-gray-500 px-2"
+    >
+      ▼
+    </button>
+  </div>
+
+  <ul
+    *ngIf="statusDropdownOpen"
+    class="absolute top-full left-0 right-0 bg-white border rounded-xl mt-1 shadow z-10 max-h-40 overflow-y-auto"
+  >
+    <li
+      *ngFor="let s of filteredStatus"
+      (click)="selectStatus(s)"
+      class="px-3 py-2 hover:bg-blue-100 cursor-pointer text-sm"
+    >
+      {{ s }}
+    </li>
+  </ul>
+</div>
+
           <div>
             <label class="text-xs font-medium text-gray-600">Lead Time (days)</label>
             <input type="number" class="w-full rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 px-3 py-2 text-sm"
@@ -47,32 +75,138 @@
         </div>
 
         <div [ngClass]="gridColsClass(4)">
-          <div>
-            <label class="text-xs font-medium text-gray-600">Payment Terms</label>
-            <select class="w-full rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 px-3 py-2 text-sm bg-white"
-                    [(ngModel)]="supplier.terms">
-              <option>COD</option><option>NET 15</option><option>NET 30</option><option>NET 45</option>
-            </select>
-          </div>
-          <div>
-            <label class="text-xs font-medium text-gray-600">Currency</label>
-            <select class="w-full rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 px-3 py-2 text-sm bg-white"
-                    [(ngModel)]="supplier.currency">
-              <option>SGD</option><option>USD</option><option>MYR</option><option>INR</option>
-            </select>
-          </div>
+        <div class="relative">
+  <label class="text-xs font-medium text-gray-600">Payment Terms</label>
+
+ <div class="relative">
+  <input
+    type="text"
+    [(ngModel)]="termsSearch"
+    (input)="filterTerms()"
+    (focus)="termsDropdownOpen = true"
+    placeholder="Search Terms..."
+    class="w-full rounded-xl border focus:outline-none focus:ring-2 px-4 py-2 text-sm"
+    style="border-color: #0e3a4c"
+  />
+
+  <button
+    type="button"
+    (click)="termsDropdownOpen = !termsDropdownOpen"
+    class="absolute inset-y-0 right-2 flex items-center text-gray-500 px-2"
+  >
+    ▼
+  </button>
+
+  <!-- 🔽 Dropdown list -->
+  <ul
+    *ngIf="termsDropdownOpen && filteredTerms.length"
+    class="absolute left-0 top-full mt-1 w-full bg-white border border-gray-200 rounded-xl shadow-lg max-h-48 overflow-y-auto z-50"
+  >
+    <li
+      *ngFor="let t of filteredTerms"
+      (click)="selectTerm(t)"
+      class="px-3 py-2 hover:bg-blue-100 cursor-pointer text-sm"
+    >
+      {{ t.paymentTermsName }}
+    </li>
+  </ul>
+</div>
+
+  <ul
+    *ngIf="termsDropdownOpen"
+    class="absolute top-full left-0 right-0 bg-white border rounded-xl mt-1 shadow z-10 max-h-40 overflow-y-auto"
+  >
+    <li
+  *ngFor="let t of filteredTerms"
+  (click)="selectTerm(t)"
+  class="px-3 py-2 hover:bg-blue-100 cursor-pointer text-sm"
+>
+  {{ t.paymentTermsName }}
+</li>
+
+  </ul>
+</div>
+
+      <div class="relative">
+  <label class="text-xs font-medium text-gray-600">Currency</label>
+
+  <div class="relative">
+    <input
+      type="text"
+      [(ngModel)]="currencySearch"
+      (input)="filterCurrencies()"
+      (focus)="currencyDropdownOpen = true"
+      placeholder="Search Currency..."
+      class="w-full rounded-xl border focus:outline-none focus:ring-2 px-4 py-2 text-sm"
+      style="border-color: #0e3a4c"
+    />
+
+    <button
+      type="button"
+      (click)="currencyDropdownOpen = !currencyDropdownOpen"
+      class="absolute inset-y-0 right-2 flex items-center text-gray-500 px-2"
+    >
+      ▼
+    </button>
+  </div>
+
+  <ul
+    *ngIf="currencyDropdownOpen && filteredCurrencies.length"
+    class="absolute top-full left-0 right-0 bg-white border rounded-xl mt-1 shadow z-10 max-h-40 overflow-y-auto"
+  >
+    <li
+      *ngFor="let c of filteredCurrencies"
+      (click)="selectCurrency(c)"
+      class="px-3 py-2 hover:bg-blue-100 cursor-pointer text-sm"
+    >
+      {{ c.currencyName }}
+    </li>
+  </ul>
+</div>
+
+
           <div>
             <label class="text-xs font-medium text-gray-600">Tax Reg No</label>
             <input class="w-full rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 px-3 py-2 text-sm"
                    [(ngModel)]="supplier.taxReg" placeholder="GST/UEN"/>
           </div>
-          <div>
-            <label class="text-xs font-medium text-gray-600">Incoterms</label>
-            <select class="w-full rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 px-3 py-2 text-sm bg-white"
-                    [(ngModel)]="supplier.incoterms">
-              <option>EXW</option><option>FOB</option><option>CIF</option><option>DAP</option>
-            </select>
-          </div>
+         <div class="relative">
+  <label class="text-xs font-medium text-gray-600">Incoterms</label>
+
+  <div class="relative">
+    <input
+      type="text"
+      [(ngModel)]="incotermSearch"
+      (input)="filterIncoterms()"
+      (focus)="incotermDropdownOpen = true"
+      placeholder="Search Incoterm..."
+      class="w-full rounded-xl border focus:outline-none focus:ring-2 px-4 py-2 text-sm"
+      style="border-color: #0e3a4c"
+    />
+
+    <button
+      type="button"
+      (click)="incotermDropdownOpen = !incotermDropdownOpen"
+      class="absolute inset-y-0 right-2 flex items-center text-gray-500 px-2"
+    >
+      ▼
+    </button>
+  </div>
+
+  <ul
+    *ngIf="incotermDropdownOpen"
+    class="absolute top-full left-0 right-0 bg-white border rounded-xl mt-1 shadow z-10 max-h-40 overflow-y-auto"
+  >
+    <li
+      *ngFor="let i of filteredIncoterms"
+      (click)="selectIncoterm(i)"
+      class="px-3 py-2 hover:bg-blue-100 cursor-pointer text-sm"
+    >
+      {{ i }}
+    </li>
+  </ul>
+</div>
+
         </div>
 
         <div [ngClass]="gridColsClass(4)">
@@ -91,20 +225,39 @@
             <input class="w-full rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 px-3 py-2 text-sm"
                    [(ngModel)]="supplier.phone"/>
           </div>
-          <div>
-            <label class="text-xs font-medium text-gray-600">Preferred Items</label>
-            <div class="flex flex-wrap items-center gap-2 rounded-xl border border-gray-300 px-2 py-2">
-              <span *ngFor="let t of preferredItems; let i = index; trackBy: trackByIndex"
-                    class="px-2 py-1 rounded-full text-xs bg-gray-100 border">
-                {{ t }}
-                <button class="ml-2 text-gray-500 hover:text-red-600" (click)="removePreferred(i)" title="Remove" type="button">×</button>
-              </span>
-              <input class="flex-1 min-w-[140px] outline-none text-sm" [(ngModel)]="preferredText"
-                     (keydown.enter)="$event.preventDefault(); addPreferred()" placeholder="Type and press Enter"/>
-              <button class="px-3 py-2 rounded-xl text-sm font-medium border border-emerald-600 text-emerald-700 hover:bg-emerald-50"
-                      (click)="addPreferred()" type="button">Add</button>
-            </div>
-          </div>
+      <div>
+  <label class="text-xs font-medium text-gray-600">Preferred Items</label>
+  <div class="flex flex-wrap items-center gap-2 rounded-xl border border-gray-300 px-2 py-2 relative">
+
+    <!-- Selected Preferred Items -->
+    <span *ngFor="let t of preferredItems; let i = index; trackBy: trackByIndex"
+          class="px-2 py-1 rounded-full text-xs bg-gray-100 border">
+      {{ t.itemName }}
+      <button class="ml-2 text-gray-500 hover:text-red-600"
+              (click)="removePreferred(i)" title="Remove" type="button">×</button>
+    </span>
+
+    <!-- Input field -->
+   <input
+  class="flex-1 min-w-[140px] outline-none text-sm"
+  [(ngModel)]="preferredText"
+  (input)="filterItems()"
+  (keydown.enter)="selectFirstFilteredItem($event)"
+  placeholder="Type to search items..." />
+
+
+    <!-- Dropdown Suggestions -->
+    <ul *ngIf="preferredText && filteredItems.length"
+        class="absolute left-0 top-full mt-1 w-full bg-white border border-gray-200 rounded-xl shadow-lg max-h-48 overflow-y-auto z-50">
+      <li *ngFor="let item of filteredItems"
+          (click)="selectPreferred(item)"
+          class="px-3 py-2 hover:bg-gray-100 cursor-pointer">
+        {{ item.itemName }}
+      </li>
+    </ul>
+  </div>
+</div>
+
         </div>
 
         <div [ngClass]="gridColsClass(1)">

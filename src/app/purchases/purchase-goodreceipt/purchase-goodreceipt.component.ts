@@ -137,6 +137,7 @@ saveGRN() {
     this.flagIssuesList = data.filter(issue => issue.isActive === true);
   });
 }
+ 
 
 
  submitFlag() {

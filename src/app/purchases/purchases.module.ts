@@ -47,7 +47,7 @@ const routes: Routes = [
    { path: 'inventory', component: InventoryComponent },
     { path: 'order', component: PurchaseOrderListComponent },
    { path: 'order/create', component: PurchaseOrderComponent },
-   { path: 'order/edit/:id', component: PurchaseOrderComponent },
+   { path: 'order/edit/:id', component: PurchaseOrderComponent }, 
    
 ];
 @NgModule({

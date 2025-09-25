@@ -194,7 +194,7 @@
       <!-- Currency + FX Rate -->
         <div class="flex gap-4">
       <!-- Currency Dropdown (Left Half) -->
-      <div class="relative w-1/2">
+      <div class="relative w-2/4">
         <label class="text-xs font-medium text-gray-600">Currency</label>
         <div class="relative">
           <input
@@ -207,14 +207,14 @@
             style="border-color: #0e3a4c"
           />
           <!-- Clear Button -->
-          <button
+          <!-- <button
             *ngIf="searchTexts['currency']"
             type="button"
             (click)="onClearSearch('currency')"
             class="absolute inset-y-0 right-7 flex items-center text-gray-400 hover:text-gray-600 px-2"
           >
             ✕
-          </button>
+          </button> -->
           <!-- Dropdown Icon -->
           <button
             type="button"
@@ -241,10 +241,10 @@
       </div>
 
       <!-- FX Rate Textbox (Right Half) -->
-      <div class="w-1/2">
+      <div class="w-2/4">
         <label class="text-xs font-medium text-gray-600">FX Rate</label>
         <input
-          type="number"
+          type="text"
           [(ngModel)]="poHdr.fxRate"
           placeholder="Enter FX Rate"
           class="w-full rounded-xl border focus:outline-none focus:ring-2 px-4 py-2 text-sm"
@@ -415,7 +415,7 @@
             <th class="text-left px-3 py-2 font-medium">Description</th>
             <!-- <th class="text-left px-3 py-2 font-medium">CapEx / OpEx</th> -->
             <th class="text-left px-3 py-2 font-medium">Budget</th>
-            <th class="text-left px-3 py-2 font-medium">Recurring?</th>
+            <th class="text-left px-3 py-2 font-medium">Recurring</th>
             <th class="text-left px-3 py-2 font-medium">Qty</th>
             <th class="text-left px-3 py-2 font-medium">Unit Price</th>
             <th class="text-left px-3 py-2 font-medium">Discount %</th>
@@ -567,14 +567,20 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mt-4">
       <div class="md:col-span-2"></div>
       <div class="space-y-2 text-sm">
-        <div class="flex justify-between">
-          <span>Sub Total</span><span>{{ poTotals.sum.toFixed(2) }}</span>
+        <div class="flex justify-between items-center gap-2">
+          <span>Sub Total</span>
+          <input
+            type="number"
+            class="w-28 rounded-xl border px-2 py-1 text-sm text-right bg-gray-100"
+            [value]="poTotals.sum.toFixed(2)"
+            disabled
+          />
         </div>
         <div class="flex justify-between items-center gap-2">
           <span>GST (%)</span>
           <input
             type="number"
-            class="w-full rounded-xl border px-3 py-2 text-sm"
+            class="w-28 rounded-xl border px-2 py-1 text-sm text-right"
             [(ngModel)]="poHdr.tax"
           />
         </div>
@@ -582,7 +588,7 @@
           <span>Shipping Cost</span>
           <input
             type="number"
-            class="w-full rounded-xl border px-3 py-2 text-sm"
+            class="w-28 rounded-xl border px-2 py-1 text-sm text-right"
             [(ngModel)]="poHdr.shipping"
           />
         </div>
@@ -590,13 +596,18 @@
           <span>Discount (absolute)</span>
           <input
             type="number"
-            class="w-full rounded-xl border px-3 py-2 text-sm"
+            class="w-28 rounded-xl border px-2 py-1 text-sm text-right"
             [(ngModel)]="poHdr.discount"
           />
         </div>
-        <div class="border-t pt-2 flex justify-between font-semibold">
+        <div class="border-t pt-2 flex justify-between items-center font-semibold gap-2">
           <span>Net Total</span>
-          <span>{{ poTotals.grand.toFixed(2) }} {{ poHdr.currencyId }}</span>
+          <input
+            type="text"
+            class="w-28 rounded-xl border px-2 py-1 text-sm text-right bg-gray-100"
+            [value]="poTotals.grand.toFixed(2) + ' ' + poHdr.currencyName"
+            disabled
+          />
         </div>
       </div>
     </div>

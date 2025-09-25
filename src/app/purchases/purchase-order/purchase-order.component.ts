@@ -26,6 +26,7 @@ export class PurchaseOrderComponent {
     approveLevelId:0,
     paymentTermId:0,
     currencyId:0,
+    currencyName:'',
     deliveryId:0,
     contactNumber:'',
     incotermsId:0,
@@ -77,11 +78,6 @@ export class PurchaseOrderComponent {
     delivery: false,
     incoterms: false
   };
-  // approvalLevel = [
-  //   { id: 1, name: 'Department Head' },
-  //   { id: 2, name: 'Management' },
-  //   { id: 3, name: 'Auto-Approve' },
-  // ];
   suppliers = [
     { id: 1, name: 'Sangeetha Restaurants' },
     { id: 2, name: 'Rajbhavan' },
@@ -163,10 +159,10 @@ export class PurchaseOrderComponent {
           if (selectedApproveLevel) {
             this.searchTexts['approval'] = selectedApproveLevel.name;
           }
-          // const selectedSupplier = this.suppliers?.find((d:any) => d.id === this.poHdr.supplierId);
-          // if (selectedSupplier) {
-          //   this.searchTexts['supplier'] = selectedSupplier.name;
-          // }
+          const selectedSupplier = this.suppliers?.find((d:any) => d.id === this.poHdr.supplierId);
+          if (selectedSupplier) {
+            this.searchTexts['supplier'] = selectedSupplier.name;
+          }
           const selectedPaymentTerms = this.paymentTerms?.find((d:any) => d.id === this.poHdr.paymentTermId);
           if (selectedPaymentTerms) {
             this.searchTexts['paymentTerms'] = selectedPaymentTerms.paymentTermsName;

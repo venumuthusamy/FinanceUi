@@ -186,7 +186,7 @@
           (click)="select('paymentTerms', item)"
           class="px-3 py-2 hover:bg-blue-100 cursor-pointer text-sm"
         >
-          {{ item.name }}
+          {{ item.paymentTermsName }}
         </li>
       </ul>
       </div>
@@ -235,7 +235,7 @@
             (click)="select('currency', item)"
             class="px-3 py-2 hover:bg-blue-100 cursor-pointer text-sm"
           >
-            {{ item.name }}
+            {{ item.currencyName }}
           </li>
         </ul>
       </div>
@@ -353,7 +353,7 @@
               (click)="select('incoterms', item)"
               class="px-3 py-2 hover:bg-blue-100 cursor-pointer text-sm"
             >
-              {{ item.name }}
+              {{ item.incotermsName }}
             </li>
           </ul>
       </div>
@@ -433,7 +433,7 @@
             *ngFor="let r of poLines; let i = index; trackBy: trackByIndex"
             class="border-t"
           >
-          <td class="px-3 py-2 relative">
+          <td class="px-3 py-2 relative dropdown-cell">
               <input type="text" [(ngModel)]="poLines[i].prNo"
                 (focus)="openDropdown(i, 'prNo')" (input)="filterOptions(i, 'prNo')"
                 placeholder="Search PO No..."
@@ -448,7 +448,7 @@
                 </div>
               </div>
             </td>
-            <td class="px-3 py-2 relative">
+            <td class="px-3 py-2 relative dropdown-cell">
               <input type="text" [(ngModel)]="poLines[i].item"
               (focus)="openDropdown(i, 'item')" (input)="filterOptions(i, 'item')"
               placeholder="Search Item..."
@@ -460,7 +460,7 @@
                     (click)="selectOption(i, 'item', option)"
                     class="px-3 py-2 cursor-pointer hover:bg-gray-100 text-sm flex justify-between">
                   <span>{{ option.code }}</span>
-                  <span class="text-gray-500 text-xs">{{ option.name }}</span>
+                  <span>{{ option.name }}</span>
                 </div>
               </div>
             </td>
@@ -471,7 +471,7 @@
                 placeholder="Item description"
               />
             </td>
-            <td class="px-3 py-2 relative">
+            <td class="px-3 py-2 relative dropdown-cell">
               <input type="text" [(ngModel)]="poLines[i].budget"
                 (focus)="openDropdown(i, 'budget')" (input)="filterOptions(i, 'budget')"
                 placeholder="Search Budget..."
@@ -486,7 +486,7 @@
                 </div>
               </div>
             </td>
-            <td class="px-3 py-2 relative">
+            <td class="px-3 py-2 relative dropdown-cell">
                 <input type="text" [(ngModel)]="poLines[i].recurring"
                   (focus)="openDropdown(i, 'recurring')" (input)="filterOptions(i, 'recurring')"
                   placeholder="Search Recurring..."
@@ -522,7 +522,7 @@
                 [(ngModel)]="poLines[i]['discount']"
               />
             </td>
-            <td class="px-3 py-2 relative">
+            <td class="px-3 py-2 relative dropdown-cell">
                 <input type="text" [(ngModel)]="poLines[i].taxCode"
                 (focus)="openDropdown(i, 'taxCode')" (input)="filterOptions(i, 'taxCode')"
                 placeholder="Search Tax Code..."

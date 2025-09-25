@@ -2,6 +2,12 @@ import { Component, HostListener } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PurchaseOrderService } from './purchase-order-service';
 import { ToastService } from 'src/app/toaster/toaster/toaster.service';
+import { ApprovalLevelService } from 'src/app/masters/approval-level/approval-level.service';
+import { PaymentTermsService } from 'src/app/masters/paymentterms/paymentterms.service';
+import { CurrencyService } from 'src/app/masters/currency/currency.service';
+import { LocationService } from 'src/app/masters/location/location-service';
+import { IncotermsService } from 'src/app/masters/incoterms/incoterms.service';
+import { forkJoin } from 'rxjs';
 type LineRow = { [k: string]: any };
 
 @Component({
@@ -37,6 +43,12 @@ export class PurchaseOrderComponent {
     approvalStatus: '',    
   };
   purchaseOrderId: any;
+  approvalLevel: any;
+  paymentTerms: any;
+  currencies: any;
+  deliveries: any;
+  incoterms: any
+  
 
   formatDate(date: Date | string): string {
   if (!date) return '';
@@ -65,45 +77,26 @@ export class PurchaseOrderComponent {
     delivery: false,
     incoterms: false
   };
-  approvalLevel = [
-    { id: 1, name: 'Department Head' },
-    { id: 2, name: 'Management' },
-    { id: 3, name: 'Auto-Approve' },
-  ];
+  // approvalLevel = [
+  //   { id: 1, name: 'Department Head' },
+  //   { id: 2, name: 'Management' },
+  //   { id: 3, name: 'Auto-Approve' },
+  // ];
   suppliers = [
     { id: 1, name: 'Sangeetha Restaurants' },
     { id: 2, name: 'Rajbhavan' },
     { id: 3, name: 'Crescent' },
   ];
-  paymentTerms = [
-    { id: 1, name: '30 days' },
-    { id: 2, name: '60 days' },
-    { id: 3, name: '90 days' },
-  ];
-   currencies = [
-    { id: 1, name: 'SGD' },
-    { id: 2, name: 'INR' },
-    { id: 3, name: 'USD' },
-  ];
-   deliveries = [
-    { id: 1, name: 'chennai' },
-    { id: 2, name: 'delhi' },
-    { id: 3, name: 'singapore' },
-  ];
-   incoterms = [
-    { id: 1, name: 'FOB' },
-    { id: 2, name: 'EXB' },
-    { id: 3, name: 'CIF' },
-  ];
+ 
   
  filteredLists: { [key: string]: any[] } = {
-  approval: [...this.approvalLevel],
-  supplier: [...this.suppliers],
-  paymentTerms: [...this.paymentTerms],
-  currency: [...this.currencies],
-  delivery: [...this.deliveries],
-  incoterms: [...this.incoterms]
- };
+  approval: [],
+  supplier: [],
+  paymentTerms: [],
+  currency: [],
+  delivery: [],
+  incoterms: []
+};
  
   
   allPrNos = ['PO123', 'PO456', 'PO789'];
@@ -122,74 +115,111 @@ export class PurchaseOrderComponent {
  
 
   constructor(private purchaseOrderService: PurchaseOrderService, private router: Router,
-     private toast: ToastService,private route: ActivatedRoute,
+     private toast: ToastService,private route: ActivatedRoute,private approvalLevelService: ApprovalLevelService,
+     private paymentTermsService: PaymentTermsService,private currencyService: CurrencyService,
+     private locationService : LocationService,private incotermsService: IncotermsService,
   ) { }
 
-   ngOnInit() {
-    debugger
-    this.route.paramMap.subscribe((params :any)=> {
-            this.purchaseOrderId = parseInt(params.get('id'));
-            if (this.purchaseOrderId) {
-              
-              this.purchaseOrderService.getPurchaseOrderById(this.purchaseOrderId).subscribe((data :any) => {
-              
-                this.poHdr = {
-                    id: data.id,
-                    purchaseOrderNo: data.purchaseOrderNo,
-                    supplierId: data.supplierId,
-                    approveLevelId: data.approveLevelId,
-                    paymentTermId: data.paymentTermId,
-                    currencyId: data.currencyId,
-                    deliveryId: data.deliveryId,
-                    contactNumber: data.contactNumber,
-                    incotermsId: data.incotermsId,
-                    remarks: data.remarks,
-                    // currency: 'SGD',
-                    fxRate:  data.fxRate,                  
-                    tax: data.tax,
-                    shipping:  data.shipping,
-                    discount: data.discount,   
-                    subTotal: data.subTotal,
-                    netTotal: data.netTotal,
-                    // approvalLevel: 'DeptHead',     
-                    approvalStatus: data.approvalStatus,    
-                  };
-                  this.poHdr.poDate = new Date(data.poDate);        // keep as Date
-                  this.poHdr.deliveryDate = this.toISODate(new Date(data.deliveryDate));
 
-                    const selectedApproveLevel = this.approvalLevel.find(d => d.id === this.poHdr.approveLevelId);
-                    if (selectedApproveLevel) {
-                      this.searchTexts['approval'] = selectedApproveLevel.name;
-                    }
-                    const selectedSupplier = this.suppliers.find(d => d.id === this.poHdr.supplierId);
-                    if (selectedSupplier) {
-                      this.searchTexts['supplier'] = selectedSupplier.name;
-                    }
-                    const selectedPaymentTerms = this.paymentTerms.find(d => d.id === this.poHdr.paymentTermId);
-                    if (selectedPaymentTerms) {
-                      this.searchTexts['paymentTerms'] = selectedPaymentTerms.name;
-                    }
-                    const selectedCurrency = this.currencies.find(d => d.id === this.poHdr.currencyId);
-                    if (selectedCurrency) {
-                      this.searchTexts['currency'] = selectedCurrency.name;
-                    }
-                    const selectedDelivery = this.deliveries.find(d => d.id === this.poHdr.deliveryId);
-                    if (selectedDelivery) {
-                      this.searchTexts['delivery'] = selectedDelivery.name;
-                    }
-                    const selectedIncoterms = this.incoterms.find(d => d.id === this.poHdr.incotermsId);
-                    if (selectedIncoterms) {
-                      this.searchTexts['incoterms'] = selectedIncoterms.name;
-                    }
+  ngOnInit() {
+  this.route.paramMap.subscribe((params: any) => {
+    this.purchaseOrderId = parseInt(params.get('id'));
 
-                    this.poLines =  JSON.parse(data.poLines)
-              }); 
-              
-            } else {
-                       
-            }
-          });
-   }
+    if (this.purchaseOrderId) {
+      // ✅ Edit mode
+      forkJoin({
+        approval: this.approvalLevelService.getAll(),
+        paymentTerms: this.paymentTermsService.getAll(),
+        currency: this.currencyService.getAll(),
+        delivery: this.locationService.getLocation(),
+        incoterms: this.incotermsService.getIncoterms(),
+        //suppliers: this.supplierService.getAll(),
+        poHdr: this.purchaseOrderService.getPurchaseOrderById(this.purchaseOrderId)
+      }).subscribe((results: any) => {
+        this.approvalLevel = results.approval.data;
+        this.paymentTerms = results.paymentTerms.data;
+        this.currencies = results.currency.data;
+        this.deliveries = results.delivery;
+        this.incoterms = results.incoterms;
+        //this.suppliers = results.suppliers.data;
+
+        this.poHdr = {
+          ...results.poHdr,
+          poDate: new Date(results.poHdr.poDate),
+          deliveryDate: this.toISODate(new Date(results.poHdr.deliveryDate))
+        };
+
+        this.filteredLists = {
+          approval: [...this.approvalLevel],
+          supplier: [...this.suppliers],
+          paymentTerms: [...this.paymentTerms],
+          currency: [...this.currencies],
+          delivery: [...this.deliveries],
+          incoterms: [...this.incoterms]
+        };
+
+        
+          const selectedApproveLevel = this.approvalLevel?.find((d:any) => d.id === this.poHdr.approveLevelId);
+          if (selectedApproveLevel) {
+            this.searchTexts['approval'] = selectedApproveLevel.name;
+          }
+          // const selectedSupplier = this.suppliers?.find((d:any) => d.id === this.poHdr.supplierId);
+          // if (selectedSupplier) {
+          //   this.searchTexts['supplier'] = selectedSupplier.name;
+          // }
+          const selectedPaymentTerms = this.paymentTerms?.find((d:any) => d.id === this.poHdr.paymentTermId);
+          if (selectedPaymentTerms) {
+            this.searchTexts['paymentTerms'] = selectedPaymentTerms.paymentTermsName;
+          }
+          const selectedCurrency = this.currencies?.find((d:any) => d.id === this.poHdr.currencyId);
+          if (selectedCurrency) {
+            this.searchTexts['currency'] = selectedCurrency.currencyName;
+          }
+          const selectedDelivery = this.deliveries?.find((d:any) => d.id === this.poHdr.deliveryId);
+          if (selectedDelivery) {
+            this.searchTexts['delivery'] = selectedDelivery.name;
+          }
+          const selectedIncoterms = this.incoterms?.find((d:any) => d.id === this.poHdr.incotermsId);
+          if (selectedIncoterms) {
+            this.searchTexts['incoterms'] = selectedIncoterms.incotermsName;
+          }
+
+        
+        this.poLines = JSON.parse(results.poHdr.poLines);
+      });
+    } else {
+      // ✅ Create mode
+      forkJoin({
+        approval: this.approvalLevelService.getAll(),
+        paymentTerms: this.paymentTermsService.getAll(),
+        currency: this.currencyService.getAll(),
+        delivery: this.locationService.getLocation(),
+        incoterms: this.incotermsService.getIncoterms(),
+        //suppliers: this.supplierService.getAll()
+      }).subscribe((results: any) => {
+        this.approvalLevel = results.approval.data;
+        this.paymentTerms = results.paymentTerms.data;
+        this.currencies = results.currency.data;
+        this.deliveries = results.delivery;
+        this.incoterms = results.incoterms;
+        //this.suppliers = results.suppliers.data;
+
+        this.filteredLists = {
+          approval: [...this.approvalLevel],
+          supplier: [...this.suppliers],
+          paymentTerms: [...this.paymentTerms],
+          currency: [...this.currencies],
+          delivery: [...this.deliveries],
+          incoterms: [...this.incoterms]
+        };
+
+        // default poHdr for create
+        //this.poHdr = { id: 0, poDate: new Date(), deliveryDate: this.toISODate(new Date()), ... };
+      });
+    }
+  });
+}
+
 
   toISODate(date: Date): string {
     const year = date.getFullYear();
@@ -217,17 +247,23 @@ export class PurchaseOrderComponent {
     this.saveRequest()
   }
 
+ 
    @HostListener('document:click', ['$event'])
-    onClickOutside(event: Event) {
-    const target = event.target as HTMLElement;
+    onDocumentClick(event: Event) {
+      const target = event.target as HTMLElement;
 
-    // if the click is NOT inside the main wrapper (div.relative)
-    if (!target.closest('.relative')) {
-       for (let key in this.dropdownOpen) {
-      this.dropdownOpen[key] = false;
+      // Check if click is outside any dropdown
+      this.poLines.forEach(line => {
+        if (!target.closest('.dropdown-cell')) {
+          line.dropdownOpen = '';
+        }
+      });
+      if (!target.closest('.relative')) {
+        for (let key in this.dropdownOpen) {
+        this.dropdownOpen[key] = false;
+      }
+      }
     }
-    }
-  }
 
     toggleDropdown(field: string, open?: boolean) {
       debugger
@@ -250,29 +286,29 @@ export class PurchaseOrderComponent {
 
     switch (field) {
       case 'approval':
-        this.filteredLists[field] = this.approvalLevel.filter(s => s.name.toLowerCase().includes(search));
+        this.filteredLists[field] = this.approvalLevel.filter((s:any) => s.name.toLowerCase().includes(search));
         break;
       case 'supplier':
-        this.filteredLists[field] = this.suppliers.filter(s => s.name.toLowerCase().includes(search));
+        this.filteredLists[field] = this.suppliers.filter((s:any) => s.name.toLowerCase().includes(search));
         break;
       case 'paymentTerms':
-        this.filteredLists[field] = this.paymentTerms.filter(p => p.name.toLowerCase().includes(search));
+        this.filteredLists[field] = this.paymentTerms.filter((p:any) => p.paymentTermsName.toLowerCase().includes(search));
         break;
       case 'currency':
-        this.filteredLists[field] = this.currencies.filter(c => c.name.toLowerCase().includes(search));
+        this.filteredLists[field] = this.currencies.filter((s:any) => s.currencyName.toLowerCase().includes(search));
         break;
       case 'delivery':
-        this.filteredLists[field] = this.deliveries.filter(d => d.name.toLowerCase().includes(search));
+        this.filteredLists[field] = this.deliveries.filter((s:any) => s.name.toLowerCase().includes(search));
         break;
       case 'incoterms':
-        this.filteredLists[field] = this.incoterms.filter(i => i.name.toLowerCase().includes(search));
+        this.filteredLists[field] = this.incoterms.filter((s:any) => s.incotermsName.toLowerCase().includes(search));
         break;
     }
   }
 
   //  Select item
   select(field: string, item: any) {
-    this.searchTexts[field] = item.name;
+    this.searchTexts[field] = item.name || item.paymentTermsName || item.currencyName || item.incotermsName;
     switch (field) {
     case 'approval':
     this.poHdr.approveLevelId = item.id;
@@ -308,10 +344,26 @@ export class PurchaseOrderComponent {
   openDropdown(index: number, field: string) {
     debugger
   this.poLines[index].dropdownOpen = field;
-  this.filterOptions(index, field); // show all initially
+  // this.filterOptions(index, field); // show all initially
+    if (field === 'prNo') {
+    this.poLines[index].filteredOptions = [...this.allPrNos];
+  }
+  if (field === 'item') {
+    this.poLines[index].filteredOptions = [...this.allItems];
+  }
+  if (field === 'budget') {
+    this.poLines[index].filteredOptions = [...this.allBudgets];
+  }
+  if (field === 'recurring') {
+    this.poLines[index].filteredOptions = [...this.allRecurring];
+  }
+  if (field === 'taxCode') {
+    this.poLines[index].filteredOptions = [...this.allTaxCodes];
+  }
   }
 
   filterOptions(index: number, field: string) {
+    debugger
   const searchValue = (this.poLines[index][field] || '').toLowerCase();
 
   if (field === 'prNo') {
